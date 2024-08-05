@@ -1,0 +1,72 @@
+[
+  {
+    "question": "Why is the transformer architecture expressive in the forward pass?",
+    "answer": "The transformer architecture is expressive because it uses a general message passing scheme where nodes get to look at each other, decide what's interesting and then update each other.",
+    "result": "The transformer architecture is designed to be very expressive in the forward pass and is optimized for hardware with lots of parallelism. It is designed to perform a lot of operations serially and is very optimizable in the backward pass. The residual connections in the transformer support a kind of passing where nodes get to communicate and broadcast their keys and values.",
+    "answerScore": {
+      "score": 1,
+      "justification": "GRADE: Correct\n\nJUSTIFICATION: The student answer accurately explains that the transformer architecture is designed to be expressive in the forward pass and uses a message passing scheme where nodes update each other. The additional information provided by the student does not conflict with the true answer."
+    },
+    "retrievalScore": {
+      "score": 1,
+      "justification": "GRADE: Correct\n\nJUSTIFICATION: All of the retrieved documents discuss the transformer architecture and its design features, specifically its ability to be expressive in the forward pass. Doc 3 specifically mentions the message passing scheme used by the transformer architecture, which directly answers the question. Therefore, the retrieved documents are relevant and support the answer."
+    },
+    "latency": 9.03007197380066
+  },
+  {
+    "question": "What design criteria does the Transformer meet?",
+    "answer": "The transformer is very expressive in a forward pass, optimizable in the backward pass using the techniques that we have such as gradient descent, and it can run efficiently on our hardware such as GPUs.",
+    "result": "The Transformer was designed to be both expressive in the forward pass and optimizable in the backward pass, with hardware efficiency in mind. The authors aimed to create a powerful architecture that could express general computation and support message passing. The Transformer has been remarkably stable since its release in 2016, with some minor reshuffling of layer normalizations in a pre-norm formulation.",
+    "answerScore": {
+      "score": 1,
+      "justification": "GRADE: Correct\n\nJUSTIFICATION: The student answer accurately describes the design criteria of the Transformer, including its expressiveness in the forward pass, optimizability in the backward pass, and hardware efficiency. The additional information provided does not conflict with the true answer."
+    },
+    "retrievalScore": {
+      "score": 1,
+      "justification": "GRADE: Correct\n\nJUSTIFICATION: The retrieved documents provide information on the design criteria of the Transformer, including its efficiency on hardware, expressiveness in the forward pass, and optimizability in the backward pass. These criteria directly answer the question and support the answer provided."
+    },
+    "latency": 9.81938886642456
+  },
+  {
+    "question": "Why is next word prediction an effective training objective?",
+    "answer": "On a sufficiently large dataset, the task of predicting the next word multi-tasks knowledge of a lot of things, including understanding of chemistry, physics, and human nature. You have to understand a lot about the world to make that prediction on an internet-scale dataset.",
+    "result": "Next word prediction is an effective training objective because it is a simple objective that can be applied to language models, which have existed for a long time. By consuming a sequence of words and predicting the next word, neural nets can be trained on large datasets and prompted to solve problems. This objective requires understanding of the world and context, making it an effective way to train language models.",
+    "answerScore": {
+      "score": 1,
+      "justification": "GRADE: Correct\n\nJUSTIFICATION: The student answer accurately explains that next word prediction is an effective training objective because it requires understanding of the world and context, making it an effective way to train language models. The answer also mentions that neural nets can be trained on large datasets and prompted to solve problems, which is also true."
+    },
+    "retrievalScore": {
+      "score": 1,
+      "justification": "GRADE: Correct\n\nJUSTIFICATION: All of the retrieved documents discuss the task of predicting the next word in a sequence and how it relates to language modeling and neural networks. They also mention the importance of understanding various aspects of the world to effectively predict the next word. Therefore, they are relevant to the question and support the answer."
+    },
+    "latency": 9.98887300491333
+  },
+  {
+    "question": "What was the World Of Bits project and why did it fail?",
+    "answer": "World Of Bits was an effort to give AI access to tools, such as a keyboard and mouse, in order to complete tasks, such as complete bookings. It failed because it turned out that reinforcement learning is an extremely inefficient way of training neural networks. You take many actions, but you only get a sparse reward once in a while. Starting from scratch, it is very unlikely to stumble on the correct action - such as a booking - by chance at random, so the reward signal is very sparse.",
+    "result": "The World of Bits project was an attempt to use reinforcement learning to teach neural networks how to complete tasks using a keyboard and mouse. The project failed because this approach was found to be inefficient and impractical for solving problems. The project also lacked a clear goal or purpose.",
+    "answerScore": {
+      "score": 1,
+      "justification": "GRADE: Correct\n\nJUSTIFICATION: The student accurately describes the World of Bits project as an attempt to use reinforcement learning to teach neural networks how to complete tasks using a keyboard and mouse. They also correctly state that the project failed due to the inefficiency and impracticality of this approach, as well as the lack of a clear goal or purpose."
+    },
+    "retrievalScore": {
+      "score": 1,
+      "justification": "GRADE: Correct\n\nJUSTIFICATION: \n- Doc 1 mentions the World Of Bits project and the time period it was active.\n- Doc 2 discusses the inefficiency of reinforcement learning, which was the approach taken in the World Of Bits project.\n- Doc 3 is not directly related to the question, but it does not contradict the information in the other documents.\n- Doc 4 provides a clear explanation of what the World Of Bits project was and what it aimed to achieve."
+    },
+    "latency": 10.1092050075531
+  },
+  {
+    "question": "Why can additional sensors be a liability in an autonomous vehicle system?",
+    "answer": "Each sensor adds complexity to the system. The hardware must be sourced, versioned, and maintain firmware. Software must ingest it, track versions. The cost of this additional bloat or entropy must be weighted against the added benefit of that particular sensor.",
+    "result": "Additional sensors can be a liability in an autonomous vehicle system because they are not free and can add bloat to the data engine. They can also be a distraction and may change over time, requiring additional resources to maintain. It is important to focus resources on necessary and sufficient sensors and consider the full cost of adding a sensor.",
+    "answerScore": {
+      "score": 1,
+      "justification": "GRADE: Correct\n\nJUSTIFICATION: The student answer accurately explains that additional sensors can add complexity and cost to an autonomous vehicle system, and emphasizes the importance of considering the full cost and necessity of adding a sensor."
+    },
+    "retrievalScore": {
+      "score": 1,
+      "justification": "GRADE: Correct\n\nJUSTIFICATION: All four documents discuss the potential drawbacks of adding additional sensors to an autonomous vehicle system, including increased complexity, cost, and potential distraction. The answer provided is supported by the information in the retrieved documents."
+    },
+    "latency": 9.15720510482788
+  }
+]
