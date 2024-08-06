@@ -1,19 +1,29 @@
-from langchain_mistralai import MistralAIEmbeddings
-from langchain_mistralai.chat_models import ChatMistralAI
+# LL-7SZFs6jbtQFVWQaVAA3VstfKx8Ecq3O0do5Y5oUS2fLHJ3UcCSGNu03HeqmEQ41F
+import os
 
-llm = ChatMistralAI(
-    mistral_api_key="M3yhMBJSuk55x1LmwlihJ8EtEvFlWIlF",
-    model="mistral-small",
-    temperature=0,
-    max_retries=2,
-    # other params...
-)
-messages = [
-    (
-        "system",
-        "You are a helpful assistant that translates English to French. Translate the user sentence.",
-    ),
-    ("human", "I love programming."),
-]
-ai_msg = llm.invoke(messages)
-print(ai_msg.content)
+os.environ['REQUESTS_CA_BUNDLE'] = 'D:/GITHUB/llm-evaluator/api.llama-api.crt'
+
+
+from llamaapi import LlamaAPI
+from langchain.chains import create_tagging_chain
+from langchain_experimental.llms import ChatLlamaAPI
+
+llama = LlamaAPI("LL-7SZFs6jbtQFVWQaVAA3VstfKx8Ecq3O0do5Y5oUS2fLHJ3UcCSGNu03HeqmEQ41F")
+model = ChatLlamaAPI(client=llama)
+
+schema = {
+    "properties": {
+        "sentiment": {
+            "type": "string",
+            "description": "the sentiment encountered in the passage",
+        },
+        "aggressiveness": {
+            "type": "integer",
+            "description": "a 0-10 score of how aggressive the passage is",
+        },
+        "language": {"type": "string", "description": "the language of the passage"},
+    }
+}
+
+chain = create_tagging_chain(schema, model)
+chain.run("give me your money")

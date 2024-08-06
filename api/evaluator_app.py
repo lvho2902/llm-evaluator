@@ -40,6 +40,10 @@ from text_utils import GRADE_DOCS_PROMPT, GRADE_ANSWER_PROMPT, GRADE_DOCS_PROMPT
 from langchain_mistralai.chat_models import ChatMistralAI
 from langchain_mistralai import MistralAIEmbeddings
 
+from langchain_community.chat_models import ChatOllama
+from langchain_community.embeddings import OllamaEmbeddings
+
+
 def generate_eval(text, chunk, logger):
     """
     Generate question answer pair from input text 
@@ -115,6 +119,9 @@ def make_llm(model):
         llm = MosaicML(inject_instruction_format=True,model_kwargs={'do_sample': False, 'max_length': 3000})
     elif model == "mistral-7b":
         llm = ChatMistralAI(mistral_api_key="M3yhMBJSuk55x1LmwlihJ8EtEvFlWIlF", model="mistral-small", temperature=0, max_retries=2)
+    elif model == "ollama-mistral-7b":
+        llm = ChatOllama(model="mistral")
+    else: raise ValueError(f"Unknown model: {model}")
     return llm
 
 def make_retriever(splits, retriever_type, embeddings, num_neighbors, llm, logger):
@@ -144,6 +151,9 @@ def make_retriever(splits, retriever_type, embeddings, num_neighbors, llm, logge
 
     elif embeddings == "Mistral":
         embd = MistralAIEmbeddings(api_key="M3yhMBJSuk55x1LmwlihJ8EtEvFlWIlF")
+
+    elif embeddings == "Ollama-Mistral":
+        embd = OllamaEmbeddings(model="mistral")
     
     # Select retriever
     if retriever_type == "similarity-search":
@@ -208,8 +218,13 @@ def grade_model_answer(predicted_dataset, predictions, grade_answer_prompt, logg
         prompt = GRADE_ANSWER_PROMPT
 
     # Note: GPT-4 grader is advised by OAI 
-    eval_chain = QAEvalChain.from_llm(llm=ChatOpenAI(model_name="gpt-4", temperature=0),
+    # eval_chain = QAEvalChain.from_llm(llm=ChatOpenAI(model_name="gpt-4", temperature=0),
+    #                                   prompt=prompt)
+    
+    eval_chain = QAEvalChain.from_llm(llm = ChatOllama(model="mistral"),
                                       prompt=prompt)
+
+
     graded_outputs = eval_chain.evaluate(predicted_dataset,
                                          predictions,
                                          question_key="question",
@@ -233,7 +248,10 @@ def grade_model_retrieval(gt_dataset, predictions, grade_docs_prompt, logger):
         prompt = GRADE_DOCS_PROMPT
 
     # Note: GPT-4 grader is advised by OAI
-    eval_chain = QAEvalChain.from_llm(llm=ChatOpenAI(model_name="gpt-4", temperature=0),
+    # eval_chain = QAEvalChain.from_llm(llm=ChatOpenAI(model_name="gpt-4", temperature=0),
+    #                                   prompt=prompt)
+    
+    eval_chain = QAEvalChain.from_llm(llm = ChatOllama(model="mistral"),
                                       prompt=prompt)
     graded_outputs = eval_chain.evaluate(gt_dataset,
                                          predictions,

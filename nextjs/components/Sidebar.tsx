@@ -101,6 +101,7 @@ const Sidebar = ({ form }: { form: Form }) => {
                     { label: "Vicuna 13B", value: "vicuna-13b" },
                     { label: "MPT-7B", value: "mosaic" },
                     { label: "Mistral-7B", value: "mistral-7b" },
+                    { label: "Ollama-Mistral-7B", value: "ollama-mistral-7b" },
                   ]}
                 />
               )}
@@ -144,6 +145,10 @@ const Sidebar = ({ form }: { form: Form }) => {
                     {
                       label: "Mistral",
                       value: "Mistral",
+                    },
+                    {
+                      label: "Ollama-Mistral",
+                      value: "Ollama-Mistral",
                     }
                   ]}
                 />
