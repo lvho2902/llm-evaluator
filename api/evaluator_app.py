@@ -59,7 +59,8 @@ def generate_eval(text, chunk, logger):
     starting_index = random.randint(0, num_of_chars-chunk)
     sub_sequence = text[starting_index:starting_index+chunk]
     # Set up QAGenerationChain chain using GPT 3.5 as default
-    chain = QAGenerationChain.from_llm(ChatOpenAI(temperature=0))
+    # chain = QAGenerationChain.from_llm(ChatOpenAI(temperature=0))
+    chain = QAGenerationChain.from_llm(ChatOllama(model="mistral", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0))
     eval_set = []
     # Catch any QA generation errors and re-try until QA pair is generated
     awaiting_answer = True
@@ -120,7 +121,8 @@ def make_llm(model):
     elif model == "mistral-7b":
         llm = ChatMistralAI(mistral_api_key="M3yhMBJSuk55x1LmwlihJ8EtEvFlWIlF", model="mistral-small", temperature=0, max_retries=2)
     elif model == "ollama-mistral-7b":
-        llm = ChatOllama(model="mistral")
+        llm = ChatOllama(model="mistral", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0)
+        print("========================================",llm.base_url)
     else: raise ValueError(f"Unknown model: {model}")
     return llm
 
@@ -154,6 +156,8 @@ def make_retriever(splits, retriever_type, embeddings, num_neighbors, llm, logge
 
     elif embeddings == "Ollama-Mistral":
         embd = OllamaEmbeddings(model="mistral")
+        embd.base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434")
+        print("===========================",embd.base_url)
     
     # Select retriever
     if retriever_type == "similarity-search":
@@ -220,10 +224,10 @@ def grade_model_answer(predicted_dataset, predictions, grade_answer_prompt, logg
     # Note: GPT-4 grader is advised by OAI 
     # eval_chain = QAEvalChain.from_llm(llm=ChatOpenAI(model_name="gpt-4", temperature=0),
     #                                   prompt=prompt)
-    
-    eval_chain = QAEvalChain.from_llm(llm = ChatOllama(model="mistral"),
-                                      prompt=prompt)
 
+    eval_chain = QAEvalChain.from_llm(llm = ChatOllama(model="mistral", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0),
+    # eval_chain = QAEvalChain.from_llm(llm = ChatMistralAI(mistral_api_key="M3yhMBJSuk55x1LmwlihJ8EtEvFlWIlF", model="mistral-small", temperature=0, max_retries=2),
+                                      prompt=prompt)
 
     graded_outputs = eval_chain.evaluate(predicted_dataset,
                                          predictions,
@@ -251,7 +255,8 @@ def grade_model_retrieval(gt_dataset, predictions, grade_docs_prompt, logger):
     # eval_chain = QAEvalChain.from_llm(llm=ChatOpenAI(model_name="gpt-4", temperature=0),
     #                                   prompt=prompt)
     
-    eval_chain = QAEvalChain.from_llm(llm = ChatOllama(model="mistral"),
+    eval_chain = QAEvalChain.from_llm(llm = ChatOllama(model="mistral", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0),
+    # eval_chain = QAEvalChain.from_llm(llm = ChatMistralAI(mistral_api_key="M3yhMBJSuk55x1LmwlihJ8EtEvFlWIlF", model="mistral-small", temperature=0, max_retries=2),
                                       prompt=prompt)
     graded_outputs = eval_chain.evaluate(gt_dataset,
                                          predictions,
@@ -430,10 +435,12 @@ def run_evaluator(
         graded_answers, graded_retrieval, latency, predictions = run_eval(
             qa_chain, retriever, eval_pair, grade_prompt, retriever_type, num_neighbors, text, logger)
 
+        print("\n===============================",graded_answers)
+        print("\n===============================",graded_retrieval)
         # Assemble output
         d = pd.DataFrame(predictions)
-        d['answerScore'] = [g['text'] for g in graded_answers]
-        d['retrievalScore'] = [g['text'] for g in graded_retrieval]
+        d['answerScore'] = [g['results'] for g in graded_answers]
+        d['retrievalScore'] = [g['results'] for g in graded_retrieval]
         d['latency'] = latency
 
         # Summary statistics
