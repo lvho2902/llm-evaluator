@@ -37,6 +37,7 @@ const ExperimentSummaryTable = ({
               <td>{result?.retriever}</td>
               <td>{result?.embeddingAlgorithm}</td>
               <td>{result?.model}</td>
+              <td>{result?.evalChainModel}</td>
               <td>{result?.gradingPrompt}</td>
               <td>{result?.numNeighbors}</td>
               <td>{result?.avgRelevancyScore}</td>

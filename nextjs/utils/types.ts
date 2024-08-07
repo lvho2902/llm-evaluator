@@ -7,6 +7,7 @@ export type FormValues = {
   splitMethod: string;
   embeddingAlgorithm: string;
   model: string;
+  evalChainModel: string;
   retriever: string;
   gradingPrompt: string;
   numNeighbors: number;
@@ -37,6 +38,7 @@ export type Experiment = {
   retriever: string;
   embeddingAlgorithm: string;
   model: string;
+  evalChainModel: string;
   gradingPrompt: string;
   numNeighbors: number;
   avgRelevancyScore: number;

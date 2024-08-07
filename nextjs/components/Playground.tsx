@@ -160,6 +160,7 @@ const Playground = ({ form }: { form: Form }) => {
     formData.append("retriever_type", data.retriever);
     formData.append("embeddings", data.embeddingAlgorithm);
     formData.append("model_version", data.model);
+    formData.append("eval_chain_model", data.evalChainModel);
     formData.append("grade_prompt", data.gradingPrompt);
     formData.append("num_neighbors", data.numNeighbors.toString());
     formData.append("test_dataset", JSON.stringify(testDataset));
@@ -174,6 +175,7 @@ const Playground = ({ form }: { form: Form }) => {
         retriever: data.retriever,
         embedding: data.embeddingAlgorithm,
         model: data.model,
+        evalChainModel: data.evalChainModel,
         promptStyle: data.gradingPrompt,
         numNeighbors: data.numNeighbors,
         uploadedTestDataset: !!testDataset.length,
@@ -259,6 +261,7 @@ const Playground = ({ form }: { form: Form }) => {
       retriever: data.retriever,
       embeddingAlgorithm: data.embeddingAlgorithm,
       model: data.model,
+      evalChainModel: data.evalChainModel,
       gradingPrompt: data.gradingPrompt,
       numNeighbors: data.numNeighbors,
       avgRelevancyScore,
@@ -564,6 +567,7 @@ const Playground = ({ form }: { form: Form }) => {
                       <td>{result?.retriever}</td>
                       <td>{result?.embeddingAlgorithm}</td>
                       <td>{result?.model}</td>
+                      <td>{result?.evalChainModel}</td>
                       <td>{result?.gradingPrompt}</td>
                       <td>{result?.numNeighbors}</td>
                       <td>{result?.avgRelevancyScore}</td>

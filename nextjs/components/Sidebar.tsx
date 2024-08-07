@@ -108,6 +108,22 @@ const Sidebar = ({ form }: { form: Form }) => {
             />
           </div>
           <div>
+            <Text fz="md">Eval Chain Model</Text>
+            <Controller
+              name="evalChainModel"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  data={[
+                    { label: "Ollama", value: "Ollama" },
+                    { label: "OpenAI", value: "OpenAI" },
+                  ]}
+                />
+              )}
+            />
+          </div>
+          <div>
             <Text fz="md">Split method</Text>
             <Controller
               name="splitMethod"
