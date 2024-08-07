@@ -1,3 +1,7 @@
+# NOTICE
+
+### This repository contains custom code derived from the LangChain open source project available at [LangChain AI Auto Evaluator](https://github.com/langchain-ai/auto-evaluator).
+
 # `Auto-evaluator` :brain: :memo:
 
 `Context`
