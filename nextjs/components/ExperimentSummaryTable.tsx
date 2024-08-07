@@ -19,6 +19,7 @@ const ExperimentSummaryTable = ({
             <th>Retriever</th>
             <th>Embedding Algorithm</th>
             <th>Model</th>
+            <th>Eval Chain Model</th>
             <th>Grading Prompt Style</th>
             <th># of Chunks Retrieved</th>
             <th>Avg Retrieval Relevancy Score</th>

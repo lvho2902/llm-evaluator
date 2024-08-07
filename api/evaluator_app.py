@@ -221,7 +221,7 @@ def grade_model_answer(predicted_dataset, predictions, eval_chain_model, grade_a
     # Note: GPT-4 grader is advised by OAI
     
     if(eval_chain_model == "Ollama"):
-        llm = ChatOllama(model="mistral", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0)
+        llm = ChatOllama(model="llama2:13b", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0)
     else:
         llm=ChatOpenAI(model_name="gpt-4", temperature=0)
 
@@ -251,7 +251,7 @@ def grade_model_retrieval(gt_dataset, predictions, eval_chain_model, grade_docs_
 
     # Note: GPT-4 grader is advised by OAI
     if(eval_chain_model == "Ollama"):
-        llm = ChatOllama(model="mistral", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0)
+        llm = ChatOllama(model="llama2:13b", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0)
     else:
         llm=ChatOpenAI(model_name="gpt-4", temperature=0)
 
