@@ -107,7 +107,7 @@ const Sidebar = ({ form }: { form: Form }) => {
             />
           </div>
           <div>
-            <Text fz="md">Grader</Text>
+            <Text fz="md">Evaluator</Text>
             <Controller
               name="grader"
               control={control}
