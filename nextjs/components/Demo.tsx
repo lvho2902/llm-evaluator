@@ -134,7 +134,7 @@ const Demo = ({ form }: { form: Form }) => {
     formData.append("retriever_type", data.retriever);
     formData.append("embeddings", data.embeddingAlgorithm);
     formData.append("model_version", data.model);
-    formData.append("eval_chain_model", data.evalChainModel);
+    formData.append("grader", data.grader);
     formData.append("grade_prompt", data.gradingPrompt);
     formData.append("num_neighbors", data.numNeighbors.toString());
     formData.append("test_dataset", JSON.stringify(testDataset));
@@ -147,7 +147,7 @@ const Demo = ({ form }: { form: Form }) => {
         retriever: data.retriever,
         embedding: data.embeddingAlgorithm,
         model: data.model,
-        evalChainModel: data.evalChainModel,
+        grader: data.grader,
         promptStyle: data.gradingPrompt,
         numNeighbors: data.numNeighbors,
       });
@@ -230,7 +230,7 @@ const Demo = ({ form }: { form: Form }) => {
       retriever: data.retriever,
       embeddingAlgorithm: data.embeddingAlgorithm,
       model: data.model,
-      evalChainModel: data.evalChainModel,
+      grader: data.grader,
       gradingPrompt: data.gradingPrompt,
       numNeighbors: data.numNeighbors,
       avgRelevancyScore,

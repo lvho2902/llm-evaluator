@@ -100,24 +100,23 @@ const Sidebar = ({ form }: { form: Form }) => {
                     { label: "Anthropic", value: "anthropic" },
                     { label: "Vicuna 13B", value: "vicuna-13b" },
                     { label: "MPT-7B", value: "mosaic" },
-                    { label: "Mistral-7B", value: "mistral-7b" },
-                    { label: "Ollama-Mistral-7B", value: "ollama-mistral-7b" },
+                    { label: "Eden GPT 3.5 Turbo Instruct", value: "eden-gpt-3.5-turbo-instruct" },
                   ]}
                 />
               )}
             />
           </div>
           <div>
-            <Text fz="md">Eval Chain Model</Text>
+            <Text fz="md">Grader</Text>
             <Controller
-              name="evalChainModel"
+              name="grader"
               control={control}
               render={({ field }) => (
                 <Select
                   {...field}
                   data={[
-                    { label: "Ollama", value: "Ollama" },
-                    { label: "OpenAI", value: "OpenAI" },
+                    { label: "Ollama Llama 3.1", value: "ollama-llama-3.1" },
+                    { label: "OpenAI", value: "openai" },
                   ]}
                 />
               )}
@@ -159,12 +158,8 @@ const Sidebar = ({ form }: { form: Form }) => {
                       value: "OpenAI",
                     },
                     {
-                      label: "Mistral",
-                      value: "Mistral",
-                    },
-                    {
-                      label: "Ollama-Mistral",
-                      value: "Ollama-Mistral",
+                      label: "EdenOpenAI",
+                      value: "EdenOpenAI",
                     }
                   ]}
                 />

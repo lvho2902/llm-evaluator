@@ -37,11 +37,11 @@ from langchain.chains.question_answering import load_qa_chain
 from langchain.text_splitter import RecursiveCharacterTextSplitter, CharacterTextSplitter
 from text_utils import GRADE_DOCS_PROMPT, GRADE_ANSWER_PROMPT, GRADE_DOCS_PROMPT_FAST, GRADE_ANSWER_PROMPT_FAST, GRADE_ANSWER_PROMPT_BIAS_CHECK, GRADE_ANSWER_PROMPT_OPENAI, QA_CHAIN_PROMPT, QA_CHAIN_PROMPT_LLAMA
 
-from langchain_mistralai.chat_models import ChatMistralAI
-from langchain_mistralai import MistralAIEmbeddings
-
 from langchain_community.chat_models import ChatOllama
 from langchain_community.embeddings import OllamaEmbeddings
+
+from langchain_community.llms import EdenAI
+from langchain_community.embeddings.edenai import EdenAiEmbeddings
 
 
 def generate_eval(text, chunk, logger):
@@ -58,9 +58,15 @@ def generate_eval(text, chunk, logger):
     num_of_chars = len(text)
     starting_index = random.randint(0, num_of_chars-chunk)
     sub_sequence = text[starting_index:starting_index+chunk]
-    # Set up QAGenerationChain chain using GPT 3.5 as default
+    # Set up QAGenerationChain chain using OpenAI GPT 3.5 as default
     # chain = QAGenerationChain.from_llm(ChatOpenAI(temperature=0))
-    chain = QAGenerationChain.from_llm(ChatOllama(model="mistral", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0))
+
+    # Set up QAGenerationChain chain using Ollama llama2:13b as default
+    # chain = QAGenerationChain.from_llm(ChatOllama(model="llama2:13b", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0))
+
+    # Set up QAGenerationChain chain using Eden OpenAI GPT 3.5 as default
+    chain = QAGenerationChain.from_llm(EdenAI(edenai_api_key=os.getenv('EDENAI_API_KEY'), feature="text", provider="openai", model="gpt-3.5-turbo-instruct"))
+
     eval_set = []
     # Catch any QA generation errors and re-try until QA pair is generated
     awaiting_answer = True
@@ -118,10 +124,9 @@ def make_llm(model):
                 input={"temperature": 0.75, "max_length": 3000, "top_p":0.25})
     elif model == "mosaic":
         llm = MosaicML(inject_instruction_format=True,model_kwargs={'do_sample': False, 'max_length': 3000})
-    elif model == "mistral-7b":
-        llm = ChatMistralAI(mistral_api_key="M3yhMBJSuk55x1LmwlihJ8EtEvFlWIlF", model="mistral-small", temperature=0, max_retries=2)
-    elif model == "ollama-mistral-7b":
-        llm = ChatOllama(model="mistral", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0)
+    elif model == "eden-gpt-3.5-turbo-instruct":
+        llm = EdenAI(edenai_api_key=os.getenv('EDENAI_API_KEY'), feature="text", provider="openai", model="gpt-3.5-turbo-instruct")
+        
     else: raise ValueError(f"Unknown model: {model}")
     return llm
 
@@ -149,13 +154,16 @@ def make_retriever(splits, retriever_type, embeddings, num_neighbors, llm, logge
     elif embeddings == "Mosaic":
         embd = MosaicMLInstructorEmbeddings(query_instruction="Represent the query for retrieval: ")
 
-    elif embeddings == "Mistral":
-        embd = MistralAIEmbeddings(api_key="M3yhMBJSuk55x1LmwlihJ8EtEvFlWIlF")
+    elif embeddings == "EdenOpenAI":
+        embd = EdenAiEmbeddings(edenai_api_key=os.getenv('EDENAI_API_KEY'), provider="openai")
 
-    elif embeddings == "Ollama-Mistral":
-        embd = OllamaEmbeddings(model="mistral")
-        embd.base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434")
-    
+    f = open("splits.txt", "w")
+    str1 = " "
+
+    str1.join(splits)
+    f.write(str1)
+    f.close()
+
     # Select retriever
     if retriever_type == "similarity-search":
         vectorstore = FAISS.from_texts(splits, embd)
@@ -198,7 +206,7 @@ def make_chain(llm, retriever, retriever_type, model):
     return qa_chain
 
 
-def grade_model_answer(predicted_dataset, predictions, eval_chain_model, grade_answer_prompt, logger):
+def grade_model_answer(predicted_dataset, predictions, grader, grade_answer_prompt, logger):
     """
     Grades the answer based on ground truth and model predictions.
     @param predicted_dataset: A list of dictionaries containing ground truth questions and answers.
@@ -220,8 +228,9 @@ def grade_model_answer(predicted_dataset, predictions, eval_chain_model, grade_a
 
     # Note: GPT-4 grader is advised by OAI
     
-    if(eval_chain_model == "Ollama"):
-        llm = ChatOllama(model="llama2:13b", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0)
+    if(grader == "ollama-llama-3.1"):
+        llm = ChatOllama(model="llama3.1", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0)
+
     else:
         llm=ChatOpenAI(model_name="gpt-4", temperature=0)
 
@@ -234,7 +243,7 @@ def grade_model_answer(predicted_dataset, predictions, eval_chain_model, grade_a
     return graded_outputs
 
 
-def grade_model_retrieval(gt_dataset, predictions, eval_chain_model, grade_docs_prompt, logger):
+def grade_model_retrieval(gt_dataset, predictions, grader, grade_docs_prompt, logger):
     """
     Grades the relevance of retrieved documents based on ground truth and model predictions.
     @param gt_dataset: list of dictionaries containing ground truth questions and answers.
@@ -250,7 +259,7 @@ def grade_model_retrieval(gt_dataset, predictions, eval_chain_model, grade_docs_
         prompt = GRADE_DOCS_PROMPT
 
     # Note: GPT-4 grader is advised by OAI
-    if(eval_chain_model == "Ollama"):
+    if(grader == "ollama-llama-3.1"):
         llm = ChatOllama(model="llama2:13b", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0)
     else:
         llm=ChatOpenAI(model_name="gpt-4", temperature=0)
@@ -263,7 +272,7 @@ def grade_model_retrieval(gt_dataset, predictions, eval_chain_model, grade_docs_
     return graded_outputs
 
 
-def run_eval(chain, retriever, eval_qa_pair, eval_chain_model, grade_prompt, retriever_type, num_neighbors, text, logger):
+def run_eval(chain, retriever, eval_qa_pair, grader, grade_prompt, retriever_type, num_neighbors, text, logger):
     """
     Runs evaluation on a model's performance on a given evaluation dataset.
     @param chain: Model chain used for answering questions
@@ -317,9 +326,9 @@ def run_eval(chain, retriever, eval_qa_pair, eval_chain_model, grade_prompt, ret
 
     # Grade
     graded_answers = grade_model_answer(
-        gt_dataset, predictions, eval_chain_model, grade_prompt, logger)
+        gt_dataset, predictions, grader, grade_prompt, logger)
     graded_retrieval = grade_model_retrieval(
-        gt_dataset, retrieved_docs, eval_chain_model, grade_prompt, logger)
+        gt_dataset, retrieved_docs, grader, grade_prompt, logger)
     return graded_answers, graded_retrieval, latency, predictions
 
 load_dotenv()
@@ -364,7 +373,7 @@ def run_evaluator(
     retriever_type,
     embeddings,
     model_version,
-    eval_chain_model,
+    grader,
     grade_prompt,
     num_neighbors,
     test_dataset
@@ -432,12 +441,12 @@ def run_evaluator(
 
         # Run eval
         graded_answers, graded_retrieval, latency, predictions = run_eval(
-            qa_chain, retriever, eval_pair, eval_chain_model, grade_prompt, retriever_type, num_neighbors, text, logger)
+            qa_chain, retriever, eval_pair, grader, grade_prompt, retriever_type, num_neighbors, text, logger)
         
         # Assemble output
         d = pd.DataFrame(predictions)
 
-        if(eval_chain_model == "Ollama"):
+        if(grader == "ollama-llama-3.1"):
             d['answerScore'] = [g['results'] for g in graded_answers]
             d['retrievalScore'] = [g['results'] for g in graded_retrieval]
         else:
@@ -471,11 +480,11 @@ async def create_response(
     retriever_type: str = Form("similarity-search"),
     embeddings: str = Form("OpenAI"),
     model_version: str = Form("gpt-3.5-turbo"),
-    eval_chain_model: str = Form("OpenAI"),
+    grader: str = Form("openai"),
     grade_prompt: str = Form("Fast"),
     num_neighbors: int = Form(3),
     test_dataset: str = Form("[]"),
 ):
     test_dataset = json.loads(test_dataset)
     return EventSourceResponse(run_evaluator(files, num_eval_questions, chunk_chars,
-                                             overlap, split_method, retriever_type, embeddings, model_version, eval_chain_model, grade_prompt, num_neighbors, test_dataset), headers={"Content-Type": "text/event-stream", "Connection": "keep-alive", "Cache-Control": "no-cache"})
+                                             overlap, split_method, retriever_type, embeddings, model_version, grader, grade_prompt, num_neighbors, test_dataset), headers={"Content-Type": "text/event-stream", "Connection": "keep-alive", "Cache-Control": "no-cache"})

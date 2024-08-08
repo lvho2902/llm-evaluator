@@ -19,7 +19,7 @@ const ExperimentSummaryTable = ({
             <th>Retriever</th>
             <th>Embedding Algorithm</th>
             <th>Model</th>
-            <th>Eval Chain Model</th>
+            <th>Grader</th>
             <th>Grading Prompt Style</th>
             <th># of Chunks Retrieved</th>
             <th>Avg Retrieval Relevancy Score</th>
@@ -38,7 +38,7 @@ const ExperimentSummaryTable = ({
               <td>{result?.retriever}</td>
               <td>{result?.embeddingAlgorithm}</td>
               <td>{result?.model}</td>
-              <td>{result?.evalChainModel}</td>
+              <td>{result?.grader}</td>
               <td>{result?.gradingPrompt}</td>
               <td>{result?.numNeighbors}</td>
               <td>{result?.avgRelevancyScore}</td>
