@@ -44,7 +44,7 @@ from langchain_community.llms import EdenAI
 from langchain_community.embeddings.edenai import EdenAiEmbeddings
 
 
-def generate_eval(text, chunk, logger):
+def generate_eval(text, chunk, grader, logger):
     """
     Generate question answer pair from input text 
     @param text: text to generate eval set from
@@ -58,14 +58,23 @@ def generate_eval(text, chunk, logger):
     num_of_chars = len(text)
     starting_index = random.randint(0, num_of_chars-chunk)
     sub_sequence = text[starting_index:starting_index+chunk]
-    # Set up QAGenerationChain chain using OpenAI GPT 3.5 as default
-    # chain = QAGenerationChain.from_llm(ChatOpenAI(temperature=0))
 
-    # Set up QAGenerationChain chain using Ollama llama2:13b as default
-    # chain = QAGenerationChain.from_llm(ChatOllama(model="llama2:13b", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0))
 
-    # Set up QAGenerationChain chain using Eden OpenAI GPT 3.5 as default
-    chain = QAGenerationChain.from_llm(EdenAI(edenai_api_key=os.getenv('EDENAI_API_KEY'), feature="text", provider="openai", model="gpt-3.5-turbo-instruct"))
+    if(grader == "ollama-mistral-7b"):
+        # Set up QAGenerationChain chain using Ollama Mistral 7B
+        chain = QAGenerationChain.from_llm(ChatOllama(model="mistral", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0))
+    elif(grader == "ollama-llama-3.1-8b"):
+        # Set up QAGenerationChain chain using Ollama Llama 3.1 8B
+        chain = QAGenerationChain.from_llm(ChatOllama(model="llama3.1", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0))
+    elif(grader == "eden-gpt-3.5-turbo-instruct"):
+        # Set up QAGenerationChain chain using Eden OpenAI GPT 3.5 as default
+        chain = QAGenerationChain.from_llm(EdenAI(edenai_api_key=os.getenv('EDENAI_API_KEY'), feature="text", provider="openai", model="gpt-3.5-turbo-instruct"))
+
+    else:
+        # Set up QAGenerationChain chain using OpenAI GPT 3.5 as default
+        chain = QAGenerationChain.from_llm(ChatOpenAI(temperature=0))
+
+
 
     eval_set = []
     # Catch any QA generation errors and re-try until QA pair is generated
@@ -157,13 +166,6 @@ def make_retriever(splits, retriever_type, embeddings, num_neighbors, llm, logge
     elif embeddings == "EdenOpenAI":
         embd = EdenAiEmbeddings(edenai_api_key=os.getenv('EDENAI_API_KEY'), provider="openai")
 
-    f = open("splits.txt", "w")
-    str1 = " "
-
-    str1.join(splits)
-    f.write(str1)
-    f.close()
-
     # Select retriever
     if retriever_type == "similarity-search":
         vectorstore = FAISS.from_texts(splits, embd)
@@ -227,10 +229,12 @@ def grade_model_answer(predicted_dataset, predictions, grader, grade_answer_prom
         prompt = GRADE_ANSWER_PROMPT
 
     # Note: GPT-4 grader is advised by OAI
-    
-    if(grader == "ollama-llama-3.1"):
-        llm = ChatOllama(model="llama3.1", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0)
-
+    if(grader == "ollama-mistral-7b"):
+        llm = ChatOllama(model="mistral", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"))
+    elif(grader == "ollama-llama-3.1-8b"):
+        llm = ChatOllama(model="llama3.1", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"))
+    elif(grader == "eden-gpt-3.5-turbo-instruct"):
+        llm = EdenAI(edenai_api_key=os.getenv('EDENAI_API_KEY'), feature="text", provider="openai", model="gpt-3.5-turbo-instruct")
     else:
         llm=ChatOpenAI(model_name="gpt-4", temperature=0)
 
@@ -259,8 +263,12 @@ def grade_model_retrieval(gt_dataset, predictions, grader, grade_docs_prompt, lo
         prompt = GRADE_DOCS_PROMPT
 
     # Note: GPT-4 grader is advised by OAI
-    if(grader == "ollama-llama-3.1"):
-        llm = ChatOllama(model="llama2:13b", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0)
+    if(grader == "ollama-mistral-7b"):
+        llm = ChatOllama(model="mistral", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"))
+    elif(grader == "ollama-llama-3.1-8b"):
+        llm = ChatOllama(model="llama3.1", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"))
+    elif(grader == "eden-gpt-3.5-turbo-instruct"):
+        llm = EdenAI(edenai_api_key=os.getenv('EDENAI_API_KEY'), feature="text", provider="openai", model="gpt-3.5-turbo-instruct")
     else:
         llm=ChatOpenAI(model_name="gpt-4", temperature=0)
 
@@ -431,7 +439,7 @@ def run_evaluator(
         if i < len(test_dataset):
             eval_pair = test_dataset[i]
         else:
-            eval_pair = generate_eval(text, 3000, logger)
+            eval_pair = generate_eval(text, 3000, grader, logger)
             if len(eval_pair) == 0:
                 # Error in eval generation
                 continue
@@ -446,12 +454,12 @@ def run_evaluator(
         # Assemble output
         d = pd.DataFrame(predictions)
 
-        if(grader == "ollama-llama-3.1"):
-            d['answerScore'] = [g['results'] for g in graded_answers]
-            d['retrievalScore'] = [g['results'] for g in graded_retrieval]
-        else:
+        if(grader == "openai"):
             d['answerScore'] = [g['text'] for g in graded_answers]
             d['retrievalScore'] = [g['text'] for g in graded_retrieval]
+        else:
+            d['answerScore'] = [g['results'] for g in graded_answers]
+            d['retrievalScore'] = [g['results'] for g in graded_retrieval]
 
         d['latency'] = latency
 

@@ -15,7 +15,7 @@ const DemoPage = () => {
       splitMethod: "RecursiveTextSplitter",
       embeddingAlgorithm: "EdenOpenAI",
       model: "eden-gpt-3.5-turbo-instruct",
-      grader: "ollama-llama-3.1",
+      grader: "ollama-mistral-7b",
       retriever: "similarity-search",
       gradingPrompt: "Descriptive",
       numNeighbors: 3,

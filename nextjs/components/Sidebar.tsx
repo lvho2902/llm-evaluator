@@ -115,7 +115,9 @@ const Sidebar = ({ form }: { form: Form }) => {
                 <Select
                   {...field}
                   data={[
-                    { label: "Ollama Llama 3.1", value: "ollama-llama-3.1" },
+                    { label: "Ollama Mistral 7B", value: "ollama-mistral-7b" },
+                    { label: "Ollama Llama 3.1 8B", value: "ollama-llama-3.1-8b" },
+                    { label: "Eden GPT 3.5 Turbo Instruct", value: "eden-gpt-3.5-turbo-instruct" },
                     { label: "OpenAI", value: "openai" },
                   ]}
                 />
