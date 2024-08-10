@@ -11,6 +11,8 @@
       "score": 1,
       "justification": "GRADE: Correct\n\nJUSTIFICATION: All of the retrieved documents discuss the transformer architecture and its design features, specifically its ability to be expressive in the forward pass. Doc 3 specifically mentions the message passing scheme used by the transformer architecture, which directly answers the question. Therefore, the retrieved documents are relevant and support the answer."
     },
+    "avgBleuScore": 0.0810,
+    "avgRougeScore": 0.2329,
     "latency": 9.03007197380066
   },
   {
@@ -25,6 +27,8 @@
       "score": 1,
       "justification": "GRADE: Correct\n\nJUSTIFICATION: The retrieved documents provide information on the design criteria of the Transformer, including its efficiency on hardware, expressiveness in the forward pass, and optimizability in the backward pass. These criteria directly answer the question and support the answer provided."
     },
+    "avgBleuScore": 0.0579,
+    "avgRougeScore": 0.2664,
     "latency": 9.81938886642456
   },
   {
@@ -39,6 +43,8 @@
       "score": 1,
       "justification": "GRADE: Correct\n\nJUSTIFICATION: All of the retrieved documents discuss the task of predicting the next word in a sequence and how it relates to language modeling and neural networks. They also mention the importance of understanding various aspects of the world to effectively predict the next word. Therefore, they are relevant to the question and support the answer."
     },
+    "avgBleuScore": 0.0357,
+    "avgRougeScore": 0.2420,
     "latency": 9.98887300491333
   },
   {
@@ -53,6 +59,8 @@
       "score": 1,
       "justification": "GRADE: Correct\n\nJUSTIFICATION: \n- Doc 1 mentions the World Of Bits project and the time period it was active.\n- Doc 2 discusses the inefficiency of reinforcement learning, which was the approach taken in the World Of Bits project.\n- Doc 3 is not directly related to the question, but it does not contradict the information in the other documents.\n- Doc 4 provides a clear explanation of what the World Of Bits project was and what it aimed to achieve."
     },
+    "avgBleuScore": 0.0243,
+    "avgRougeScore": 0.2520,
     "latency": 10.1092050075531
   },
   {
@@ -67,6 +75,8 @@
       "score": 1,
       "justification": "GRADE: Correct\n\nJUSTIFICATION: All four documents discuss the potential drawbacks of adding additional sensors to an autonomous vehicle system, including increased complexity, cost, and potential distraction. The answer provided is supported by the information in the retrieved documents."
     },
+    "avgBleuScore": 0.0199,
+    "avgRougeScore": 0.2115,
     "latency": 9.15720510482788
   }
 ]

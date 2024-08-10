@@ -19,6 +19,8 @@ const ExperimentResultsTable = ({
             <th>Observed Answer</th>
             <th>Retrieval Relevancy Score</th>
             <th>Answer Similarity Score</th>
+            <th>BLEU</th>
+            <th>ROUGE</th>
             <th>Latency (s)</th>
           </tr>
         </thead>
@@ -71,6 +73,8 @@ const ExperimentResultsTable = ({
                     </Spoiler>
                   )}
                 </td>
+                <td>{result?.avgBleuScore.toFixed(3)}</td>
+                <td>{result?.avgRougeScore.toFixed(3)}</td>
                 <td>{result?.latency?.toFixed(3)}</td>
               </tr>
             );

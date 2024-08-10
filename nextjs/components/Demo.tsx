@@ -219,6 +219,12 @@ const Demo = ({ form }: { form: Form }) => {
     const avgRelevancyScore =
       localResults.reduce((acc, curr) => acc + curr.retrievalScore.score, 0) /
       localResults.length;
+    const avgBleuScore =
+      localResults.reduce((acc, curr) => acc + curr.avgBleuScore, 0) /
+      localResults.length;
+    const avgRougeScore =
+      localResults.reduce((acc, curr) => acc + curr.avgRougeScore, 0) /
+      localResults.length;
     const avgLatency =
       localResults.reduce((acc, curr) => acc + curr.latency, 0) /
       localResults.length;
@@ -235,6 +241,8 @@ const Demo = ({ form }: { form: Form }) => {
       numNeighbors: data.numNeighbors,
       avgRelevancyScore,
       avgAnswerScore,
+      avgBleuScore,
+      avgRougeScore,
       avgLatency,
       performance: avgAnswerScore / avgLatency,
       id: resetExpts ? 1 : experiments.length + 1,

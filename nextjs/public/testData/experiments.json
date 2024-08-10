@@ -12,6 +12,8 @@
     "numNeighbors": 3,
     "avgRelevancyScore": 1,
     "avgAnswerScore": 1,
+    "avgBleuScore": 0.044,
+    "avgRougeScore": 0.241,
     "avgLatency": 14.516361331939697,
     "performance": 0.06888778648680678,
     "id": 1
@@ -29,6 +31,8 @@
     "numNeighbors": 3,
     "avgRelevancyScore": 1,
     "avgAnswerScore": 0.8,
+    "avgBleuScore": 0.044,
+    "avgRougeScore": 0.241,
     "avgLatency": 10.672325372695923,
     "performance": 0.0749602333196025,
     "id": 2
@@ -46,6 +50,8 @@
     "numNeighbors": 3,
     "avgRelevancyScore": 1,
     "avgAnswerScore": 1,
+    "avgBleuScore": 0.044,
+    "avgRougeScore": 0.241,
     "avgLatency": 9.620948791503906,
     "performance": 0.10393985267680489,
     "id": 3

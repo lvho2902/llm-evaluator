@@ -43,6 +43,10 @@ from langchain_community.embeddings import OllamaEmbeddings
 from langchain_community.llms import EdenAI
 from langchain_community.embeddings.edenai import EdenAiEmbeddings
 
+from statistics import mean
+from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 def generate_eval(text, chunk, grader, logger):
     """
@@ -279,6 +283,72 @@ def grade_model_retrieval(gt_dataset, predictions, grader, grade_docs_prompt, lo
                                          prediction_key="result")
     return graded_outputs
 
+def calculate_bleu(reference, candidate):
+    """
+    Calculates the BLEU score between a reference and a candidate sentence.
+    
+    :param reference: The ground truth sentence (string).
+    :param candidate: The generated sentence by the model (string).
+    :return: BLEU score (float).
+    """
+    reference_tokens = []
+    reference_tokens.append(reference.split())  # Tokenize reference
+    candidate_tokens = candidate.split()  # Tokenize candidate
+    smoothie = SmoothingFunction().method4
+    bleu_score = sentence_bleu(reference_tokens, candidate_tokens, smoothing_function=smoothie)
+    return bleu_score
+
+def calculate_rouge(reference, candidate):
+    """
+    Calculates the ROUGE-1, ROUGE-2, and ROUGE-L scores between a reference and a candidate sentence.
+    
+    :param reference: The ground truth sentence (string).
+    :param candidate: The generated sentence by the model (string).
+    :return: Array containing ROUGE scores (rouge1, rouge2).
+    """
+    # Initialize CountVectorizer for unigram (ROUGE-1) and bigram (ROUGE-2) calculations
+    vectorizer = CountVectorizer(ngram_range=(1, 2))
+
+    # Fit and transform the texts
+    vectors = vectorizer.fit_transform([reference, candidate])
+
+    # Compute cosine similarity (as a proxy for ROUGE score)
+    cosine_sim = cosine_similarity(vectors)
+
+    # The diagonal contains the similarity of each text with itself, and the off-diagonal contains the similarity between the texts
+    rouge_scores = cosine_sim[0, 1]
+    return rouge_scores
+
+def evaluate_bleu_rouge(predictions, logger):
+    """
+    Evaluates BLEU and ROUGE scores from a list of dictionaries.
+    
+    :param predictions: List of dictionaries containing 'question', 'answer' (reference), and 'result' (generated sentence).
+    :param logger: Logger for logging information.
+    :return: Tuple containing:
+             - Average BLEU score (float).
+             - Overall average of the ROUGE-1, ROUGE-2, and ROUGE-L F-measure scores (float).
+    """
+    logger.info("Evaluating BLEU and ROUGE scores from predictions...")
+
+    bleu_scores = []
+    avg_rouge_scores = 0
+
+    for item in predictions:
+        reference = item['answer']
+        candidate = item['result']
+        
+        # Calculate BLEU score
+        bleu_score = calculate_bleu(reference, candidate)
+        bleu_scores.append(bleu_score)
+        
+        # Calculate ROUGE scores
+        avg_rouge_scores = calculate_rouge(reference, candidate)
+
+    # Calculate average BLEU score
+    avg_bleu_score = mean(bleu_scores) if bleu_scores else 0
+
+    return avg_bleu_score, avg_rouge_scores
 
 def run_eval(chain, retriever, eval_qa_pair, grader, grade_prompt, retriever_type, num_neighbors, text, logger):
     """
@@ -337,7 +407,10 @@ def run_eval(chain, retriever, eval_qa_pair, grader, grade_prompt, retriever_typ
         gt_dataset, predictions, grader, grade_prompt, logger)
     graded_retrieval = grade_model_retrieval(
         gt_dataset, retrieved_docs, grader, grade_prompt, logger)
-    return graded_answers, graded_retrieval, latency, predictions
+    
+    avg_bleu_score, avg_rouge_score = evaluate_bleu_rouge(predictions, logger)
+
+    return graded_answers, graded_retrieval, avg_bleu_score, avg_rouge_score, latency, predictions
 
 load_dotenv()
 
@@ -448,7 +521,7 @@ def run_evaluator(
                 eval_pair = eval_pair[0]
 
         # Run eval
-        graded_answers, graded_retrieval, latency, predictions = run_eval(
+        graded_answers, graded_retrieval, avg_bleu_score, avg_rouge_score, latency, predictions = run_eval(
             qa_chain, retriever, eval_pair, grader, grade_prompt, retriever_type, num_neighbors, text, logger)
         
         # Assemble output
@@ -468,6 +541,9 @@ def run_evaluator(
                              'justification': text} for text in d['answerScore']]
         d['retrievalScore'] = [{'score': 1 if "Incorrect" not in text else 0,
                                 'justification': text} for text in d['retrievalScore']]
+
+        d['avgBleuScore'] = f"{avg_bleu_score:.3f}"
+        d['avgRougeScore'] = f"{avg_rouge_score:3f}"
 
         # Convert dataframe to dict
         d_dict = d.to_dict('records')

@@ -22,6 +22,8 @@ export type Result = {
   result: string;
   retrievalScore: { score: number; justification: string };
   answerScore: { score: number; justification: string };
+  avgBleuScore: number,
+  avgRougeScore: number;
   latency: number;
 };
 
@@ -43,6 +45,8 @@ export type Experiment = {
   numNeighbors: number;
   avgRelevancyScore: number;
   avgAnswerScore: number;
+  avgBleuScore: number,
+  avgRougeScore: number;
   avgLatency: number;
   performance: number;
   id: number;

@@ -24,6 +24,8 @@ const ExperimentSummaryTable = ({
             <th># of Chunks Retrieved</th>
             <th>Avg Retrieval Relevancy Score</th>
             <th>Avg Answer Similarity Score</th>
+            <th>Avg BLEU</th>
+            <th>Avg ROUGE</th>
             <th>Avg Latency (s)</th>
           </tr>
         </thead>
@@ -43,6 +45,8 @@ const ExperimentSummaryTable = ({
               <td>{result?.numNeighbors}</td>
               <td>{result?.avgRelevancyScore}</td>
               <td>{result?.avgAnswerScore}</td>
+              <td>{result?.avgBleuScore.toFixed(3)}</td>
+              <td>{result?.avgRougeScore.toFixed(3)}</td>
               <td>{result?.avgLatency.toFixed(3)}</td>
             </tr>
           ))}
