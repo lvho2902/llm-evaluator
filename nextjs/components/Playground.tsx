@@ -253,8 +253,11 @@ const Playground = ({ form }: { form: Form }) => {
     const avgBleuScore =
       localResults.reduce((acc, curr) => acc + curr.avgBleuScore, 0) /
       localResults.length;
-      const avgRougeScore =
+    const avgRougeScore =
       localResults.reduce((acc, curr) => acc + curr.avgRougeScore, 0) /
+      localResults.length;
+    const avgMeteorScores =
+      localResults.reduce((acc, curr) => acc + curr.avgMeteorScores, 0) /
       localResults.length;
     const avgLatency =
       localResults.reduce((acc, curr) => acc + curr.latency, 0) /
@@ -274,6 +277,7 @@ const Playground = ({ form }: { form: Form }) => {
       avgAnswerScore,
       avgBleuScore,
       avgRougeScore,
+      avgMeteorScores,
       avgLatency,
       performance: avgAnswerScore / avgLatency,
       id: resetExpts ? 1 : experiments.length + 1,
@@ -549,8 +553,8 @@ const Playground = ({ form }: { form: Form }) => {
               <Table withBorder withColumnBorders striped highlightOnHover>
                 <thead>
                   <tr>
-                    <th>Experiment #</th>
-                    <th># of Eval Questions</th>
+                    <th>#Experiment</th>
+                    <th>#Questions</th>
                     <th>Chunk Size</th>
                     <th>Overlap</th>
                     <th>Split Method</th>
@@ -564,6 +568,7 @@ const Playground = ({ form }: { form: Form }) => {
                     <th>Avg Answer Similarity Score</th>
                     <th>BLEU</th>
                     <th>ROUGE</th>
+                    <th>Avg METEOR</th>
                     <th>Avg Latency (s)</th>
                   </tr>
                 </thead>
@@ -585,6 +590,7 @@ const Playground = ({ form }: { form: Form }) => {
                       <td>{result?.avgAnswerScore}</td>
                       <td>{result?.avgBleuScore.toFixed(3)}</td>
                       <td>{result?.avgRougeScore.toFixed(3)}</td>
+                      <td>{result?.avgMeteorScores.toFixed(3)}</td>
                       <td>{result?.avgLatency.toFixed(3)}</td>
                     </tr>
                   ))}
@@ -696,6 +702,7 @@ const Playground = ({ form }: { form: Form }) => {
                     <th>Answer Similarity Score</th>
                     <th>BLEU</th>
                     <th>ROUGE</th>
+                    <th>METEOR</th>
                     <th>Latency (s)</th>
                   </tr>
                 </thead>
@@ -749,6 +756,7 @@ const Playground = ({ form }: { form: Form }) => {
                       </td>
                       <td>{Number(result?.avgBleuScore).toFixed(3)}</td>
                       <td>{Number(result?.avgRougeScore).toFixed(3)}</td>
+                      <td>{Number(result?.avgMeteorScores).toFixed(3)}</td>
                       <td>{result?.latency?.toFixed(3)}</td>
                     </tr>
                   ))}

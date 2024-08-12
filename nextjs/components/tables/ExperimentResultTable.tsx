@@ -21,6 +21,7 @@ const ExperimentResultsTable = ({
             <th>Answer Similarity Score</th>
             <th>BLEU</th>
             <th>ROUGE</th>
+            <th>METEOR</th>
             <th>Latency (s)</th>
           </tr>
         </thead>
@@ -75,6 +76,7 @@ const ExperimentResultsTable = ({
                 </td>
                 <td>{result?.avgBleuScore.toFixed(3)}</td>
                 <td>{result?.avgRougeScore.toFixed(3)}</td>
+                <td>{result?.avgMeteorScores.toFixed(3)}</td>
                 <td>{result?.latency?.toFixed(3)}</td>
               </tr>
             );

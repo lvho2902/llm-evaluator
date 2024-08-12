@@ -11,8 +11,8 @@ const ExperimentSummaryTable = ({
       <Table withBorder withColumnBorders striped highlightOnHover>
         <thead>
           <tr>
-            <th>Experiment #</th>
-            <th># of Eval Questions</th>
+            <th>#</th>
+            <th># of Questions</th>
             <th>Chunk Size</th>
             <th>Overlap</th>
             <th>Split Method</th>
@@ -26,6 +26,7 @@ const ExperimentSummaryTable = ({
             <th>Avg Answer Similarity Score</th>
             <th>Avg BLEU</th>
             <th>Avg ROUGE</th>
+            <th>Avg METEOR</th>
             <th>Avg Latency (s)</th>
           </tr>
         </thead>
@@ -47,6 +48,7 @@ const ExperimentSummaryTable = ({
               <td>{result?.avgAnswerScore}</td>
               <td>{result?.avgBleuScore.toFixed(3)}</td>
               <td>{result?.avgRougeScore.toFixed(3)}</td>
+              <td>{result?.avgMeteorScores.toFixed(3)}</td>
               <td>{result?.avgLatency.toFixed(3)}</td>
             </tr>
           ))}

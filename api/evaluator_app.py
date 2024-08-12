@@ -48,6 +48,11 @@ from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
+import nltk
+from nltk.translate.meteor_score import meteor_score
+nltk.download('punkt')
+nltk.download('wordnet')
+
 def generate_eval(text, chunk, grader, logger):
     """
     Generate question answer pair from input text 
@@ -319,7 +324,34 @@ def calculate_rouge(reference, candidate):
     rouge_scores = cosine_sim[0, 1]
     return rouge_scores
 
-def evaluate_bleu_rouge(predictions, logger):
+def calculate_meteor_score(reference_text, candidate_text):
+    """
+    Calculate the METEOR score between a reference text and a candidate text.
+
+    Parameters:
+    reference_text (str): The reference text or ground truth sentence. This can be a single sentence or multiple sentences 
+                          concatenated together, which will be tokenized into a list of words.
+    candidate_text (str): The candidate text or the generated sentence that is being evaluated. This will be tokenized 
+                           into a list of words for comparison against the reference text.
+
+    Returns:
+    float: The METEOR score between the reference text and the candidate text. The score is a float value representing 
+           the similarity between the two texts, with higher values indicating better similarity.
+    """
+    # Tokenize the texts
+    reference_tokens = nltk.word_tokenize(reference_text)
+    candidate_tokens = nltk.word_tokenize(candidate_text)
+
+    # METEOR score requires the reference tokens to be in a list of lists
+    # Each list within the list represents a reference sentence
+    reference_tokens_list = [reference_tokens]
+
+    # Calculate METEOR score
+    score = meteor_score(reference_tokens_list, candidate_tokens)
+
+    return score
+
+def evaluate_statistical_scores(predictions, logger):
     """
     Evaluates BLEU and ROUGE scores from a list of dictionaries.
     
@@ -329,10 +361,11 @@ def evaluate_bleu_rouge(predictions, logger):
              - Average BLEU score (float).
              - Overall average of the ROUGE-1, ROUGE-2, and ROUGE-L F-measure scores (float).
     """
-    logger.info("Evaluating BLEU and ROUGE scores from predictions...")
+    logger.info("Evaluating statistical scores from predictions...")
 
     bleu_scores = []
-    avg_rouge_scores = 0
+    rouge_scores = []
+    meteor_scores = []
 
     for item in predictions:
         reference = item['answer']
@@ -343,12 +376,20 @@ def evaluate_bleu_rouge(predictions, logger):
         bleu_scores.append(bleu_score)
         
         # Calculate ROUGE scores
-        avg_rouge_scores = calculate_rouge(reference, candidate)
+        rouge_score = calculate_rouge(reference, candidate)
+        rouge_scores.append(rouge_score)
+
+        # Calculate METEOR  scores
+        meteor_score = calculate_meteor_score(reference, candidate)
+        meteor_scores.append(meteor_score)
+
 
     # Calculate average BLEU score
     avg_bleu_score = mean(bleu_scores) if bleu_scores else 0
+    avg_rouge_scores = mean(rouge_scores) if rouge_scores else 0
+    avg_meteor_scores = mean(meteor_scores) if meteor_scores else 0
 
-    return avg_bleu_score, avg_rouge_scores
+    return avg_bleu_score, avg_rouge_scores, avg_meteor_scores
 
 def run_eval(chain, retriever, eval_qa_pair, grader, grade_prompt, retriever_type, num_neighbors, text, logger):
     """
@@ -408,9 +449,9 @@ def run_eval(chain, retriever, eval_qa_pair, grader, grade_prompt, retriever_typ
     graded_retrieval = grade_model_retrieval(
         gt_dataset, retrieved_docs, grader, grade_prompt, logger)
     
-    avg_bleu_score, avg_rouge_score = evaluate_bleu_rouge(predictions, logger)
+    avg_bleu_score, avg_rouge_score, avg_meteor_scores = evaluate_statistical_scores(predictions, logger)
 
-    return graded_answers, graded_retrieval, avg_bleu_score, avg_rouge_score, latency, predictions
+    return graded_answers, graded_retrieval, avg_bleu_score, avg_rouge_score, avg_meteor_scores, latency, predictions
 
 load_dotenv()
 
@@ -521,7 +562,7 @@ def run_evaluator(
                 eval_pair = eval_pair[0]
 
         # Run eval
-        graded_answers, graded_retrieval, avg_bleu_score, avg_rouge_score, latency, predictions = run_eval(
+        graded_answers, graded_retrieval, avg_bleu_score, avg_rouge_score, avg_meteor_scores, latency, predictions = run_eval(
             qa_chain, retriever, eval_pair, grader, grade_prompt, retriever_type, num_neighbors, text, logger)
         
         # Assemble output
@@ -544,6 +585,7 @@ def run_evaluator(
 
         d['avgBleuScore'] = f"{avg_bleu_score:.3f}"
         d['avgRougeScore'] = f"{avg_rouge_score:3f}"
+        d['avgMeteorScores'] = f"{avg_meteor_scores:3f}"
 
         # Convert dataframe to dict
         d_dict = d.to_dict('records')

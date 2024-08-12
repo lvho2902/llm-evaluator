@@ -225,6 +225,9 @@ const Demo = ({ form }: { form: Form }) => {
     const avgRougeScore =
       localResults.reduce((acc, curr) => acc + curr.avgRougeScore, 0) /
       localResults.length;
+    const avgMeteorScores =
+      localResults.reduce((acc, curr) => acc + curr.avgMeteorScores, 0) /
+      localResults.length;
     const avgLatency =
       localResults.reduce((acc, curr) => acc + curr.latency, 0) /
       localResults.length;
@@ -243,6 +246,7 @@ const Demo = ({ form }: { form: Form }) => {
       avgAnswerScore,
       avgBleuScore,
       avgRougeScore,
+      avgMeteorScores,
       avgLatency,
       performance: avgAnswerScore / avgLatency,
       id: resetExpts ? 1 : experiments.length + 1,

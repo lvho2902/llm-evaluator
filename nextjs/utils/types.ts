@@ -24,6 +24,7 @@ export type Result = {
   answerScore: { score: number; justification: string };
   avgBleuScore: number,
   avgRougeScore: number;
+  avgMeteorScores: number;
   latency: number;
 };
 
@@ -47,6 +48,7 @@ export type Experiment = {
   avgAnswerScore: number;
   avgBleuScore: number,
   avgRougeScore: number;
+  avgMeteorScores: number;
   avgLatency: number;
   performance: number;
   id: number;
