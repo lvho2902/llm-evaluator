@@ -135,7 +135,7 @@ def make_grader(garder):
     return garder_llm
     
 
-def make_retriever(splits, retriever_type, embeddings, num_neighbors, llm, logger):
+def make_retriever(splits, retriever_type, embeddings, num_neighbors, logger):
     """
     Make document retriever
     @param splits: list of str splits

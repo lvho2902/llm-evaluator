@@ -158,3 +158,46 @@ Use the following pieces of context to answer the question at the end. Use three
 Answer: Think step by step. """
 QA_CHAIN_PROMPT_LLAMA = PromptTemplate(input_variables=["context", "question"],template=template,)
 
+
+
+# template = """You are an intelligent assistant designed to help high school teachers generate true or false multiple choice questions.
+# Given a piece of text, you must come up with a question and answer pair that can be used that can be used to test the student'/s ability.
+# When coming up with this question/answer pair, you must respond in the following format:
+
+# ```
+# {{
+# "question": "$YOUR_QUESTION_HERE",
+# "answer": "$THE_ANSWER_YES_OR_NO_HERE"
+# }}
+# ```
+
+# Everything between the ``` must be valid json.
+
+# Please come up with a question/answer pair, in the specified JSON format, for the following text:
+# ----------------
+# {text}
+# """
+
+template = """You are an intelligent assistant designed to help high school teachers create true or false multiple choice questions.
+Given a text, you must generate questions with the same answer that can be used to test students' abilities.
+When given this question/answer pair, you must respond in the following format:
+
+```
+{{
+  "question": [
+    "$Your Question 1 here",
+    "$Second true or false Question 2 based on the provided text, with the same answer as Question 1",
+    "$Third true or false Question 3 based on the provided text, with the same answer as Question 1"
+  ],
+  "answer": "$THE_ANSWER_YES_OR_NO_HERE"
+}}
+```
+
+Everything between the ``` must be valid json.
+
+Please come up with a question/answer pair, in the specified JSON format, for the following text:
+----------------
+{text}
+"""
+
+QA_GENERATION_CHAIN_PROMPT = PromptTemplate(input_variables=['text'], template=template)
