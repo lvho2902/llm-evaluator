@@ -97,9 +97,6 @@ const Sidebar = ({ form }: { form: Form }) => {
                   data={[
                     { label: "GPT 3.5 Turbo", value: "gpt-3.5-turbo" },
                     { label: "GPT 4", value: "gpt-4" },
-                    { label: "Anthropic", value: "anthropic" },
-                    { label: "Vicuna 13B", value: "vicuna-13b" },
-                    { label: "MPT-7B", value: "mosaic" },
                     { label: "Eden GPT 3.5 Turbo Instruct", value: "eden-gpt-3.5-turbo-instruct" },
                   ]}
                 />
@@ -177,12 +174,12 @@ const Sidebar = ({ form }: { form: Form }) => {
                 <Select
                   {...field}
                   onChange={(value) => {
-                    field.onChange(value);
-                    if (value === "Anthropic-100k") {
-                      setValue("model", "anthropic");
-                      setValue("splitMethod", "");
-                      setValue("embeddingAlgorithm", ""); 
-                    }
+                    // field.onChange(value);
+                    // if (value === "Anthropic-100k") {
+                    //   setValue("model", "anthropic");
+                    //   setValue("splitMethod", "");
+                    //   setValue("embeddingAlgorithm", ""); 
+                    // }
                   }}
                   data={[
                     {
@@ -193,8 +190,10 @@ const Sidebar = ({ form }: { form: Form }) => {
                       label: "SVM",
                       value: "SVM",
                     },
-                    { label: "TF-IDF", value: "TF-IDF" },
-                    { label: "Anthropic-100k", value: "Anthropic-100k" },
+                    {
+                      label: "TF-IDF",
+                      value: "TF-IDF",
+                    }
                   ]}
                 />
               )}

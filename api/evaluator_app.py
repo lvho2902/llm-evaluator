@@ -17,7 +17,6 @@ import pandas as pd
 from typing import Dict, List
 from json import JSONDecodeError
 from langchain.llms import MosaicML
-from langchain.llms import Anthropic
 from langchain.llms import Replicate
 from langchain.schema import Document
 from langchain.vectorstores import FAISS
@@ -53,7 +52,7 @@ from nltk.translate.meteor_score import meteor_score
 nltk.download('punkt')
 nltk.download('wordnet')
 
-def generate_eval(text, chunk, grader, logger):
+def generate_eval(text, chunk, grader_llm, logger):
     """
     Generate question answer pair from input text 
     @param text: text to generate eval set from
@@ -67,24 +66,7 @@ def generate_eval(text, chunk, grader, logger):
     num_of_chars = len(text)
     starting_index = random.randint(0, num_of_chars-chunk)
     sub_sequence = text[starting_index:starting_index+chunk]
-
-
-    if(grader == "ollama-mistral-7b"):
-        # Set up QAGenerationChain chain using Ollama Mistral 7B
-        chain = QAGenerationChain.from_llm(ChatOllama(model="mistral", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0))
-    elif(grader == "ollama-llama-3.1-8b"):
-        # Set up QAGenerationChain chain using Ollama Llama 3.1 8B
-        chain = QAGenerationChain.from_llm(ChatOllama(model="llama3.1", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0))
-    elif(grader == "eden-gpt-3.5-turbo-instruct"):
-        # Set up QAGenerationChain chain using Eden OpenAI GPT 3.5 as default
-        chain = QAGenerationChain.from_llm(EdenAI(edenai_api_key=os.getenv('EDENAI_API_KEY'), feature="text", provider="openai", model="gpt-3.5-turbo-instruct"))
-
-    else:
-        # Set up QAGenerationChain chain using OpenAI GPT 3.5 as default
-        chain = QAGenerationChain.from_llm(ChatOpenAI(temperature=0))
-
-
-
+    chain = QAGenerationChain.from_llm(grader_llm)
     eval_set = []
     # Catch any QA generation errors and re-try until QA pair is generated
     awaiting_answer = True
@@ -133,20 +115,25 @@ def make_llm(model):
 
     if model in ("gpt-3.5-turbo", "gpt-4"):
         llm = ChatOpenAI(model_name=model, temperature=0)
-    elif model == "anthropic":
-        llm = Anthropic(temperature=0)
-    elif model == "Anthropic-100k":
-        llm = Anthropic(model="claude-v1-100k",temperature=0)
-    elif model == "vicuna-13b":
-        llm = Replicate(model="replicate/vicuna-13b:e6d469c2b11008bb0e446c3e9629232f9674581224536851272c54871f84076e",
-                input={"temperature": 0.75, "max_length": 3000, "top_p":0.25})
-    elif model == "mosaic":
-        llm = MosaicML(inject_instruction_format=True,model_kwargs={'do_sample': False, 'max_length': 3000})
     elif model == "eden-gpt-3.5-turbo-instruct":
         llm = EdenAI(edenai_api_key=os.getenv('EDENAI_API_KEY'), feature="text", provider="openai", model="gpt-3.5-turbo-instruct")
         
     else: raise ValueError(f"Unknown model: {model}")
     return llm
+
+def make_grader(garder):
+    
+    # Note: GPT-4 grader is advised by OAI
+    if(garder == "ollama-mistral-7b"):
+        garder_llm = ChatOllama(model="mistral", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"))
+    elif(garder == "ollama-llama-3.1-8b"):
+        lgarder_llmm = ChatOllama(model="llama3.1", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"))
+    elif(garder == "eden-gpt-3.5-turbo-instruct"):
+        garder_llm = EdenAI(edenai_api_key=os.getenv('EDENAI_API_KEY'), feature="text", provider="openai", model="gpt-3.5-turbo-instruct")
+    else:
+        llm=ChatOpenAI(model_name="gpt-4", temperature=0)
+    return garder_llm
+    
 
 def make_retriever(splits, retriever_type, embeddings, num_neighbors, llm, logger):
     """
@@ -165,13 +152,6 @@ def make_retriever(splits, retriever_type, embeddings, num_neighbors, llm, logge
     # Set embeddings
     if embeddings == "OpenAI":
         embd = OpenAIEmbeddings()
-    # Note: Still WIP (can't be selected by user yet)
-    elif embeddings == "LlamaCppEmbeddings":
-        embd = LlamaCppEmbeddings(model="replicate/vicuna-13b:e6d469c2b11008bb0e446c3e9629232f9674581224536851272c54871f84076e")
-    # Note: Test
-    elif embeddings == "Mosaic":
-        embd = MosaicMLInstructorEmbeddings(query_instruction="Represent the query for retrieval: ")
-
     elif embeddings == "EdenOpenAI":
         embd = EdenAiEmbeddings(edenai_api_key=os.getenv('EDENAI_API_KEY'), provider="openai")
 
@@ -183,41 +163,30 @@ def make_retriever(splits, retriever_type, embeddings, num_neighbors, llm, logge
         retriever = SVMRetriever.from_texts(splits, embd)
     elif retriever_type == "TF-IDF":
         retriever = TFIDFRetriever.from_texts(splits)
-    elif retriever_type == "Anthropic-100k":
-         retriever = llm
     return retriever
 
-def make_chain(llm, retriever, retriever_type, model):
+def make_chain(llm, retriever):
 
     """
     Make retrieval chain
-    @param llm: model
+    @param llm: llm
     @param retriever: retriever
-    @param retriever_type: retriever type
     @return: QA chain
     """
 
     # Select prompt 
-    if model == "vicuna-13b":
-        # Note: Better answer quality using default prompt 
-        # chain_type_kwargs = {"prompt": QA_CHAIN_PROMPT_LLAMA}
-        chain_type_kwargs = {"prompt": QA_CHAIN_PROMPT}
-    else: 
-        chain_type_kwargs = {"prompt": QA_CHAIN_PROMPT}
+    chain_type_kwargs = {"prompt": QA_CHAIN_PROMPT}
 
     # Select model 
-    if retriever_type == "Anthropic-100k":
-        qa_chain = load_qa_chain(llm,chain_type="stuff",prompt=QA_CHAIN_PROMPT)
-    else:
-        qa_chain = RetrievalQA.from_chain_type(llm,
-                                               chain_type="stuff",
-                                               retriever=retriever,
-                                               chain_type_kwargs=chain_type_kwargs,
-                                               input_key="question")
+    qa_chain = RetrievalQA.from_chain_type(llm,
+                                            chain_type="stuff",
+                                            retriever=retriever,
+                                            chain_type_kwargs=chain_type_kwargs,
+                                            input_key="question")
     return qa_chain
 
 
-def grade_model_answer(predicted_dataset, predictions, grader, grade_answer_prompt, logger):
+def grade_model_answer(predicted_dataset, predictions, grader_llm, grade_answer_prompt, logger):
     """
     Grades the answer based on ground truth and model predictions.
     @param predicted_dataset: A list of dictionaries containing ground truth questions and answers.
@@ -237,17 +206,7 @@ def grade_model_answer(predicted_dataset, predictions, grader, grade_answer_prom
     else:
         prompt = GRADE_ANSWER_PROMPT
 
-    # Note: GPT-4 grader is advised by OAI
-    if(grader == "ollama-mistral-7b"):
-        llm = ChatOllama(model="mistral", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"))
-    elif(grader == "ollama-llama-3.1-8b"):
-        llm = ChatOllama(model="llama3.1", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"))
-    elif(grader == "eden-gpt-3.5-turbo-instruct"):
-        llm = EdenAI(edenai_api_key=os.getenv('EDENAI_API_KEY'), feature="text", provider="openai", model="gpt-3.5-turbo-instruct")
-    else:
-        llm=ChatOpenAI(model_name="gpt-4", temperature=0)
-
-    eval_chain = QAEvalChain.from_llm(llm = llm, prompt=prompt)
+    eval_chain = QAEvalChain.from_llm(llm = grader_llm, prompt=prompt)
 
     graded_outputs = eval_chain.evaluate(predicted_dataset,
                                          predictions,
@@ -256,7 +215,7 @@ def grade_model_answer(predicted_dataset, predictions, grader, grade_answer_prom
     return graded_outputs
 
 
-def grade_model_retrieval(gt_dataset, predictions, grader, grade_docs_prompt, logger):
+def grade_model_retrieval(gt_dataset, predictions, grader_llm, grade_docs_prompt, logger):
     """
     Grades the relevance of retrieved documents based on ground truth and model predictions.
     @param gt_dataset: list of dictionaries containing ground truth questions and answers.
@@ -271,17 +230,7 @@ def grade_model_retrieval(gt_dataset, predictions, grader, grade_docs_prompt, lo
     else:
         prompt = GRADE_DOCS_PROMPT
 
-    # Note: GPT-4 grader is advised by OAI
-    if(grader == "ollama-mistral-7b"):
-        llm = ChatOllama(model="mistral", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"))
-    elif(grader == "ollama-llama-3.1-8b"):
-        llm = ChatOllama(model="llama3.1", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"))
-    elif(grader == "eden-gpt-3.5-turbo-instruct"):
-        llm = EdenAI(edenai_api_key=os.getenv('EDENAI_API_KEY'), feature="text", provider="openai", model="gpt-3.5-turbo-instruct")
-    else:
-        llm=ChatOpenAI(model_name="gpt-4", temperature=0)
-
-    eval_chain = QAEvalChain.from_llm(llm = llm,prompt=prompt)
+    eval_chain = QAEvalChain.from_llm(llm = grader_llm,prompt=prompt)
     graded_outputs = eval_chain.evaluate(gt_dataset,
                                          predictions,
                                          question_key="question",
@@ -391,7 +340,7 @@ def evaluate_statistical_scores(predictions, logger):
 
     return avg_bleu_score, avg_rouge_scores, avg_meteor_scores
 
-def run_eval(chain, retriever, eval_qa_pair, grader, grade_prompt, retriever_type, num_neighbors, text, logger):
+def run_eval(chain, retriever, eval_qa_pair, grader_llm, grade_prompt, retriever_type, num_neighbors, text, logger):
     """
     Runs evaluation on a model's performance on a given evaluation dataset.
     @param chain: Model chain used for answering questions
@@ -416,13 +365,7 @@ def run_eval(chain, retriever, eval_qa_pair, grader, grade_prompt, retriever_typ
 
     # Get answer and log latency
     start_time = time.time()
-    if retriever_type == "Anthropic-100k":
-        docs=[Document(page_content=text)]
-        answer = chain.run(input_documents=docs,question=eval_qa_pair["question"])
-        predictions.append(
-            {"question": eval_qa_pair["question"], "answer": eval_qa_pair["answer"], "result": answer})
-    else :
-        predictions.append(chain(eval_qa_pair))
+    predictions.append(chain(eval_qa_pair))
     gt_dataset.append(eval_qa_pair)
     end_time = time.time()
     elapsed_time = end_time - start_time
@@ -430,13 +373,10 @@ def run_eval(chain, retriever, eval_qa_pair, grader, grade_prompt, retriever_typ
 
     # Extract text from retrieved docs
     retrieved_doc_text = ""
-    if retriever_type == "Anthropic-100k":
-        retrieved_doc_text = "Doc %s: " % str(eval_qa_pair["answer"])
-    else:
-        docs = retriever.get_relevant_documents(eval_qa_pair["question"])
-        for i, doc in enumerate(docs):
-            retrieved_doc_text += "Doc %s: " % str(i+1) + \
-                doc.page_content + " "
+    docs = retriever.get_relevant_documents(eval_qa_pair["question"])
+    for i, doc in enumerate(docs):
+        retrieved_doc_text += "Doc %s: " % str(i+1) + \
+            doc.page_content + " "
 
     # Log
     retrieved = {"question": eval_qa_pair["question"],
@@ -445,9 +385,9 @@ def run_eval(chain, retriever, eval_qa_pair, grader, grade_prompt, retriever_typ
 
     # Grade
     graded_answers = grade_model_answer(
-        gt_dataset, predictions, grader, grade_prompt, logger)
+        gt_dataset, predictions, grader_llm, grade_prompt, logger)
     graded_retrieval = grade_model_retrieval(
-        gt_dataset, retrieved_docs, grader, grade_prompt, logger)
+        gt_dataset, retrieved_docs, grader_llm, grade_prompt, logger)
     
     avg_bleu_score, avg_rouge_score, avg_meteor_scores = evaluate_statistical_scores(predictions, logger)
 
@@ -530,22 +470,20 @@ def run_evaluator(
                 "Unsupported file type for file: {}".format(file.filename))
     text = " ".join(texts)
 
-    if retriever_type == "Anthropic-100k":
-        splits = ""
-        model_version = "Anthropic-100k"
-    else:
-        logger.info("Splitting texts")
-        splits = split_texts(text, chunk_chars, overlap, split_method, logger)
+    logger.info("Splitting texts")
+    splits = split_texts(text, chunk_chars, overlap, split_method, logger)
 
     logger.info("Make LLM")
     llm = make_llm(model_version)
+
+    grader_llm = make_grader(grader)
 
     logger.info("Make retriever")
     retriever = make_retriever(
         splits, retriever_type, embeddings, num_neighbors, llm, logger)
 
     logger.info("Make chain")
-    qa_chain = make_chain(llm, retriever, retriever_type, model_version)
+    qa_chain = make_chain(llm, retriever)
 
     for i in range(num_eval_questions):
 
@@ -553,7 +491,7 @@ def run_evaluator(
         if i < len(test_dataset):
             eval_pair = test_dataset[i]
         else:
-            eval_pair = generate_eval(text, 3000, grader, logger)
+            eval_pair = generate_eval(text, 3000, grader_llm, logger)
             if len(eval_pair) == 0:
                 # Error in eval generation
                 continue
@@ -563,7 +501,7 @@ def run_evaluator(
 
         # Run eval
         graded_answers, graded_retrieval, avg_bleu_score, avg_rouge_score, avg_meteor_scores, latency, predictions = run_eval(
-            qa_chain, retriever, eval_pair, grader, grade_prompt, retriever_type, num_neighbors, text, logger)
+            qa_chain, retriever, eval_pair, grader_llm, grade_prompt, retriever_type, num_neighbors, text, logger)
         
         # Assemble output
         d = pd.DataFrame(predictions)
