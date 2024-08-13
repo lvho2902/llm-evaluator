@@ -158,46 +158,36 @@ Use the following pieces of context to answer the question at the end. Use three
 Answer: Think step by step. """
 QA_CHAIN_PROMPT_LLAMA = PromptTemplate(input_variables=["context", "question"],template=template,)
 
+template = """Given the following text:
+<<{text}>>
 
-
-# template = """You are an intelligent assistant designed to help high school teachers generate true or false multiple choice questions.
-# Given a piece of text, you must come up with a question and answer pair that can be used that can be used to test the student'/s ability.
-# When coming up with this question/answer pair, you must respond in the following format:
-
-# ```
-# {{
-# "question": "$YOUR_QUESTION_HERE",
-# "answer": "$THE_ANSWER_YES_OR_NO_HERE"
-# }}
-# ```
-
-# Everything between the ``` must be valid json.
-
-# Please come up with a question/answer pair, in the specified JSON format, for the following text:
-# ----------------
-# {text}
-# """
-
-template = """You are an intelligent assistant designed to help high school teachers create true or false multiple choice questions.
-Given a text, you must generate questions with the same answer that can be used to test students' abilities.
-When given this question/answer pair, you must respond in the following format:
-
+Please only generate a JSON object must be in the following format:
 ```
 {{
   "question": [
-    "$Your Question 1 here",
-    "$Second true or false Question 2 based on the provided text, with the same answer as Question 1",
-    "$Third true or false Question 3 based on the provided text, with the same answer as Question 1"
+    "$statement_1",
+    "$statement_2",
+    "$statement_3"
   ],
-  "answer": "$THE_ANSWER_YES_OR_NO_HERE"
+  "answer": "$true_or_false"
 }}
 ```
+$statement_1: Generate a true or false statement based on the input text.
+$statement_2: Create a variation of $statement_1 that conveys the same fact.
+$statement_3: Provide another variation of $statement_1, but phrased differently.
 
-Everything between the ``` must be valid json.
+**Important**: Your response must be **exactly** in the JSON format provided above. No additional text, explanations, or information should be included. Ensure that the "answer" field is set to "true" or "false" based on the truth value of the provided text. The generated statements must be logically consistent with the truth value of the provided text.
 
-Please come up with a question/answer pair, in the specified JSON format, for the following text:
-----------------
-{text}
-"""
+Your response should be a valid JSON object only.
+Ensure that the variations you generate are logically consistent with the truth value of the original text."""
 
 QA_GENERATION_CHAIN_PROMPT = PromptTemplate(input_variables=['text'], template=template)
+
+template = """Use the following context to give your opinion on the statement in question at the end.
+{context}
+Statement: {question}
+
+**Important**: Your response must be **exactly** in one of three values ​​"True", "False", "Unknown". No line break, no additional any space, any characters, text, explanations, or information should be included. If you don't know the answer, just answer "Unknown", don't try to make up an answer.
+"""
+
+SELF_CHECK_QA_CHAIN_PROMPT = PromptTemplate(input_variables=["context", "question"],template=template,)

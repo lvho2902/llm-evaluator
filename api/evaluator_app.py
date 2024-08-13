@@ -208,6 +208,9 @@ def grade_model_answer(predicted_dataset, predictions, grader_llm, grade_answer_
 
     eval_chain = QAEvalChain.from_llm(llm = grader_llm, prompt=prompt)
 
+    print(predicted_dataset)
+    print(predictions)
+
     graded_outputs = eval_chain.evaluate(predicted_dataset,
                                          predictions,
                                          question_key="question",
@@ -480,7 +483,7 @@ def run_evaluator(
 
     logger.info("Make retriever")
     retriever = make_retriever(
-        splits, retriever_type, embeddings, num_neighbors, llm, logger)
+        splits, retriever_type, embeddings, num_neighbors, logger)
 
     logger.info("Make chain")
     qa_chain = make_chain(llm, retriever)
