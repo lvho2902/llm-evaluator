@@ -187,7 +187,7 @@ template = """Use the following context to give your opinion on the statement in
 {context}
 Statement: {question}
 
-**Important**: Your response must be **exactly** in one of three values ​​"True", "False", "Unknown". No line break, no additional any space, any characters, text, explanations, or information should be included. If you don't know the answer, just answer "Unknown", don't try to make up an answer.
+**Important**: Your response must be **exactly** in one of three values ​​"True", "False", "Unknown". No dot, no line break, no additional any space, any characters, text, explanations, or information should be included. If you don't know the answer, just answer "Unknown", don't try to make up an answer.
 """
 
 SELF_CHECK_QA_CHAIN_PROMPT = PromptTemplate(input_variables=["context", "question"],template=template,)
