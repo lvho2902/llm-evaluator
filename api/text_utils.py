@@ -169,14 +169,14 @@ Please only generate a JSON object must be in the following format:
     "$statement_2",
     "$statement_3"
   ],
-  "answer": "$true_or_false"
+  "answer": "$True_or_False"
 }}
 ```
 $statement_1: Generate a true or false statement based on the input text.
 $statement_2: Create a variation of $statement_1 that conveys the same fact.
 $statement_3: Provide another variation of $statement_1, but phrased differently.
 
-**Important**: Your response must be **exactly** in the JSON format provided above. No additional text, explanations, or information should be included. Ensure that the "answer" field is set to "true" or "false" based on the truth value of the provided text. The generated statements must be logically consistent with the truth value of the provided text.
+**Important**: Your response must be **exactly** in the JSON format provided above. No additional text, explanations, or information should be included. Ensure that the "answer" field is set to "True" or "False" based on the truth value of the provided text. The generated statements must be logically consistent with the truth value of the provided text.
 
 Your response should be a valid JSON object only.
 Ensure that the variations you generate are logically consistent with the truth value of the original text."""
@@ -185,9 +185,10 @@ QA_GENERATION_CHAIN_PROMPT = PromptTemplate(input_variables=['text'], template=t
 
 template = """Use the following context to give your opinion on the statement in question at the end.
 {context}
-Statement: {question}
+What is your opinion on this statement: "{question}" ?
+###Response: "True" or "False" or "Unknown" 
 
-**Important**: Your response must be **exactly** in one of three values ​​"True", "False", "Unknown". No dot, no line break, no additional any space, any characters, text, explanations, or information should be included. If you don't know the answer, just answer "Unknown", don't try to make up an answer.
+**Important**: Your response must be **exactly** in one of three values ​​"True", "False", "Unknown". No additional dot, line break, space, characters, text, explanations, or information should be included. If you don't know the answer, just response "Unknown", don't try to make up an response.
 """
 
-SELF_CHECK_QA_CHAIN_PROMPT = PromptTemplate(input_variables=["context", "question"],template=template,)
+SELF_CHECK_QA_CHAIN_PROMPT = PromptTemplate(input_variables=["context", "question"],template=template)

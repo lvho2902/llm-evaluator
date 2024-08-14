@@ -4,6 +4,7 @@ This is an API to support the LLM QA chain auto-evaluator.
 
 import io
 import os
+import re
 from dotenv import load_dotenv
 import sentry_sdk
 import json
@@ -34,7 +35,7 @@ from fastapi import FastAPI, File, UploadFile, Form
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.chains.question_answering import load_qa_chain
 from langchain.text_splitter import RecursiveCharacterTextSplitter, CharacterTextSplitter
-from text_utils import GRADE_DOCS_PROMPT, GRADE_ANSWER_PROMPT, GRADE_DOCS_PROMPT_FAST, GRADE_ANSWER_PROMPT_FAST, GRADE_ANSWER_PROMPT_BIAS_CHECK, GRADE_ANSWER_PROMPT_OPENAI, QA_CHAIN_PROMPT, QA_CHAIN_PROMPT_LLAMA
+from text_utils import GRADE_DOCS_PROMPT, GRADE_ANSWER_PROMPT, GRADE_DOCS_PROMPT_FAST, GRADE_ANSWER_PROMPT_FAST, GRADE_ANSWER_PROMPT_BIAS_CHECK, GRADE_ANSWER_PROMPT_OPENAI, QA_CHAIN_PROMPT, QA_GENERATION_CHAIN_PROMPT, SELF_CHECK_QA_CHAIN_PROMPT
 
 from langchain_community.chat_models import ChatOllama
 from langchain_community.embeddings import OllamaEmbeddings
@@ -52,7 +53,7 @@ from nltk.translate.meteor_score import meteor_score
 nltk.download('punkt')
 nltk.download('wordnet')
 
-def generate_eval(text, chunk, grader_llm, logger):
+def generate_eval(text, chunk, grader_llm, prompt, logger):
     """
     Generate question answer pair from input text 
     @param text: text to generate eval set from
@@ -61,12 +62,16 @@ def generate_eval(text, chunk, grader_llm, logger):
     @return: dict with keys "question" and "answer"
     """
 
-    logger.info("`Generating eval QA pair ...`")
     # Generate random starting index in the doc to draw question from
     num_of_chars = len(text)
     starting_index = random.randint(0, num_of_chars-chunk)
     sub_sequence = text[starting_index:starting_index+chunk]
-    chain = QAGenerationChain.from_llm(grader_llm)
+    if(prompt == None):
+        logger.info("`Generating eval QA pair ...`")
+        chain = QAGenerationChain.from_llm(grader_llm)
+    else:
+        logger.info("`Generating self check eval QA pair ...`")
+        chain = QAGenerationChain.from_llm(grader_llm, prompt)
     eval_set = []
     # Catch any QA generation errors and re-try until QA pair is generated
     awaiting_answer = True
@@ -113,26 +118,31 @@ def make_llm(model):
     @return: LLM
     """
 
-    if model in ("gpt-3.5-turbo", "gpt-4"):
-        llm = ChatOpenAI(model_name=model, temperature=0)
+    print(model)
+    if model == "ollama-mistral-7b":
+        llm = ChatOllama(model="mistral", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0)
+    elif(model == "ollama-llama-3.1-8b"):
+        llm = ChatOllama(model="llama3.1", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0)
     elif model == "eden-gpt-3.5-turbo-instruct":
-        llm = EdenAI(edenai_api_key=os.getenv('EDENAI_API_KEY'), feature="text", provider="openai", model="gpt-3.5-turbo-instruct")
-        
-    else: raise ValueError(f"Unknown model: {model}")
+        llm = EdenAI(edenai_api_key=os.getenv('EDENAI_API_KEY'), feature="text", provider="openai", model="gpt-3.5-turbo-instruct", temperature=0)
+    else:
+        llm = ChatOpenAI(model_name=model, temperature=0)
+
     return llm
 
-def make_grader(garder):
+def make_grader(grader):
     
     # Note: GPT-4 grader is advised by OAI
-    if(garder == "ollama-mistral-7b"):
-        garder_llm = ChatOllama(model="mistral", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"))
-    elif(garder == "ollama-llama-3.1-8b"):
-        lgarder_llmm = ChatOllama(model="llama3.1", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"))
-    elif(garder == "eden-gpt-3.5-turbo-instruct"):
-        garder_llm = EdenAI(edenai_api_key=os.getenv('EDENAI_API_KEY'), feature="text", provider="openai", model="gpt-3.5-turbo-instruct")
+    if(grader == "ollama-mistral-7b"):
+        grader_llm = ChatOllama(model="mistral", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0)
+    elif(grader == "ollama-llama-3.1-8b"):
+        grader_llm = ChatOllama(model="llama3.1", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0)
+    elif(grader == "eden-gpt-3.5-turbo-instruct"):
+        grader_llm = EdenAI(edenai_api_key=os.getenv('EDENAI_API_KEY'), feature="text", provider="openai", model="gpt-3.5-turbo-instruct", temperature=0)
     else:
-        llm=ChatOpenAI(model_name="gpt-4", temperature=0)
-    return garder_llm
+        grader_llm=ChatOpenAI(model_name="gpt-4", temperature=0)
+
+    return grader_llm
     
 
 def make_retriever(splits, retriever_type, embeddings, num_neighbors, logger):
@@ -150,10 +160,14 @@ def make_retriever(splits, retriever_type, embeddings, num_neighbors, logger):
     logger.info("`Making retriever ...`")
     
     # Set embeddings
-    if embeddings == "OpenAI":
-        embd = OpenAIEmbeddings()
+    
+    if embeddings == "Ollama":
+        embd = OllamaEmbeddings(model="llama3.1")
+        embd.base_url = os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434")
     elif embeddings == "EdenOpenAI":
         embd = EdenAiEmbeddings(edenai_api_key=os.getenv('EDENAI_API_KEY'), provider="openai")
+    else:
+        embd = OpenAIEmbeddings()
 
     # Select retriever
     if retriever_type == "similarity-search":
@@ -165,7 +179,7 @@ def make_retriever(splits, retriever_type, embeddings, num_neighbors, logger):
         retriever = TFIDFRetriever.from_texts(splits)
     return retriever
 
-def make_chain(llm, retriever):
+def make_chain(llm, retriever, prompt=QA_CHAIN_PROMPT, input_key="question"):
 
     """
     Make retrieval chain
@@ -175,14 +189,14 @@ def make_chain(llm, retriever):
     """
 
     # Select prompt 
-    chain_type_kwargs = {"prompt": QA_CHAIN_PROMPT}
+    chain_type_kwargs = {"prompt": prompt}
 
     # Select model 
     qa_chain = RetrievalQA.from_chain_type(llm,
                                             chain_type="stuff",
                                             retriever=retriever,
                                             chain_type_kwargs=chain_type_kwargs,
-                                            input_key="question")
+                                            input_key=input_key)
     return qa_chain
 
 
@@ -207,9 +221,6 @@ def grade_model_answer(predicted_dataset, predictions, grader_llm, grade_answer_
         prompt = GRADE_ANSWER_PROMPT
 
     eval_chain = QAEvalChain.from_llm(llm = grader_llm, prompt=prompt)
-
-    print(predicted_dataset)
-    print(predictions)
 
     graded_outputs = eval_chain.evaluate(predicted_dataset,
                                          predictions,
@@ -343,7 +354,7 @@ def evaluate_statistical_scores(predictions, logger):
 
     return avg_bleu_score, avg_rouge_scores, avg_meteor_scores
 
-def run_eval(chain, retriever, eval_qa_pair, grader_llm, grade_prompt, retriever_type, num_neighbors, text, logger):
+def run_eval(chain, retriever, eval_qa_pair, grader_llm, grade_prompt, logger):
     """
     Runs evaluation on a model's performance on a given evaluation dataset.
     @param chain: Model chain used for answering questions
@@ -392,9 +403,60 @@ def run_eval(chain, retriever, eval_qa_pair, grader_llm, grade_prompt, retriever
     graded_retrieval = grade_model_retrieval(
         gt_dataset, retrieved_docs, grader_llm, grade_prompt, logger)
     
+    # grade_self_check = grade_model_self_check()
+    
     avg_bleu_score, avg_rouge_score, avg_meteor_scores = evaluate_statistical_scores(predictions, logger)
 
     return graded_answers, graded_retrieval, avg_bleu_score, avg_rouge_score, avg_meteor_scores, latency, predictions
+
+def run_self_check_eval(llm, grader_llm, retriever, text, logger):
+
+    logger.info("`Running self check eval ...`")
+
+    eval_self_check_pair = []
+    while(len(eval_self_check_pair) == 0):
+        eval_self_check_pair = generate_eval(text, 3000, grader_llm, QA_GENERATION_CHAIN_PROMPT, logger)
+
+    eval_self_check_pair = eval_self_check_pair[0]
+    predictions = []
+    parsed_format = [{ 'question': question, 'answer': eval_self_check_pair['answer'] } for question in eval_self_check_pair['question']]
+
+    self_check_chain = make_chain(llm, retriever, SELF_CHECK_QA_CHAIN_PROMPT)
+
+    for pair in parsed_format:
+        predictions.append(self_check_chain(pair))
+
+    # Process predictions to populate parsed_results
+    questions = []
+    actual = []
+    expected = predictions[0]['answer'].upper()
+    grade = verify_all_results(predictions)
+    parsed_results = {}
+    # Collect formatted data
+    for pred in predictions:
+        questions.append(pred['question'])
+        actual.append(pred['result'].strip().upper())
+
+    parsed_results['questions'] = '\n\n'.join(questions)
+    parsed_results['expected'] = expected
+    parsed_results['actual'] = '\n'.join(actual)
+    parsed_results['grade'] = 'Correct' if(grade) else 'Incorrect'
+
+    return parsed_results
+
+def verify_all_results(results_list):
+    # Define the valid true values
+    expected_value = results_list[0]['answer'].lower()
+    
+    # Function to clean and check result
+    def is_valid(result):
+        # Remove all non-alphanumeric characters and digits
+        cleaned_result = re.sub(r'[^\w]', '', result)  # Remove all non-word characters
+        cleaned_result = re.sub(r'\d', '', cleaned_result)  # Remove all digits
+        return cleaned_result.lower() == expected_value
+    
+    # Check if all results are valid
+    return all(is_valid(item['result']) for item in results_list)
 
 load_dotenv()
 
@@ -485,7 +547,7 @@ def run_evaluator(
     retriever = make_retriever(
         splits, retriever_type, embeddings, num_neighbors, logger)
 
-    logger.info("Make chain")
+    logger.info("Make QA chain")
     qa_chain = make_chain(llm, retriever)
 
     for i in range(num_eval_questions):
@@ -494,7 +556,7 @@ def run_evaluator(
         if i < len(test_dataset):
             eval_pair = test_dataset[i]
         else:
-            eval_pair = generate_eval(text, 3000, grader_llm, logger)
+            eval_pair = generate_eval(text, 3000, grader_llm, None, logger)
             if len(eval_pair) == 0:
                 # Error in eval generation
                 continue
@@ -504,8 +566,12 @@ def run_evaluator(
 
         # Run eval
         graded_answers, graded_retrieval, avg_bleu_score, avg_rouge_score, avg_meteor_scores, latency, predictions = run_eval(
-            qa_chain, retriever, eval_pair, grader_llm, grade_prompt, retriever_type, num_neighbors, text, logger)
+            qa_chain, retriever, eval_pair, grader_llm, grade_prompt, logger)
         
+        self_check_result = run_self_check_eval(llm, grader_llm, retriever, text, logger)
+
+        print(self_check_result)
+
         # Assemble output
         d = pd.DataFrame(predictions)
 
@@ -527,6 +593,20 @@ def run_evaluator(
         d['avgBleuScore'] = f"{avg_bleu_score:.3f}"
         d['avgRougeScore'] = f"{avg_rouge_score:3f}"
         d['avgMeteorScores'] = f"{avg_meteor_scores:3f}"
+
+        # Add the self-check results to the DataFrame
+        d['selfCheckResult'] = [{'questions': self_check_result['questions'],
+                                'expected': self_check_result['expected'],
+                                'actual': self_check_result['actual'],
+                                'grade': self_check_result['grade']}]
+        
+    # parsed_results['questions'] = '\n'.join(questions)
+    # parsed_results['expected'] = expected
+    # parsed_results['actual'] = '\n'.join(actual)
+    # parsed_results['grade'] = grade
+
+        print(d['selfCheckResult'])
+
 
         # Convert dataframe to dict
         d_dict = d.to_dict('records')

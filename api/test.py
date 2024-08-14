@@ -13,7 +13,7 @@ from langchain_community.vectorstores import FAISS
 from langchain.chains import QAGenerationChain
 from text_utils import GRADE_DOCS_PROMPT, GRADE_ANSWER_PROMPT, GRADE_DOCS_PROMPT_FAST, GRADE_ANSWER_PROMPT_FAST, GRADE_ANSWER_PROMPT_BIAS_CHECK, GRADE_ANSWER_PROMPT_OPENAI, QA_CHAIN_PROMPT, QA_CHAIN_PROMPT_LLAMA, SELF_CHECK_QA_CHAIN_PROMPT
 EDENAI_API_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMmFjNmJiZWUtZTdiMy00NTRkLTk4MmUtY2Y0ODQ2NGMzMzFkIiwidHlwZSI6ImFwaV90b2tlbiJ9.8YU_EHliBgJ2EqNBGNddA7fbTqkTSKF4lFHDz772xpQ"
-OLLAMA_SERVER_URL="https://3a6a-34-32-187-245.ngrok-free.app"
+OLLAMA_SERVER_URL="https://0778-34-83-80-70.ngrok-free.app"
 def make_llm():
     # llm = EdenAI(edenai_api_key=EDENAI_API_KEY, feature="text", provider="openai", model="gpt-3.5-turbo-instruct")
     llm = ChatOllama(model="llama3.1", base_url=OLLAMA_SERVER_URL)
@@ -68,89 +68,86 @@ def generate_eval(text, chunk, grader_llm, prompt):
     eval_pair = list(itertools.chain.from_iterable(eval_set))
     return eval_pair
 
-def is_true(value):
-    # Normalize various representations of True
-    if isinstance(value, bool):
-        return value is True
-    elif isinstance(value, str):
-        value = value.strip().lower()
-        return value in ['true']
-    return False
 
-texts = []
-fnames = []
+# texts = []
+# fnames = []
 
-pdf_path = "C:\\Users\\levan\\Downloads\\ale-omniswitch-milestone-plugin-user-guide-v3-0-rev-a-en.pdf"
-texts = []
-fnames = []
+# pdf_path = "C:\\Users\\levan\\Downloads\\ale-omniswitch-milestone-plugin-user-guide-v3-0-rev-a-en.pdf"
+# texts = []
+# fnames = []
 
-# Open and read the PDF file
-with open(pdf_path, 'rb') as file:
-    contents = file.read()
-    if file.name.lower().endswith('.pdf'):
-        pdf_reader = pypdf.PdfReader(io.BytesIO(contents))
-        text = ""
-        for page in pdf_reader.pages:
-            text += page.extract_text() or ""
-        texts.append(text)
-        fnames.append(pdf_path)  # Add the filename or path
-    else:
-        print("Unsupported file type for file: {}".format(pdf_path))
+# # Open and read the PDF file
+# with open(pdf_path, 'rb') as file:
+#     contents = file.read()
+#     if file.name.lower().endswith('.pdf'):
+#         pdf_reader = pypdf.PdfReader(io.BytesIO(contents))
+#         text = ""
+#         for page in pdf_reader.pages:
+#             text += page.extract_text() or ""
+#         texts.append(text)
+#         fnames.append(pdf_path)  # Add the filename or path
+#     else:
+#         print("Unsupported file type for file: {}".format(pdf_path))
 
-full_text = " ".join(texts)
+# full_text = " ".join(texts)
 
-num_eval_questions = 1
-test_dataset = []
+# num_eval_questions = 1
+# test_dataset = []
 
-from text_utils import QA_GENERATION_CHAIN_PROMPT
+# from text_utils import QA_GENERATION_CHAIN_PROMPT
 
-for i in range(num_eval_questions):
-    if i < len(test_dataset):
-        eval_pair = test_dataset[i]
-    else:
-        eval_pair = generate_eval(text, 3000, make_llm(), QA_GENERATION_CHAIN_PROMPT)
-        if len(eval_pair) == 0:
-            # Error in eval generation
-            continue
-        else:
-            # This returns a list, so we unpack to dict
-            eval_pair = eval_pair[0]
+# for i in range(num_eval_questions):
+#     if i < len(test_dataset):
+#         eval_pair = test_dataset[i]
+#     else:
+#         eval_pair = generate_eval(text, 3000, make_llm(), QA_GENERATION_CHAIN_PROMPT)
+#         if len(eval_pair) == 0:
+#             # Error in eval generation
+#             continue
+#         else:
+#             # This returns a list, so we unpack to dict
+#             eval_pair = eval_pair[0]
 
-# Given dictionary
-# eval_pair = {
-#     'question': [
-#         'Only PoE OmniSwitches can be added to the ALOM plugin.', 
-#         'The ALOM plugin is compatible with only PoE OmniSwitches.',
-#         'PoE OmniSwitches are required for adding them to the ALOM plugin.'
-#     ],
-#     'answer': True
-# }
+# # Given dictionary
+#     eval_pair = {
+#         'question': [
+#             'Only PoE OmniSwitches can be added to the ALOM plugin.', 
+#             'The ALOM plugin is compatible with only PoE OmniSwitches.',
+#             'PoE OmniSwitches are required for adding them to the ALOM plugin.'
+#         ],
+#         'answer': True
+#     }
 
-# Convert to the desired format
-    parsed_format = [{ 'question': question, 'answer': eval_pair['answer'] } for question in eval_pair['question']]  
+# # Convert to the desired format
+#     parsed_format = [{ 'question': question, 'answer': eval_pair['answer'] } for question in eval_pair['question']]  
 
-    gt_dataset = parsed_format
-    predictions = []
+#     gt_dataset = parsed_format
+#     predictions = []
 
 
-    splits = split_texts(text)
-    llm = make_llm()
-    retriever = make_retriever(splits)
+#     splits = split_texts(text)
+#     llm = make_llm()
+#     retriever = make_retriever(splits)
 
-    qa_chain = make_chain(llm, retriever)
+#     qa_chain = make_chain(llm, retriever)
 
-    for set in gt_dataset:
-        predictions.append(qa_chain(set))
+#     for set in gt_dataset:
+#         predictions.append(qa_chain(set))
 
-    print(predictions)
+#     print(predictions)
 
-    # Check if all 'answer' values are True
-    all_true = all(is_true(entry['answer']) for entry in predictions)
+#     # Check if all 'answer' values are True
+#     all_true = all(is_true(entry['answer']) for entry in predictions)
 
-    print(all_true)  # This will print True if all answers are True, otherwise False
+#     print(all_true)  # This will print True if all answers are True, otherwise False
 
 
-
+# List of predictions
+predictions = [
+    {'question': "Using the universal driver for some vendor's cameras in Milestone xProtect VMS can result in an incorrect MAC address being associated with the camera.", 'answer': 'True', 'result': ' True'},
+    {'question': "The use of a universal driver for certain vendors' cameras in Milestone xProtect VMS may lead to incorrect MAC address association.", 'answer': 'True', 'result': ' True'},
+    {'question': 'Associating a camera with an incorrect MAC address using a universal driver in Milestone xProtect VMS is possible.', 'answer': 'True', 'result': ' True'}
+]
 
 
 
