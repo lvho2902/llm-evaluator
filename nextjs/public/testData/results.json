@@ -14,6 +14,13 @@
     "avgBleuScore": 0.0810,
     "avgRougeScore": 0.2329,
     "avgMeteorScores": 0.241,
+    "selfCheckResult":
+    {
+        "questions": "Prior to installing a new version of the ALOM Plugin, the previous version should be uninstalled.\n\nYou must uninstall the old ALOM Plugin before installing a new one.\n\nUninstalling the old ALOM Plugin is required before installing an updated version.", 
+        "expected": "TRUE",
+        "actual": "TRUE\nTRUE\nTRUE", 
+        "grade": "Correct"
+    },
     "latency": 9.03007197380066
   },
   {
@@ -31,6 +38,13 @@
     "avgBleuScore": 0.0579,
     "avgRougeScore": 0.2664,
     "avgMeteorScores": 0.241,
+    "selfCheckResult":
+    {
+        "questions": "Prior to installing a new version of the ALOM Plugin, the previous version should be uninstalled.\n\nYou must uninstall the old ALOM Plugin before installing a new one.\n\nUninstalling the old ALOM Plugin is required before installing an updated version.", 
+        "expected": "TRUE",
+        "actual": "TRUE\nTRUE\nTRUE", 
+        "grade": "Correct"
+    },
     "latency": 9.81938886642456
   },
   {
@@ -48,6 +62,13 @@
     "avgBleuScore": 0.0357,
     "avgRougeScore": 0.2420,
     "avgMeteorScores": 0.241,
+    "selfCheckResult":
+    {
+        "questions": "Prior to installing a new version of the ALOM Plugin, the previous version should be uninstalled.\n\nYou must uninstall the old ALOM Plugin before installing a new one.\n\nUninstalling the old ALOM Plugin is required before installing an updated version.", 
+        "expected": "TRUE",
+        "actual": "TRUE\nTRUE\nTRUE", 
+        "grade": "Correct"
+    },
     "latency": 9.98887300491333
   },
   {
@@ -65,6 +86,13 @@
     "avgBleuScore": 0.0243,
     "avgRougeScore": 0.2520,
     "avgMeteorScores": 0.241,
+    "selfCheckResult":
+    {
+        "questions": "Prior to installing a new version of the ALOM Plugin, the previous version should be uninstalled.\n\nYou must uninstall the old ALOM Plugin before installing a new one.\n\nUninstalling the old ALOM Plugin is required before installing an updated version.", 
+        "expected": "TRUE",
+        "actual": "TRUE\nTRUE\nTRUE", 
+        "grade": "Correct"
+    },
     "latency": 10.1092050075531
   },
   {
@@ -82,6 +110,13 @@
     "avgBleuScore": 0.0199,
     "avgRougeScore": 0.2115,
     "avgMeteorScores": 0.241,
+    "selfCheckResult":
+    {
+        "questions": "Prior to installing a new version of the ALOM Plugin, the previous version should be uninstalled.\n\nYou must uninstall the old ALOM Plugin before installing a new one.\n\nUninstalling the old ALOM Plugin is required before installing an updated version.", 
+        "expected": "TRUE",
+        "actual": "TRUE\nTRUE\nTRUE", 
+        "grade": "Correct"
+    },
     "latency": 9.15720510482788
   }
 ]

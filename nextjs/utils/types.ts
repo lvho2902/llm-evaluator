@@ -22,7 +22,8 @@ export type Result = {
   result: string;
   retrievalScore: { score: number; justification: string };
   answerScore: { score: number; justification: string };
-  avgBleuScore: number,
+  selfCheckResult: {questions: string; expected: string; actual: string; grade: string};
+  avgBleuScore: number;
   avgRougeScore: number;
   avgMeteorScores: number;
   latency: number;

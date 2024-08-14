@@ -11,7 +11,7 @@ const ExperimentResultsTable = ({
 }) => {
   return (
     <ScrollArea scrollbarSize={0}>
-      <Table withBorder withColumnBorders striped highlightOnHover>
+      <Table withBorder withColumnBorders striped highlightOnHover fontSize="10.8px">
         <thead>
           <tr>
             <th>Question</th>
@@ -23,6 +23,10 @@ const ExperimentResultsTable = ({
             <th>ROUGE</th>
             <th>METEOR</th>
             <th>Latency (s)</th>
+            <th>Self Check Statements</th>
+            <th>Expected Self Check </th>
+            <th>Actual Self Check</th>
+            <th>Grade Self Check</th>
           </tr>
         </thead>
         <tbody>
@@ -78,6 +82,26 @@ const ExperimentResultsTable = ({
                 <td>{result?.avgRougeScore.toFixed(3)}</td>
                 <td>{result?.avgMeteorScores.toFixed(3)}</td>
                 <td>{result?.latency?.toFixed(3)}</td>
+                <td style={{ whiteSpace: "pre-wrap" }}>
+                  <Spoiler
+                      maxHeight={150}
+                      hideLabel={
+                        <Text weight="bold" color="blue">
+                          Show less
+                        </Text>
+                      }
+                      showLabel={
+                        <Text weight="bold" color="blue">
+                          Show more
+                        </Text>
+                      }
+                    >
+                      {result?.selfCheckResult?.questions}
+                    </Spoiler>
+                </td>
+                <td>{result?.selfCheckResult?.expected}</td>
+                <td>{result?.selfCheckResult?.actual}</td>
+                <td>{result?.selfCheckResult?.grade}</td>
               </tr>
             );
           })}

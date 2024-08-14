@@ -95,6 +95,8 @@ const Sidebar = ({ form }: { form: Form }) => {
                 <Select
                   {...field}
                   data={[
+                    { label: "Ollama Mistral 7B", value: "ollama-mistral-7b" },
+                    { label: "Ollama Llama 3.1 8B", value: "ollama-llama-3.1-8b" },
                     { label: "GPT 3.5 Turbo", value: "gpt-3.5-turbo" },
                     { label: "GPT 4", value: "gpt-4" },
                     { label: "Eden GPT 3.5 Turbo Instruct", value: "eden-gpt-3.5-turbo-instruct" },
@@ -152,6 +154,10 @@ const Sidebar = ({ form }: { form: Form }) => {
                 <Select
                   {...field}
                   data={[
+                    {
+                      label: "Ollama",
+                      value: "Ollama",
+                    },
                     {
                       label: "OpenAI",
                       value: "OpenAI",

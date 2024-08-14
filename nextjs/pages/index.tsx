@@ -9,13 +9,13 @@ import Demo from "../components/Demo";
 const DemoPage = () => {
   const form = useForm<FormValues>({
     defaultValues: {
-      evalQuestionsCount: 5,
-      chunkSize: 1000,
-      overlap: 100,
+      evalQuestionsCount: 1,
+      chunkSize: 2000,
+      overlap: 150,
       splitMethod: "RecursiveTextSplitter",
-      embeddingAlgorithm: "EdenOpenAI",
-      model: "eden-gpt-3.5-turbo-instruct",
-      grader: "ollama-mistral-7b",
+      embeddingAlgorithm: "Ollama",
+      model: "ollama-mistral-7b",
+      grader: "ollama-llama-3.1-8b",
       retriever: "similarity-search",
       gradingPrompt: "Descriptive",
       numNeighbors: 3,
@@ -27,7 +27,7 @@ const DemoPage = () => {
     <AppShell
       navbarOffsetBreakpoint="sm"
       navbar={
-        <Navbar p="md" hiddenBreakpoint="sm" width={{ base: "20%" }}>
+        <Navbar p="md" hiddenBreakpoint="sm" width={{ sm: 200, lg: 300 }}>
           <Sidebar form={form} />
           <br />
         </Navbar>
