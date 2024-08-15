@@ -588,9 +588,9 @@ const Playground = ({ form }: { form: Form }) => {
                       <td>{result?.numNeighbors}</td>
                       <td>{result?.avgRelevancyScore}</td>
                       <td>{result?.avgAnswerScore}</td>
-                      <td>{result?.avgBleuScore.toFixed(3)}</td>
-                      <td>{result?.avgRougeScore.toFixed(3)}</td>
-                      <td>{result?.avgMeteorScores.toFixed(3)}</td>
+                      <td>{Number(result?.avgBleuScore).toFixed(3)}</td>
+                      <td>{Number(result?.avgRougeScore).toFixed(3)}</td>
+                      <td>{Number(result?.avgMeteorScores).toFixed(3)}</td>
                       <td>{result?.avgLatency.toFixed(3)}</td>
                     </tr>
                   ))}
@@ -704,6 +704,10 @@ const Playground = ({ form }: { form: Form }) => {
                     <th>ROUGE</th>
                     <th>METEOR</th>
                     <th>Latency (s)</th>
+                    <th>Self Check Statements</th>
+                    <th>Expected Self Check </th>
+                    <th>Actual Self Check</th>
+                    <th>Grade Self Check</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -758,6 +762,26 @@ const Playground = ({ form }: { form: Form }) => {
                       <td>{Number(result?.avgRougeScore).toFixed(3)}</td>
                       <td>{Number(result?.avgMeteorScores).toFixed(3)}</td>
                       <td>{result?.latency?.toFixed(3)}</td>
+                      <td style={{ whiteSpace: "pre-wrap" }}>
+                        <Spoiler
+                            maxHeight={150}
+                            hideLabel={
+                              <Text weight="bold" color="blue">
+                                Show less
+                              </Text>
+                            }
+                            showLabel={
+                              <Text weight="bold" color="blue">
+                                Show more
+                              </Text>
+                            }
+                          >
+                            {result?.selfCheckResult?.questions}
+                          </Spoiler>
+                      </td>
+                      <td>{result?.selfCheckResult?.expected}</td>
+                      <td style={{ whiteSpace: "pre-wrap" }}>{result?.selfCheckResult?.actual}</td>
+                      <td>{result?.selfCheckResult?.grade}</td>
                     </tr>
                   ))}
                 </tbody>

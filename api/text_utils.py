@@ -176,7 +176,9 @@ $statement_1: Generate a true or false statement based on the input text.
 $statement_2: Create a variation of $statement_1 that conveys the same fact.
 $statement_3: Provide another variation of $statement_1, but phrased differently.
 
-**Important**: Your response must be **exactly** in the JSON format provided above. No additional text, explanations, or information should be included. Ensure that the "answer" field is set to "True" or "False" based on the truth value of the provided text. The generated statements must be logically consistent with the truth value of the provided text.
+**Important**: Your response must be **exactly** in the JSON format provided above. No additional text, explanations, or information should be included. Ensure that the "answer" field is set to "True" or "False" based on the truth value of the provided text.
+The generated statements must be logically consistent with the truth value of the provided text.
+You can make statements outside the input text and its answer is "Unknown".
 
 Your response should be a valid JSON object only.
 Ensure that the variations you generate are logically consistent with the truth value of the original text."""

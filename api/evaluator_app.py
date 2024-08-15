@@ -117,10 +117,10 @@ def make_llm(model):
     @param model: LLM to use
     @return: LLM
     """
-
-    print(model)
     if model == "ollama-mistral-7b":
         llm = ChatOllama(model="mistral", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0)
+    elif(model == "ollama-llama-3-8b"):
+        llm = ChatOllama(model="llama3", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0)
     elif(model == "ollama-llama-3.1-8b"):
         llm = ChatOllama(model="llama3.1", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0)
     elif model == "eden-gpt-3.5-turbo-instruct":
@@ -135,6 +135,8 @@ def make_grader(grader):
     # Note: GPT-4 grader is advised by OAI
     if(grader == "ollama-mistral-7b"):
         grader_llm = ChatOllama(model="mistral", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0)
+    elif(grader == "ollama-llama-3-8b"):
+        grader_llm = ChatOllama(model="llama3", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0)
     elif(grader == "ollama-llama-3.1-8b"):
         grader_llm = ChatOllama(model="llama3.1", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0)
     elif(grader == "eden-gpt-3.5-turbo-instruct"):
@@ -412,17 +414,16 @@ def run_eval(chain, retriever, eval_qa_pair, grader_llm, grade_prompt, logger):
 def run_self_check_eval(llm, grader_llm, retriever, text, logger):
 
     logger.info("`Running self check eval ...`")
-
+    predictions = []
     eval_self_check_pair = []
+    
     while(len(eval_self_check_pair) == 0):
         eval_self_check_pair = generate_eval(text, 3000, grader_llm, QA_GENERATION_CHAIN_PROMPT, logger)
 
+
     eval_self_check_pair = eval_self_check_pair[0]
-    predictions = []
     parsed_format = [{ 'question': question, 'answer': eval_self_check_pair['answer'] } for question in eval_self_check_pair['question']]
-
     self_check_chain = make_chain(llm, retriever, SELF_CHECK_QA_CHAIN_PROMPT)
-
     for pair in parsed_format:
         predictions.append(self_check_chain(pair))
 
@@ -570,8 +571,6 @@ def run_evaluator(
         
         self_check_result = run_self_check_eval(llm, grader_llm, retriever, text, logger)
 
-        print(self_check_result)
-
         # Assemble output
         d = pd.DataFrame(predictions)
 
@@ -599,14 +598,6 @@ def run_evaluator(
                                 'expected': self_check_result['expected'],
                                 'actual': self_check_result['actual'],
                                 'grade': self_check_result['grade']}]
-        
-    # parsed_results['questions'] = '\n'.join(questions)
-    # parsed_results['expected'] = expected
-    # parsed_results['actual'] = '\n'.join(actual)
-    # parsed_results['grade'] = grade
-
-        print(d['selfCheckResult'])
-
 
         # Convert dataframe to dict
         d_dict = d.to_dict('records')

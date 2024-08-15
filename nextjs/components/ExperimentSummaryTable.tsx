@@ -46,9 +46,9 @@ const ExperimentSummaryTable = ({
               <td>{result?.numNeighbors}</td>
               <td>{result?.avgRelevancyScore}</td>
               <td>{result?.avgAnswerScore}</td>
-              <td>{result?.avgBleuScore.toFixed(3)}</td>
-              <td>{result?.avgRougeScore.toFixed(3)}</td>
-              <td>{result?.avgMeteorScores.toFixed(3)}</td>
+              <td>{Number(result?.avgBleuScore).toFixed(3)}</td>
+              <td>{Number(result?.avgRougeScore).toFixed(3)}</td>
+              <td>{Number(result?.avgMeteorScores).toFixed(3)}</td>
               <td>{result?.avgLatency.toFixed(3)}</td>
             </tr>
           ))}

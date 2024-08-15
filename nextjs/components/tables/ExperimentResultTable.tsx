@@ -78,9 +78,9 @@ const ExperimentResultsTable = ({
                     </Spoiler>
                   )}
                 </td>
-                <td>{result?.avgBleuScore.toFixed(3)}</td>
-                <td>{result?.avgRougeScore.toFixed(3)}</td>
-                <td>{result?.avgMeteorScores.toFixed(3)}</td>
+                <td>{Number(result?.avgBleuScore).toFixed(3)}</td>
+                <td>{Number(result?.avgRougeScore).toFixed(3)}</td>
+                <td>{Number(result?.avgMeteorScores).toFixed(3)}</td>
                 <td>{result?.latency?.toFixed(3)}</td>
                 <td style={{ whiteSpace: "pre-wrap" }}>
                   <Spoiler
@@ -100,7 +100,7 @@ const ExperimentResultsTable = ({
                     </Spoiler>
                 </td>
                 <td>{result?.selfCheckResult?.expected}</td>
-                <td>{result?.selfCheckResult?.actual}</td>
+                <td style={{ whiteSpace: "pre-wrap" }}>{result?.selfCheckResult?.actual}</td>
                 <td>{result?.selfCheckResult?.grade}</td>
               </tr>
             );

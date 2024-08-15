@@ -96,6 +96,7 @@ const Sidebar = ({ form }: { form: Form }) => {
                   {...field}
                   data={[
                     { label: "Ollama Mistral 7B", value: "ollama-mistral-7b" },
+                    { label: "Ollama Llama 3 8B", value: "ollama-llama-3-8b" },
                     { label: "Ollama Llama 3.1 8B", value: "ollama-llama-3.1-8b" },
                     { label: "GPT 3.5 Turbo", value: "gpt-3.5-turbo" },
                     { label: "GPT 4", value: "gpt-4" },
@@ -115,6 +116,7 @@ const Sidebar = ({ form }: { form: Form }) => {
                   {...field}
                   data={[
                     { label: "Ollama Mistral 7B", value: "ollama-mistral-7b" },
+                    { label: "Ollama Llama 3 8B", value: "ollama-llama-3-8b" },
                     { label: "Ollama Llama 3.1 8B", value: "ollama-llama-3.1-8b" },
                     { label: "Eden GPT 3.5 Turbo Instruct", value: "eden-gpt-3.5-turbo-instruct" },
                     { label: "OpenAI", value: "openai" },
