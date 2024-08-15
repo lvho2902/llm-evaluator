@@ -589,9 +589,9 @@ def run_evaluator(
         d['retrievalScore'] = [{'score': 1 if "Incorrect" not in text else 0,
                                 'justification': text} for text in d['retrievalScore']]
 
-        d['avgBleuScore'] = f"{avg_bleu_score:.3f}"
-        d['avgRougeScore'] = f"{avg_rouge_score:3f}"
-        d['avgMeteorScores'] = f"{avg_meteor_scores:3f}"
+        d['avgBleuScore'] = avg_bleu_score
+        d['avgRougeScore'] = avg_rouge_score
+        d['avgMeteorScores'] = avg_meteor_scores
 
         # Add the self-check results to the DataFrame
         d['selfCheckResult'] = [{'questions': self_check_result['questions'],
