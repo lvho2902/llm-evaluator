@@ -405,27 +405,28 @@ def run_eval(chain, retriever, eval_qa_pair, grader_llm, grade_prompt, logger):
     graded_retrieval = grade_model_retrieval(
         gt_dataset, retrieved_docs, grader_llm, grade_prompt, logger)
     
-    # grade_self_check = grade_model_self_check()
-    
     avg_bleu_score, avg_rouge_score, avg_meteor_scores = evaluate_statistical_scores(predictions, logger)
 
     return graded_answers, graded_retrieval, avg_bleu_score, avg_rouge_score, avg_meteor_scores, latency, predictions
 
-def run_self_check_eval(llm, grader_llm, retriever, text, logger):
+from text_utils import FALSE_QA_GENERATION_CHAIN_PROMPT
 
+def run_self_check_eval(chain, grader_llm, text, logger):
+
+    print(text)
+    
     logger.info("`Running self check eval ...`")
     predictions = []
     eval_self_check_pair = []
     
     while(len(eval_self_check_pair) == 0):
-        eval_self_check_pair = generate_eval(text, 3000, grader_llm, QA_GENERATION_CHAIN_PROMPT, logger)
-
+        eval_self_check_pair = generate_eval(text, len(text), grader_llm, FALSE_QA_GENERATION_CHAIN_PROMPT, logger)
 
     eval_self_check_pair = eval_self_check_pair[0]
     parsed_format = [{ 'question': question, 'answer': eval_self_check_pair['answer'] } for question in eval_self_check_pair['question']]
-    self_check_chain = make_chain(llm, retriever, SELF_CHECK_QA_CHAIN_PROMPT)
+
     for pair in parsed_format:
-        predictions.append(self_check_chain(pair))
+        predictions.append(chain(pair))
 
     # Process predictions to populate parsed_results
     questions = []
@@ -569,7 +570,8 @@ def run_evaluator(
         graded_answers, graded_retrieval, avg_bleu_score, avg_rouge_score, avg_meteor_scores, latency, predictions = run_eval(
             qa_chain, retriever, eval_pair, grader_llm, grade_prompt, logger)
         
-        self_check_result = run_self_check_eval(llm, grader_llm, retriever, text, logger)
+        self_check_chain = make_chain(llm, retriever, SELF_CHECK_QA_CHAIN_PROMPT)
+        self_check_result = run_self_check_eval(self_check_chain, grader_llm, 'Teacher: ' + eval_pair['question'] + '\nStudent: ' + eval_pair['answer'], logger)
 
         # Assemble output
         d = pd.DataFrame(predictions)

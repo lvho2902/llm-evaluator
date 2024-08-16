@@ -161,7 +161,7 @@ QA_CHAIN_PROMPT_LLAMA = PromptTemplate(input_variables=["context", "question"],t
 template = """Given the following text:
 <<{text}>>
 
-Please only generate a JSON object must be in the following format:
+Please only generate a JSON objects must be in the following format:
 ```
 {{
   "question": [
@@ -176,7 +176,8 @@ $statement_1: Generate a true or false statement based on the input text.
 $statement_2: Create a variation of $statement_1 that conveys the same fact.
 $statement_3: Provide another variation of $statement_1, but phrased differently.
 
-**Important**: Your response must be **exactly** in the JSON format provided above. No additional text, explanations, or information should be included. Ensure that the "answer" field is set to "True" or "False" based on the truth value of the provided text.
+**Important**: Your response must be **exactly** in the JSON format provided above. No additional text, explanations, or information should be included. 
+Ensure that the "answer" field is set to "True" or "False" based on the truth value of the provided text.
 The generated statements must be logically consistent with the truth value of the provided text.
 You can make statements outside the input text and its answer is "Unknown".
 
@@ -185,12 +186,76 @@ Ensure that the variations you generate are logically consistent with the truth 
 
 QA_GENERATION_CHAIN_PROMPT = PromptTemplate(input_variables=['text'], template=template)
 
-template = """Use the following context to give your opinion on the statement in question at the end.
-{context}
-What is your opinion on this statement: "{question}" ?
-###Response: "True" or "False" or "Unknown" 
+template = """Please read the following context carefully:
+----------------------
+"{context}"
+----------------------
 
-**Important**: Your response must be **exactly** in one of three values ​​"True", "False", "Unknown". No additional dot, line break, space, characters, text, explanations, or information should be included. If you don't know the answer, just response "Unknown", don't try to make up an response.
+Based on this context, answer the following question:
+
+"{question}"
+
+**Your answer must be exactly one of these three words: "True", "False", or "Unknown".**
+
+- Do not add any other characters, words, punctuation, or explanations.
+- If the context does not provide enough information to answer the question, respond with "Unknown".
+
+What is your answer?
+
 """
 
 SELF_CHECK_QA_CHAIN_PROMPT = PromptTemplate(input_variables=["context", "question"],template=template)
+
+template = """Given the following text:
+<<{text}>>
+
+Please only generate a JSON objects must be in the following format:
+```
+{{
+  "question": [
+    "$question_1",
+    "$question_2",
+    "$question_3"
+  ],
+  "answer": "$True_or_False"
+}}
+```
+$statement_1: Generate a true or false question based on the input text.
+$statement_2: Create a variation of $question_1 that conveys the same fact.
+$statement_3: Provide another variation of $question_1, but phrased differently.
+
+**Important**: Your response must be **exactly** in the JSON format provided above. No additional text, explanations, or information should be included. 
+Ensure that the "answer" field is set to "True" or "False" based on the truth value of the provided text.
+The generated statements must be logically consistent with the truth value of the provided text.
+You can make statements outside the input text and its answer is "Unknown".
+
+Your response should be a valid JSON object only.
+Ensure that the variations you generate are logically consistent with the truth value of the original text."""
+
+FALSE_QA_GENERATION_CHAIN_PROMPT = PromptTemplate(input_variables=['text'], template=template)
+
+template = """Given the following text:
+<<{text}>>
+
+Please only generate a JSON objects must be in the following format:
+```
+{{
+  "question": [
+    "$question_1",
+    "$question_2",
+    "$question_3"
+  ],
+  "answer": "False"
+}}
+```
+$statement_1: Generate a false answer question based on the input text.
+$statement_2: Create a variation of $question_1 that conveys the same fact.
+$statement_3: Provide another variation of $question_1, but phrased differently.
+
+**Important**: All questions must be answer **False** 
+Your response must be **exactly** in the JSON format provided above. No additional text, explanations, or information should be included. 
+The response should consist only of a valid JSON object.
+"""
+
+FALSE_QA_GENERATION_CHAIN_PROMPT = PromptTemplate(input_variables=['text'], template=template)
+
