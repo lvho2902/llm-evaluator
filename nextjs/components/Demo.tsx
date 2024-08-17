@@ -33,6 +33,7 @@ import SummaryChart from "./SummaryChart";
 import ExperimentSummaryTable from "./ExperimentSummaryTable";
 import FilesTable from "./tables/FilesTable";
 import ExperimentResultTable from "./tables/ExperimentResultTable";
+import ConsistencyResultTable from "./tables/ConsistencyResultTable";
 import sampleText from "../public/testData/karpathy-pod.json";
 import LogRocket from "logrocket";
 
@@ -47,6 +48,7 @@ const Demo = ({ form }: { form: Form }) => {
   const [shouldShowProgress, setShouldShowProgress] = useState(false);
   const [gradingPromptStyle, setGradingPromptStyle] = useState(undefined);
   const experimentsResultsSpoilerRef = useRef<HTMLButtonElement>(null);
+  const consistencyResultsSpoilerRef = useRef<HTMLButtonElement>(null);
   const summarySpoilerRef = useRef<HTMLButtonElement>(null);
   const testDatasetSpoilerRef = useRef<HTMLButtonElement>(null);
   const [isFirstRun, setIsFirstRun] = useState(true);
@@ -454,6 +456,49 @@ const Demo = ({ form }: { form: Form }) => {
               </Group>
             </Stack>
             <ExperimentResultTable
+              results={results}
+              isFastGradingPrompt={isFastGradingPrompt}
+            />
+          </Spoiler>
+        </Card>
+      ) : null}
+            {!isEmpty(results) ? (
+        <Card>
+          <Spoiler
+            maxHeight={0}
+            showLabel="Show consistency results"
+            hideLabel={null}
+            transitionDuration={500}
+            initialState={true}
+            controlRef={consistencyResultsSpoilerRef}
+          >
+            <Stack>
+              <Group position="apart">
+                <Title order={3}>Consistency Results</Title>
+                <Group spacing={0}>
+                  <Button
+                    style={{ marginBottom: "18px" }}
+                    type="button"
+                    variant="subtle"
+                    onClick={() => download(results, "results")}
+                  >
+                    Download
+                  </Button>
+                  <Button
+                    style={{ marginBottom: "18px" }}
+                    type="button"
+                    variant="subtle"
+                    onClick={() => {
+                      if (consistencyResultsSpoilerRef.current)
+                        consistencyResultsSpoilerRef.current.click();
+                    }}
+                  >
+                    Hide
+                  </Button>
+                </Group>
+              </Group>
+            </Stack>
+            <ConsistencyResultTable
               results={results}
               isFastGradingPrompt={isFastGradingPrompt}
             />

@@ -75,6 +75,7 @@ const Playground = ({ form }: { form: Form }) => {
   const [shouldShowProgress, setShouldShowProgress] = useState(false);
   const [gradingPromptStyle, setGradingPromptStyle] = useState(undefined);
   const experimentsResultsSpoilerRef = useRef<HTMLButtonElement>(null);
+  const consistencyResultsSpoilerRef = useRef<HTMLButtonElement>(null);
   const summarySpoilerRef = useRef<HTMLButtonElement>(null);
   const testDatasetSpoilerRef = useRef<HTMLButtonElement>(null);
   const [testFilesDropzoneDisabled, setTestFilesDropzoneDisabled] =
@@ -704,10 +705,6 @@ const Playground = ({ form }: { form: Form }) => {
                     <th>ROUGE</th>
                     <th>METEOR</th>
                     <th>Latency (s)</th>
-                    <th>Self Check Statements</th>
-                    <th>Expected Self Check </th>
-                    <th>Actual Self Check</th>
-                    <th>Grade Self Check</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -762,8 +759,67 @@ const Playground = ({ form }: { form: Form }) => {
                       <td>{Number(result?.avgRougeScore).toFixed(3)}</td>
                       <td>{Number(result?.avgMeteorScores).toFixed(3)}</td>
                       <td>{result?.latency?.toFixed(3)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </ScrollArea>
+          </Spoiler>
+        </Card>
+      ) : null}
+            {!isEmpty(results) ? (
+        <Card>
+          <Spoiler
+            maxHeight={0}
+            showLabel="Show consistency results"
+            hideLabel={null}
+            transitionDuration={500}
+            initialState={true}
+            controlRef={consistencyResultsSpoilerRef}
+          >
+            <Stack>
+              <Group position="apart">
+                <Title order={3}>Consistency Results</Title>
+                <br />
+                <br />
+                <Group>
+                  <Button
+                    style={{ marginBottom: "18px" }}
+                    type="button"
+                    variant="subtle"
+                    onClick={() => download(results, "results")}
+                  >
+                    Download
+                  </Button>
+                  <Button
+                    style={{ marginBottom: "18px" }}
+                    type="button"
+                    variant="subtle"
+                    onClick={() => {
+                      if (consistencyResultsSpoilerRef.current)
+                        consistencyResultsSpoilerRef.current.click();
+                    }}
+                  >
+                    Hide
+                  </Button>
+                </Group>
+              </Group>
+            </Stack>
+            <ScrollArea scrollbarSize={0}>
+              <Table withBorder withColumnBorders striped highlightOnHover>
+                <thead>
+                  <tr>
+                    <th>Question</th>
+                    <th>Variant Questions</th>
+                    <th>Model Answers</th>
+                    <th>Grade Result</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {results?.map((result: Result, index: number) => (
+                    <tr key={index}>
                       <td style={{ whiteSpace: "pre-wrap" }}>
-                        <Spoiler
+                          <Spoiler
                             maxHeight={150}
                             hideLabel={
                               <Text weight="bold" color="blue">
@@ -776,12 +832,60 @@ const Playground = ({ form }: { form: Form }) => {
                               </Text>
                             }
                           >
-                            {result?.selfCheckResult?.questions}
+                            {result?.question}
                           </Spoiler>
                       </td>
-                      <td>{result?.selfCheckResult?.expected}</td>
-                      <td style={{ whiteSpace: "pre-wrap" }}>{result?.selfCheckResult?.actual}</td>
-                      <td>{result?.selfCheckResult?.grade}</td>
+                      <td style={{ whiteSpace: "pre-wrap" }}>
+                          <Spoiler
+                            maxHeight={150}
+                            hideLabel={
+                              <Text weight="bold" color="blue">
+                                Show less
+                              </Text>
+                            }
+                            showLabel={
+                              <Text weight="bold" color="blue">
+                                Show more
+                              </Text>
+                            }
+                          >
+                            {result?.consistencyResults?.questions}
+                          </Spoiler>
+                      </td>
+                      <td style={{ whiteSpace: "pre-wrap" }}>
+                          <Spoiler
+                            maxHeight={150}
+                            hideLabel={
+                              <Text weight="bold" color="blue">
+                                Show less
+                              </Text>
+                            }
+                            showLabel={
+                              <Text weight="bold" color="blue">
+                                Show more
+                              </Text>
+                            }
+                          >
+                            {result?.consistencyResults?.answers}
+                          </Spoiler>
+                      </td>
+                      <td style={{ whiteSpace: "pre-wrap" }}>
+                          <Spoiler
+                            maxHeight={150}
+                            hideLabel={
+                              <Text weight="bold" color="blue">
+                                Show less
+                              </Text>
+                            }
+                            showLabel={
+                              <Text weight="bold" color="blue">
+                                Show more
+                              </Text>
+                            }
+                          >
+                            {result?.consistencyResults?.results}
+                          </Spoiler>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

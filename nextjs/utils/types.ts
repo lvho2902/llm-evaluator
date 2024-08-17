@@ -22,12 +22,18 @@ export type Result = {
   result: string;
   retrievalScore: { score: number; justification: string };
   answerScore: { score: number; justification: string };
-  selfCheckResult: {questions: string; expected: string; actual: string; grade: string};
   avgBleuScore: number;
   avgRougeScore: number;
   avgMeteorScores: number;
   latency: number;
+  consistencyResults: COnsistencyResults;
 };
+
+export type COnsistencyResults = {
+  questions: string;
+  answers: string;
+  results: string;
+}
 
 export type QAPair = {
   question: string;

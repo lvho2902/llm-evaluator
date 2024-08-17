@@ -2,7 +2,7 @@ import { ScrollArea, Spoiler, Table, Text } from "@mantine/core";
 import { Result } from "../../utils/types";
 import renderPassFail from "../../utils/renderPassFail";
 
-const ExperimentResultsTable = ({
+const ConsistencyResultTable = ({
   results,
   isFastGradingPrompt,
 }: {
@@ -15,27 +15,16 @@ const ExperimentResultsTable = ({
         <thead>
           <tr>
             <th>Question</th>
-            <th>Expected Answer</th>
-            <th>Observed Answer</th>
-            <th>Retrieval Relevancy Score</th>
-            <th>Answer Similarity Score</th>
-            <th>BLEU</th>
-            <th>ROUGE</th>
-            <th>METEOR</th>
-            <th>Latency (s)</th>
+            <th>Variant Questions</th>
+            <th>Model Answers</th>
+            <th>Grade Result</th>
           </tr>
         </thead>
         <tbody>
           {results?.map((result: Result, index: number) => {
             return (
               <tr key={index}>
-                <td>{result?.question}</td>
-                <td>{result?.answer}</td>
-                <td>{result?.result}</td>
                 <td style={{ whiteSpace: "pre-wrap" }}>
-                  {isFastGradingPrompt ? (
-                    renderPassFail(result.retrievalScore)
-                  ) : (
                     <Spoiler
                       maxHeight={150}
                       hideLabel={
@@ -49,14 +38,10 @@ const ExperimentResultsTable = ({
                         </Text>
                       }
                     >
-                      {result?.retrievalScore.justification}
+                      {result?.question}
                     </Spoiler>
-                  )}
                 </td>
                 <td style={{ whiteSpace: "pre-wrap" }}>
-                  {isFastGradingPrompt ? (
-                    renderPassFail(result?.answerScore)
-                  ) : (
                     <Spoiler
                       maxHeight={150}
                       hideLabel={
@@ -70,14 +55,43 @@ const ExperimentResultsTable = ({
                         </Text>
                       }
                     >
-                      {result?.answerScore.justification}
+                      {result?.consistencyResults?.questions}
                     </Spoiler>
-                  )}
                 </td>
-                <td>{Number(result?.avgBleuScore).toFixed(3)}</td>
-                <td>{Number(result?.avgRougeScore).toFixed(3)}</td>
-                <td>{Number(result?.avgMeteorScores).toFixed(3)}</td>
-                <td>{result?.latency?.toFixed(3)}</td>
+                <td style={{ whiteSpace: "pre-wrap" }}>
+                    <Spoiler
+                      maxHeight={150}
+                      hideLabel={
+                        <Text weight="bold" color="blue">
+                          Show less
+                        </Text>
+                      }
+                      showLabel={
+                        <Text weight="bold" color="blue">
+                          Show more
+                        </Text>
+                      }
+                    >
+                      {result?.consistencyResults?.answers}
+                    </Spoiler>
+                </td>
+                <td style={{ whiteSpace: "pre-wrap" }}>
+                    <Spoiler
+                      maxHeight={150}
+                      hideLabel={
+                        <Text weight="bold" color="blue">
+                          Show less
+                        </Text>
+                      }
+                      showLabel={
+                        <Text weight="bold" color="blue">
+                          Show more
+                        </Text>
+                      }
+                    >
+                      {result?.consistencyResults?.results}
+                    </Spoiler>
+                </td>
               </tr>
             );
           })}
@@ -86,4 +100,4 @@ const ExperimentResultsTable = ({
     </ScrollArea>
   );
 };
-export default ExperimentResultsTable;
+export default ConsistencyResultTable;

@@ -35,7 +35,7 @@ from fastapi import FastAPI, File, UploadFile, Form
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.chains.question_answering import load_qa_chain
 from langchain.text_splitter import RecursiveCharacterTextSplitter, CharacterTextSplitter
-from text_utils import GRADE_DOCS_PROMPT, GRADE_ANSWER_PROMPT, GRADE_DOCS_PROMPT_FAST, GRADE_ANSWER_PROMPT_FAST, GRADE_ANSWER_PROMPT_BIAS_CHECK, GRADE_ANSWER_PROMPT_OPENAI, QA_CHAIN_PROMPT, QA_GENERATION_CHAIN_PROMPT, SELF_CHECK_QA_CHAIN_PROMPT
+from text_utils import GRADE_DOCS_PROMPT, GRADE_ANSWER_PROMPT, GRADE_DOCS_PROMPT_FAST, GRADE_ANSWER_PROMPT_FAST, GRADE_ANSWER_PROMPT_BIAS_CHECK, GRADE_ANSWER_PROMPT_OPENAI, QA_CHAIN_PROMPT, QA_GENERATION_CHAIN_PROMPT, CONSISTENCY_QA_CHAIN_PROMPT, GRADE_ANSWERS_CONSISTENCY_PROMPT
 
 from langchain_community.chat_models import ChatOllama
 from langchain_community.embeddings import OllamaEmbeddings
@@ -70,7 +70,7 @@ def generate_eval(text, chunk, grader_llm, prompt, logger):
         logger.info("`Generating eval QA pair ...`")
         chain = QAGenerationChain.from_llm(grader_llm)
     else:
-        logger.info("`Generating self check eval QA pair ...`")
+        logger.info("`Generating consistency eval QA pair ...`")
         chain = QAGenerationChain.from_llm(grader_llm, prompt)
     eval_set = []
     # Catch any QA generation errors and re-try until QA pair is generated
@@ -164,7 +164,7 @@ def make_retriever(splits, retriever_type, embeddings, num_neighbors, logger):
     # Set embeddings
     
     if embeddings == "Ollama":
-        embd = OllamaEmbeddings(model="llama3.1")
+        embd = OllamaEmbeddings(model="nomic-embed-text")
         embd.base_url = os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434")
     elif embeddings == "EdenOpenAI":
         embd = EdenAiEmbeddings(edenai_api_key=os.getenv('EDENAI_API_KEY'), provider="openai")
@@ -409,42 +409,38 @@ def run_eval(chain, retriever, eval_qa_pair, grader_llm, grade_prompt, logger):
 
     return graded_answers, graded_retrieval, avg_bleu_score, avg_rouge_score, avg_meteor_scores, latency, predictions
 
-from text_utils import FALSE_QA_GENERATION_CHAIN_PROMPT
-
-def run_self_check_eval(chain, grader_llm, text, logger):
-
-    print(text)
-    
-    logger.info("`Running self check eval ...`")
+def run_consistency_eval(chain, grader_llm, text, logger):    
+    logger.info("`Running consistency eval ...`")
     predictions = []
-    eval_self_check_pair = []
+    eval_pair = []
     
-    while(len(eval_self_check_pair) == 0):
-        eval_self_check_pair = generate_eval(text, len(text), grader_llm, FALSE_QA_GENERATION_CHAIN_PROMPT, logger)
+    while(len(eval_pair) == 0):
+        eval_pair = generate_eval(text, len(text), grader_llm, CONSISTENCY_QA_CHAIN_PROMPT, logger)
 
-    eval_self_check_pair = eval_self_check_pair[0]
-    parsed_format = [{ 'question': question, 'answer': eval_self_check_pair['answer'] } for question in eval_self_check_pair['question']]
+    eval_pair = eval_pair[0]
+    parsed_format = [{ 'question': question } for question in eval_pair['question']]
 
     for pair in parsed_format:
         predictions.append(chain(pair))
 
-    # Process predictions to populate parsed_results
+    eval_chain = QAEvalChain.from_llm(llm = grader_llm, prompt=GRADE_ANSWERS_CONSISTENCY_PROMPT)
+    results = ""
+    for i in range(len(predictions)):
+        results += "Answer " + str(i + 1) + ". " + predictions[i]['result'] + "\n\n"
+    inputs = [{"query": "", "answer": "", "result": results}]
+    graded_outputs = eval_chain.apply(inputs)
+
     questions = []
-    actual = []
-    expected = predictions[0]['answer'].upper()
-    grade = verify_all_results(predictions)
-    parsed_results = {}
-    # Collect formatted data
+    answers = []
     for pred in predictions:
-        questions.append(pred['question'])
-        actual.append(pred['result'].strip().upper())
+        questions.append(pred['question'].strip())
+        answers.append(pred['result'].strip())
 
-    parsed_results['questions'] = '\n\n'.join(questions)
-    parsed_results['expected'] = expected
-    parsed_results['actual'] = '\n'.join(actual)
-    parsed_results['grade'] = 'Correct' if(grade) else 'Incorrect'
-
-    return parsed_results
+    graded_results = {}
+    graded_results['questions'] = '\n\nRESPONSE: '.join(questions)
+    graded_results['answers'] = '\n\nANSWER: '.join(answers)
+    graded_results['results'] = graded_outputs[0]['results']
+    return graded_results
 
 def verify_all_results(results_list):
     # Define the valid true values
@@ -570,8 +566,7 @@ def run_evaluator(
         graded_answers, graded_retrieval, avg_bleu_score, avg_rouge_score, avg_meteor_scores, latency, predictions = run_eval(
             qa_chain, retriever, eval_pair, grader_llm, grade_prompt, logger)
         
-        self_check_chain = make_chain(llm, retriever, SELF_CHECK_QA_CHAIN_PROMPT)
-        self_check_result = run_self_check_eval(self_check_chain, grader_llm, 'Teacher: ' + eval_pair['question'] + '\nStudent: ' + eval_pair['answer'], logger)
+        graded_consistency_results = run_consistency_eval(qa_chain, grader_llm, eval_pair["question"], logger)
 
         # Assemble output
         d = pd.DataFrame(predictions)
@@ -595,11 +590,7 @@ def run_evaluator(
         d['avgRougeScore'] = avg_rouge_score
         d['avgMeteorScores'] = avg_meteor_scores
 
-        # Add the self-check results to the DataFrame
-        d['selfCheckResult'] = [{'questions': self_check_result['questions'],
-                                'expected': self_check_result['expected'],
-                                'actual': self_check_result['actual'],
-                                'grade': self_check_result['grade']}]
+        d['consistencyResults'] = [graded_consistency_results]
 
         # Convert dataframe to dict
         d_dict = d.to_dict('records')
@@ -608,7 +599,6 @@ def run_evaluator(
         else:
             logger.warn(
                 "A QA pair was not evaluated correctly. Skipping this pair.")
-
 
 @app.post("/evaluator-stream")
 async def create_response(
