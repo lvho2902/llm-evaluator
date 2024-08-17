@@ -8,7 +8,7 @@ const ExperimentSummaryTable = ({
 }) => {
   return (
     <ScrollArea scrollbarSize={0}>
-      <Table withBorder withColumnBorders striped highlightOnHover fontSize="10.8px">
+      <Table withBorder withColumnBorders striped highlightOnHover>
         <thead>
           <tr>
             <th>#</th>
@@ -44,8 +44,8 @@ const ExperimentSummaryTable = ({
               <td>{result?.grader}</td>
               <td>{result?.gradingPrompt}</td>
               <td>{result?.numNeighbors}</td>
-              <td>{result?.avgRelevancyScore}</td>
-              <td>{result?.avgAnswerScore}</td>
+              <td>{Number(result?.avgRelevancyScore).toFixed(3)}</td>
+              <td>{Number(result?.avgAnswerScore).toFixed(3)}</td>
               <td>{Number(result?.avgBleuScore).toFixed(3)}</td>
               <td>{Number(result?.avgRougeScore).toFixed(3)}</td>
               <td>{Number(result?.avgMeteorScores).toFixed(3)}</td>

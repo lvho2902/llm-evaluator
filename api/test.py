@@ -11,30 +11,28 @@ from langchain_community.embeddings.edenai import EdenAiEmbeddings
 from langchain.chains import RetrievalQA
 from langchain_community.vectorstores import FAISS
 from langchain.chains import QAGenerationChain
-from text_utils import GRADE_DOCS_PROMPT, GRADE_ANSWER_PROMPT, GRADE_DOCS_PROMPT_FAST, GRADE_ANSWER_PROMPT_FAST, GRADE_ANSWER_PROMPT_BIAS_CHECK, GRADE_ANSWER_PROMPT_OPENAI, QA_CHAIN_PROMPT, QA_CHAIN_PROMPT_LLAMA, SELF_CHECK_QA_CHAIN_PROMPT
-EDENAI_API_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMmFjNmJiZWUtZTdiMy00NTRkLTk4MmUtY2Y0ODQ2NGMzMzFkIiwidHlwZSI6ImFwaV90b2tlbiJ9.8YU_EHliBgJ2EqNBGNddA7fbTqkTSKF4lFHDz772xpQ"
-OLLAMA_SERVER_URL="https://0778-34-83-80-70.ngrok-free.app"
+from text_utils import GRADE_DOCS_PROMPT, GRADE_ANSWER_PROMPT, GRADE_DOCS_PROMPT_FAST, GRADE_ANSWER_PROMPT_FAST, GRADE_ANSWER_PROMPT_BIAS_CHECK, GRADE_ANSWER_PROMPT_OPENAI, QA_CHAIN_PROMPT, CONSISTENCY_QA_CHAIN_PROMPT, GRADE_ANSWERS_CONSISTENCY_PROMPT
+
+OLLAMA_SERVER_URL="https://rides-airports-gotten-essex.trycloudflare.com"
 def make_llm():
-    # llm = EdenAI(edenai_api_key=EDENAI_API_KEY, feature="text", provider="openai", model="gpt-3.5-turbo-instruct")
     llm = ChatOllama(model="llama3.1", base_url=OLLAMA_SERVER_URL)
     return llm
 
 def make_grader():
-    # garder_llm = EdenAI(edenai_api_key=EDENAI_API_KEY, feature="text", provider="openai", model="gpt-3.5-turbo-instruct")
     garder_llm = ChatOllama(model="llama3.1", base_url=OLLAMA_SERVER_URL)
     return garder_llm
 
 from langchain_community.embeddings import OllamaEmbeddings
 
 def make_retriever(splits):
-    embd = OllamaEmbeddings(model="llama3.1")
+    embd = OllamaEmbeddings(model="nomic-embed-text")
     embd.base_url=OLLAMA_SERVER_URL
     vectorstore = FAISS.from_texts(splits, embd)
     retriever = vectorstore.as_retriever(k=3)
     return retriever
 
 def make_chain(llm, retriever):
-    chain_type_kwargs = {"prompt": SELF_CHECK_QA_CHAIN_PROMPT}
+    chain_type_kwargs = {"prompt": QA_CHAIN_PROMPT}
     qa_chain = RetrievalQA.from_chain_type(llm,
                                             chain_type="stuff",
                                             retriever=retriever,
@@ -68,86 +66,43 @@ def generate_eval(text, chunk, grader_llm, prompt):
     eval_pair = list(itertools.chain.from_iterable(eval_set))
     return eval_pair
 
-
-# texts = []
-# fnames = []
-
-# pdf_path = "C:\\Users\\levan\\Downloads\\ale-omniswitch-milestone-plugin-user-guide-v3-0-rev-a-en.pdf"
-# texts = []
-# fnames = []
-
-# # Open and read the PDF file
-# with open(pdf_path, 'rb') as file:
-#     contents = file.read()
-#     if file.name.lower().endswith('.pdf'):
-#         pdf_reader = pypdf.PdfReader(io.BytesIO(contents))
-#         text = ""
-#         for page in pdf_reader.pages:
-#             text += page.extract_text() or ""
-#         texts.append(text)
-#         fnames.append(pdf_path)  # Add the filename or path
-#     else:
-#         print("Unsupported file type for file: {}".format(pdf_path))
-
-# full_text = " ".join(texts)
-
-# num_eval_questions = 1
-# test_dataset = []
-
-# from text_utils import QA_GENERATION_CHAIN_PROMPT
-
-# for i in range(num_eval_questions):
-#     if i < len(test_dataset):
-#         eval_pair = test_dataset[i]
-#     else:
-#         eval_pair = generate_eval(text, 3000, make_llm(), QA_GENERATION_CHAIN_PROMPT)
-#         if len(eval_pair) == 0:
-#             # Error in eval generation
-#             continue
-#         else:
-#             # This returns a list, so we unpack to dict
-#             eval_pair = eval_pair[0]
-
-# # Given dictionary
-#     eval_pair = {
-#         'question': [
-#             'Only PoE OmniSwitches can be added to the ALOM plugin.', 
-#             'The ALOM plugin is compatible with only PoE OmniSwitches.',
-#             'PoE OmniSwitches are required for adding them to the ALOM plugin.'
-#         ],
-#         'answer': True
-#     }
-
-# # Convert to the desired format
-#     parsed_format = [{ 'question': question, 'answer': eval_pair['answer'] } for question in eval_pair['question']]  
-
-#     gt_dataset = parsed_format
-#     predictions = []
-
-
-#     splits = split_texts(text)
-#     llm = make_llm()
-#     retriever = make_retriever(splits)
-
-#     qa_chain = make_chain(llm, retriever)
-
-#     for set in gt_dataset:
-#         predictions.append(qa_chain(set))
-
-#     print(predictions)
-
-#     # Check if all 'answer' values are True
-#     all_true = all(is_true(entry['answer']) for entry in predictions)
-
-#     print(all_true)  # This will print True if all answers are True, otherwise False
-
-
-# List of predictions
 predictions = [
-    {'question': "Using the universal driver for some vendor's cameras in Milestone xProtect VMS can result in an incorrect MAC address being associated with the camera.", 'answer': 'True', 'result': ' True'},
-    {'question': "The use of a universal driver for certain vendors' cameras in Milestone xProtect VMS may lead to incorrect MAC address association.", 'answer': 'True', 'result': ' True'},
-    {'question': 'Associating a camera with an incorrect MAC address using a universal driver in Milestone xProtect VMS is possible.', 'answer': 'True', 'result': ' True'}
+    {
+        # "result": "The main objective of the ALOM plugin is to provide a user-friendly interface within the Milestone VMS system, \
+        # allowing operators to manage and monitor various components such as cameras, switches, and ports without requiring separate user interfaces. \
+        # This includes functions like checking the status, power consumption, temperature, and CPU usage of OmniSwitches; \
+        # managing PoE power allocations for each port; and controlling cameras by resetting them, pinging them, or checking their URLs. \
+        # The ALOM plugin also offers information about each camera's vendor, IP address, MAC address, status, traffic, power consumption, \
+        # maximum power available, PoE status, Locked status (LPS), priority level, and more.",
+        "result" : "I don't know."
+    },
+    {
+        "result": "The primary function of the ALOM (Advanced LAN Management) plugin is to provide detailed information about each port on an OmniSwitch, \
+        ncluding the status of PoE (Power over Ethernet), the amount of PoE power usage and maximum available, the lock/unlock status of the port security (LPS), \
+        and more. Additionally, it provides information about devices connected to specific ports, such as cameras, their IP addresses, MAC addresses, priority levels, \
+        and statuses. The plugin also allows for various actions like resetting the camera, pinging the camera, removing the camera from the port, \
+        setting power priority, performing a TDR cable test (on certain models), and executing switch-level actions such as writing memory or configuring SNMP traps."
+    },
+    {
+        "result": "The core purpose of the ALOM (Advanced Live Operation Monitor) plugin in the Milestone VMS system is to provide remote management \
+        capabilities for network devices such as cameras, switches, and other security equipment. This includes monitoring key parameters like power \
+        consumption, temperature, CPU usage, and port status, as well as controlling features like PoE (Power over Ethernet) and Locked Port Status (LPS). \
+        The ALOM plugin is accessible through the Smart Client interface, allowing operators to manage their surveillance system efficiently without \
+        needing to connect to a separate user interface."
+    }
 ]
 
+from langchain.evaluation.qa import QAEvalChain
 
+
+eval_chain = QAEvalChain.from_llm(llm = make_llm(), prompt=GRADE_ANSWERS_CONSISTENCY_PROMPT)
+
+results = ""
+for i in range(len(predictions)):
+    results += "Answer " + str(i + 1) + ". " + predictions[i]['result'] + "\n\n"
+inputs = [{"query": "", "answer": "", "result": results}]
+graded_outputs = eval_chain.apply(inputs)
+
+
+print(graded_outputs[0]['results'])
 

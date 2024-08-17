@@ -11,7 +11,7 @@ const ExperimentResultsTable = ({
 }) => {
   return (
     <ScrollArea scrollbarSize={0}>
-      <Table withBorder withColumnBorders striped highlightOnHover fontSize="10.8px">
+      <Table withBorder withColumnBorders striped highlightOnHover>
         <thead>
           <tr>
             <th>Question</th>

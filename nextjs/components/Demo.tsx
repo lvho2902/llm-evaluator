@@ -356,7 +356,7 @@ const Demo = ({ form }: { form: Form }) => {
                     </Group>
                   </Group>
                 </Stack>
-                <Table withBorder withColumnBorders striped highlightOnHover fontSize="10.8px">
+                <Table withBorder withColumnBorders striped highlightOnHover>
                   <thead>
                     <tr>
                       <th>Question</th>

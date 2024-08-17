@@ -437,8 +437,8 @@ def run_consistency_eval(chain, grader_llm, text, logger):
         answers.append(pred['result'].strip())
 
     graded_results = {}
-    graded_results['questions'] = '\n\nRESPONSE: '.join(questions)
-    graded_results['answers'] = '\n\nANSWER: '.join(answers)
+    graded_results['questions'] = '\n\n'.join([f"QUESTION {index + 1}: {question}" for index, question in enumerate(questions)])
+    graded_results['answers'] = '\n\n'.join([f"ANSWER {index + 1}: {answer}" for index, answer in enumerate(answers)])
     graded_results['results'] = graded_outputs[0]['results']
     return graded_results
 
@@ -595,6 +595,7 @@ def run_evaluator(
         # Convert dataframe to dict
         d_dict = d.to_dict('records')
         if len(d_dict) == 1:
+            logger.info("Sending the results to client...")
             yield json.dumps({"data":  d_dict[0]})
         else:
             logger.warn(

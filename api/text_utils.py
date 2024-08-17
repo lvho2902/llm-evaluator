@@ -184,14 +184,32 @@ $question_3: Create a variation of {text}, phrased differently.
 
 CONSISTENCY_QA_CHAIN_PROMPT = PromptTemplate(input_variables=['text'], template=template)
 
-template = """**Role:** You are an evaluator tasked with assessing the consistency of a set of answers.
-{query}{answer}
-Compare the following sentences and see if they are consistent in every detail?
-{result}
+# template = """**Role:** You are an evaluator tasked with assessing the consistency of a set of answers.
+# {query}{answer}
+# Compare the following sentences and see if they are consistent in every detail?
+# {result}
 
-**Instruction:** The response format shoud be:
+# **Instruction:** The response format shoud be:
+# GRADE: (Consistent or Inconsistent)
+# JUSTIFICATION: (Provide a brief explanation in one or two sentences, focusing solely on whether the content and meaning of the responses align perfectly.)
+# """
+
+template = """Prompt:
+Evaluate the consistency and accuracy of the following answers, focusing on the meaning and key concepts conveyed. Ignore differences in wording or phrasing and skip any acronyms. For each answer, assess the following:
+
+***Core Concepts:*** Are the core ideas and concepts consistent across all answers? Identify any differences in the interpretation or presentation of these concepts.
+***Details and Specifics:*** Do the answers consistently present the relevant details and specifics? Note any discrepancies or inaccuracies.
+***Logical Coherence:*** Are the answers logically coherent with one another? Identify any contradictions or areas where the answers do not align.
+***Overall Consistency:*** Is the overall meaning conveyed by each answer consistent with the others? Highlight any areas where the answers diverge in their understanding or description.
+**If any of the answers indicate uncertainty or state that they do not know, note this and provide an appropriate response.**
+Based on these criteria, provide a grade and justification of the consistency between the answers, noting any areas of disagreement or inconsistency.
+The response format shoud be:
 GRADE: (Consistent or Inconsistent)
-JUSTIFICATION: (Provide a brief explanation in one or two sentences, focusing solely on whether the content and meaning of the responses align perfectly.)
-"""
+JUSTIFICATION: (Provide a brief explanation in one or two sentences, noting any domain-specific conflicts, inconsistencies, or indications of uncertainty observed.)
+
+All of the answers here:
+{result}
+{query}{answer}"""
+
 
 GRADE_ANSWERS_CONSISTENCY_PROMPT = PromptTemplate(input_variables=["query", "answer", "result"], template=template)

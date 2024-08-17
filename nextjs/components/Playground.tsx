@@ -587,8 +587,8 @@ const Playground = ({ form }: { form: Form }) => {
                       <td>{result?.grader}</td>
                       <td>{result?.gradingPrompt}</td>
                       <td>{result?.numNeighbors}</td>
-                      <td>{result?.avgRelevancyScore}</td>
-                      <td>{result?.avgAnswerScore}</td>
+                      <td>{Number(result?.avgRelevancyScore).toFixed(3)}</td>
+                      <td>{Number(result?.avgAnswerScore).toFixed(3)}</td>
                       <td>{Number(result?.avgBleuScore).toFixed(3)}</td>
                       <td>{Number(result?.avgRougeScore).toFixed(3)}</td>
                       <td>{Number(result?.avgMeteorScores).toFixed(3)}</td>
