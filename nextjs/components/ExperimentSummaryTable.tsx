@@ -27,6 +27,7 @@ const ExperimentSummaryTable = ({
             <th>Avg BLEU</th>
             <th>Avg ROUGE</th>
             <th>Avg METEOR</th>
+            <th>Avg Consistency Score</th>
             <th>Avg Latency (s)</th>
           </tr>
         </thead>
@@ -49,6 +50,7 @@ const ExperimentSummaryTable = ({
               <td>{Number(result?.avgBleuScore).toFixed(3)}</td>
               <td>{Number(result?.avgRougeScore).toFixed(3)}</td>
               <td>{Number(result?.avgMeteorScores).toFixed(3)}</td>
+              <td>{Number(result?.avgConsistencyScore).toFixed(3)}</td>
               <td>{result?.avgLatency.toFixed(3)}</td>
             </tr>
           ))}

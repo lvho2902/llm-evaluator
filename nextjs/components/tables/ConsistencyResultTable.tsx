@@ -18,6 +18,7 @@ const ConsistencyResultTable = ({
             <th>Variant Questions</th>
             <th>Model Answers</th>
             <th>Grade Result</th>
+            <th>Score</th>
           </tr>
         </thead>
         <tbody>
@@ -92,6 +93,7 @@ const ConsistencyResultTable = ({
                       {result?.consistencyResults?.results}
                     </Spoiler>
                 </td>
+                <td>{Number(result?.consistencyResults?.score).toFixed(1)}</td>
               </tr>
             );
           })}
