@@ -184,7 +184,7 @@ const Sidebar = ({ form }: { form: Form }) => {
               render={({ field }) => (
                 <Select
                   {...field}
-                  // onChange={(value) => {
+                  //onChange={(value) => {
                     // field.onChange(value);
                     // if (value === "Anthropic-100k") {
                     //   setValue("model", "anthropic");

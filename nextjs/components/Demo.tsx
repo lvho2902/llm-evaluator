@@ -230,6 +230,9 @@ const Demo = ({ form }: { form: Form }) => {
     const avgMeteorScores =
       localResults.reduce((acc, curr) => acc + curr.avgMeteorScores, 0) /
       localResults.length;
+    const avgConsistencyScore =
+      localResults.reduce((acc, curr) => acc + curr.consistencyResults?.score, 0) /
+      localResults.length;
     const avgLatency =
       localResults.reduce((acc, curr) => acc + curr.latency, 0) /
       localResults.length;
@@ -249,6 +252,7 @@ const Demo = ({ form }: { form: Form }) => {
       avgBleuScore,
       avgRougeScore,
       avgMeteorScores,
+      avgConsistencyScore,
       avgLatency,
       performance: avgAnswerScore / avgLatency,
       id: resetExpts ? 1 : experiments.length + 1,
@@ -480,7 +484,7 @@ const Demo = ({ form }: { form: Form }) => {
                     style={{ marginBottom: "18px" }}
                     type="button"
                     variant="subtle"
-                    onClick={() => download(results, "results")}
+                    onClick={() => download(results.map(result => result.consistencyResults), "consistency_results")}
                   >
                     Download
                   </Button>

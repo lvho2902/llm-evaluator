@@ -260,6 +260,9 @@ const Playground = ({ form }: { form: Form }) => {
     const avgMeteorScores =
       localResults.reduce((acc, curr) => acc + curr.avgMeteorScores, 0) /
       localResults.length;
+    const avgConsistencyScore =
+      localResults.reduce((acc, curr) => acc + curr.consistencyResults?.score, 0) /
+      localResults.length;
     const avgLatency =
       localResults.reduce((acc, curr) => acc + curr.latency, 0) /
       localResults.length;
@@ -279,6 +282,7 @@ const Playground = ({ form }: { form: Form }) => {
       avgBleuScore,
       avgRougeScore,
       avgMeteorScores,
+      avgConsistencyScore,
       avgLatency,
       performance: avgAnswerScore / avgLatency,
       id: resetExpts ? 1 : experiments.length + 1,
@@ -567,9 +571,10 @@ const Playground = ({ form }: { form: Form }) => {
                     <th># of Chunks Retrieved</th>
                     <th>Avg Retrieval Relevancy Score</th>
                     <th>Avg Answer Similarity Score</th>
-                    <th>BLEU</th>
-                    <th>ROUGE</th>
+                    <th>Avg BLEU</th>
+                    <th>Avg ROUGE</th>
                     <th>Avg METEOR</th>
+                    <th>Avg Consistency Score</th>
                     <th>Avg Latency (s)</th>
                   </tr>
                 </thead>
@@ -592,6 +597,7 @@ const Playground = ({ form }: { form: Form }) => {
                       <td>{Number(result?.avgBleuScore).toFixed(3)}</td>
                       <td>{Number(result?.avgRougeScore).toFixed(3)}</td>
                       <td>{Number(result?.avgMeteorScores).toFixed(3)}</td>
+                      <td>{Number(result?.avgConsistencyScore).toFixed(3)}</td>
                       <td>{result?.avgLatency.toFixed(3)}</td>
                     </tr>
                   ))}
@@ -787,7 +793,7 @@ const Playground = ({ form }: { form: Form }) => {
                     style={{ marginBottom: "18px" }}
                     type="button"
                     variant="subtle"
-                    onClick={() => download(results, "results")}
+                    onClick={() => download(results.map(result => result.consistencyResults), "consistency_results")}
                   >
                     Download
                   </Button>
@@ -813,6 +819,7 @@ const Playground = ({ form }: { form: Form }) => {
                     <th>Variant Questions</th>
                     <th>Model Answers</th>
                     <th>Grade Result</th>
+                    <th>Score</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -886,6 +893,7 @@ const Playground = ({ form }: { form: Form }) => {
                             {result?.consistencyResults?.results}
                           </Spoiler>
                       </td>
+                      <td>{Number(result?.consistencyResults?.score).toFixed(1)}</td>
                     </tr>
                   ))}
                 </tbody>

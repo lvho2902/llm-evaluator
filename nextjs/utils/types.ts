@@ -26,13 +26,14 @@ export type Result = {
   avgRougeScore: number;
   avgMeteorScores: number;
   latency: number;
-  consistencyResults: COnsistencyResults;
+  consistencyResults: ConsistencyResults;
 };
 
-export type COnsistencyResults = {
+export type ConsistencyResults = {
   questions: string;
   answers: string;
   results: string;
+  score: number;
 }
 
 export type QAPair = {
@@ -56,6 +57,7 @@ export type Experiment = {
   avgBleuScore: number,
   avgRougeScore: number;
   avgMeteorScores: number;
+  avgConsistencyScore: number;
   avgLatency: number;
   performance: number;
   id: number;

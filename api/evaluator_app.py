@@ -440,6 +440,7 @@ def run_consistency_eval(chain, grader_llm, text, logger):
     graded_results['questions'] = '\n\n'.join([f"QUESTION {index + 1}: {question}" for index, question in enumerate(questions)])
     graded_results['answers'] = '\n\n'.join([f"ANSWER {index + 1}: {answer}" for index, answer in enumerate(answers)])
     graded_results['results'] = graded_outputs[0]['results']
+    graded_results['score'] = 1 if "Inconsistent" not in graded_results['results'] else 0
     return graded_results
 
 def verify_all_results(results_list):
