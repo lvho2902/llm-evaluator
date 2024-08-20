@@ -34,8 +34,9 @@ const Sidebar = ({ form }: { form: Form }) => {
                     { value: 5, label: "5" },
                     { value: 10, label: "10" },
                     { value: 15, label: "15" },
+                    { value: 20, label: "20" },
                   ]}
-                  max={15}
+                  max={20}
                   min={1}
                   step={1}
                 />
@@ -183,14 +184,14 @@ const Sidebar = ({ form }: { form: Form }) => {
               render={({ field }) => (
                 <Select
                   {...field}
-                  onChange={(value) => {
+                  // onChange={(value) => {
                     // field.onChange(value);
                     // if (value === "Anthropic-100k") {
                     //   setValue("model", "anthropic");
                     //   setValue("splitMethod", "");
                     //   setValue("embeddingAlgorithm", ""); 
                     // }
-                  }}
+                  // }}
                   data={[
                     {
                       label: "Similarity Search",
