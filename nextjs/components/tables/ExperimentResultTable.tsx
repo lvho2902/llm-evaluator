@@ -49,7 +49,7 @@ const ExperimentResultsTable = ({
                         </Text>
                       }
                     >
-                      {result?.retrievalScore.justification}
+                      {result?.retrievalScore?.justification}
                     </Spoiler>
                   )}
                 </td>
@@ -70,7 +70,7 @@ const ExperimentResultsTable = ({
                         </Text>
                       }
                     >
-                      {result?.answerScore.justification}
+                      {result?.answerScore?.justification}
                     </Spoiler>
                   )}
                 </td>

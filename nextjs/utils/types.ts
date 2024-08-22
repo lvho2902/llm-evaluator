@@ -27,6 +27,7 @@ export type Result = {
   avgMeteorScores: number;
   latency: number;
   consistencyResults: ConsistencyResults;
+  deepeval: DeepEval;
 };
 
 export type ConsistencyResults = {
@@ -35,6 +36,13 @@ export type ConsistencyResults = {
   results: string;
   score: number;
 }
+
+export type DeepEval = {
+  [key: string]: {
+    score: number;
+    reason: string;
+  };
+};
 
 export type QAPair = {
   question: string;

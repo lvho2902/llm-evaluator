@@ -17,9 +17,6 @@ import faiss
 import pandas as pd
 from typing import Dict, List
 from json import JSONDecodeError
-from langchain.llms import MosaicML
-from langchain.llms import Replicate
-from langchain.schema import Document
 from langchain.vectorstores import FAISS
 from langchain.chains import RetrievalQA
 from langchain.chat_models import ChatOpenAI
@@ -29,8 +26,6 @@ from langchain.evaluation.qa import QAEvalChain
 from langchain.retrievers import TFIDFRetriever
 from sse_starlette.sse import EventSourceResponse
 from fastapi.middleware.cors import CORSMiddleware
-from langchain.embeddings import LlamaCppEmbeddings
-from langchain.embeddings import MosaicMLInstructorEmbeddings
 from fastapi import FastAPI, File, UploadFile, Form
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.chains.question_answering import load_qa_chain
@@ -54,13 +49,6 @@ nltk.download('punkt')
 nltk.download('wordnet')
 
 def generate_eval(text, chunk, grader_llm, prompt, logger):
-    """
-    Generate question answer pair from input text 
-    @param text: text to generate eval set from
-    @param chunk: chunk size to draw question from text
-    @param logger: logger
-    @return: dict with keys "question" and "answer"
-    """
 
     # Generate random starting index in the doc to draw question from
     num_of_chars = len(text)
@@ -87,17 +75,7 @@ def generate_eval(text, chunk, grader_llm, prompt, logger):
     eval_pair = list(itertools.chain.from_iterable(eval_set))
     return eval_pair
 
-
 def split_texts(text, chunk_size, overlap, split_method, logger):
-    """
-    Split text into chunks
-    @param text: text to split
-    @param chunk_size: charecters per split
-    @param overlap: charecter overlap between splits
-    @param split_method: method used to split text
-    @param logger: logger
-    @return: list of str splits
-    """
 
     logger.info("`Splitting doc ...`")
     if split_method == "RecursiveTextSplitter":
@@ -110,13 +88,8 @@ def split_texts(text, chunk_size, overlap, split_method, logger):
     splits = text_splitter.split_text(text)
     return splits
 
-
 def make_llm(model):
-    """
-    Make LLM
-    @param model: LLM to use
-    @return: LLM
-    """
+
     if model == "ollama-mistral-7b":
         llm = ChatOllama(model="mistral", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0)
     elif(model == "ollama-llama-3-8b"):
@@ -131,7 +104,7 @@ def make_llm(model):
     return llm
 
 def make_grader(grader):
-    
+
     # Note: GPT-4 grader is advised by OAI
     if(grader == "ollama-mistral-7b"):
         grader_llm = ChatOllama(model="mistral", base_url=os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434"), temperature=0)
@@ -148,21 +121,9 @@ def make_grader(grader):
     
 
 def make_retriever(splits, retriever_type, embeddings, num_neighbors, logger):
-    """
-    Make document retriever
-    @param splits: list of str splits
-    @param retriever_type: retriever type
-    @param embedding_type: embedding type
-    @param num_neighbors: number of neighbors for retrieval
-    @param _llm: model
-    @param logger: logger
-    @return: retriever
-    """
 
     logger.info("`Making retriever ...`")
-    
     # Set embeddings
-    
     if embeddings == "Ollama":
         embd = OllamaEmbeddings(model="nomic-embed-text")
         embd.base_url = os.getenv('OLLAMA_SERVER_URL', "http://localhost:11434")
@@ -183,13 +144,6 @@ def make_retriever(splits, retriever_type, embeddings, num_neighbors, logger):
 
 def make_chain(llm, retriever, prompt=QA_CHAIN_PROMPT, input_key="question"):
 
-    """
-    Make retrieval chain
-    @param llm: llm
-    @param retriever: retriever
-    @return: QA chain
-    """
-
     # Select prompt 
     chain_type_kwargs = {"prompt": prompt}
 
@@ -201,16 +155,7 @@ def make_chain(llm, retriever, prompt=QA_CHAIN_PROMPT, input_key="question"):
                                             input_key=input_key)
     return qa_chain
 
-
 def grade_model_answer(predicted_dataset, predictions, grader_llm, grade_answer_prompt, logger):
-    """
-    Grades the answer based on ground truth and model predictions.
-    @param predicted_dataset: A list of dictionaries containing ground truth questions and answers.
-    @param predictions: A list of dictionaries containing model predictions for the questions.
-    @param grade_answer_prompt: The prompt level for the grading. Either "Fast" or "Full".
-    @param logger: logger
-    @return: A list of scores for the distilled answers.
-    """
 
     logger.info("`Grading model answer ...`")
     if grade_answer_prompt == "Fast":
@@ -232,13 +177,6 @@ def grade_model_answer(predicted_dataset, predictions, grader_llm, grade_answer_
 
 
 def grade_model_retrieval(gt_dataset, predictions, grader_llm, grade_docs_prompt, logger):
-    """
-    Grades the relevance of retrieved documents based on ground truth and model predictions.
-    @param gt_dataset: list of dictionaries containing ground truth questions and answers.
-    @param predictions: list of dictionaries containing model predictions for the questions
-    @param grade_docs_prompt: prompt level for the grading.
-    @return: list of scores for the retrieved documents.
-    """
 
     logger.info("`Grading relevance of retrieved docs ...`")
     if grade_docs_prompt == "Fast":
@@ -254,13 +192,7 @@ def grade_model_retrieval(gt_dataset, predictions, grader_llm, grade_docs_prompt
     return graded_outputs
 
 def calculate_bleu(reference, candidate):
-    """
-    Calculates the BLEU score between a reference and a candidate sentence.
-    
-    :param reference: The ground truth sentence (string).
-    :param candidate: The generated sentence by the model (string).
-    :return: BLEU score (float).
-    """
+
     reference_tokens = []
     reference_tokens.append(reference.split())  # Tokenize reference
     candidate_tokens = candidate.split()  # Tokenize candidate
@@ -269,13 +201,7 @@ def calculate_bleu(reference, candidate):
     return bleu_score
 
 def calculate_rouge(reference, candidate):
-    """
-    Calculates the ROUGE-1, ROUGE-2, and ROUGE-L scores between a reference and a candidate sentence.
-    
-    :param reference: The ground truth sentence (string).
-    :param candidate: The generated sentence by the model (string).
-    :return: Array containing ROUGE scores (rouge1, rouge2).
-    """
+
     # Initialize CountVectorizer for unigram (ROUGE-1) and bigram (ROUGE-2) calculations
     vectorizer = CountVectorizer(ngram_range=(1, 2))
 
@@ -290,44 +216,20 @@ def calculate_rouge(reference, candidate):
     return rouge_scores
 
 def calculate_meteor_score(reference_text, candidate_text):
-    """
-    Calculate the METEOR score between a reference text and a candidate text.
 
-    Parameters:
-    reference_text (str): The reference text or ground truth sentence. This can be a single sentence or multiple sentences 
-                          concatenated together, which will be tokenized into a list of words.
-    candidate_text (str): The candidate text or the generated sentence that is being evaluated. This will be tokenized 
-                           into a list of words for comparison against the reference text.
-
-    Returns:
-    float: The METEOR score between the reference text and the candidate text. The score is a float value representing 
-           the similarity between the two texts, with higher values indicating better similarity.
-    """
     # Tokenize the texts
     reference_tokens = nltk.word_tokenize(reference_text)
     candidate_tokens = nltk.word_tokenize(candidate_text)
-
     # METEOR score requires the reference tokens to be in a list of lists
     # Each list within the list represents a reference sentence
     reference_tokens_list = [reference_tokens]
-
     # Calculate METEOR score
     score = meteor_score(reference_tokens_list, candidate_tokens)
-
     return score
 
 def evaluate_statistical_scores(predictions, logger):
-    """
-    Evaluates BLEU and ROUGE scores from a list of dictionaries.
-    
-    :param predictions: List of dictionaries containing 'question', 'answer' (reference), and 'result' (generated sentence).
-    :param logger: Logger for logging information.
-    :return: Tuple containing:
-             - Average BLEU score (float).
-             - Overall average of the ROUGE-1, ROUGE-2, and ROUGE-L F-measure scores (float).
-    """
-    logger.info("Evaluating statistical scores from predictions...")
 
+    logger.info("Evaluating statistical scores from predictions...")
     bleu_scores = []
     rouge_scores = []
     meteor_scores = []
@@ -348,7 +250,6 @@ def evaluate_statistical_scores(predictions, logger):
         meteor_score = calculate_meteor_score(reference, candidate)
         meteor_scores.append(meteor_score)
 
-
     # Calculate average BLEU score
     avg_bleu_score = mean(bleu_scores) if bleu_scores else 0
     avg_rouge_scores = mean(rouge_scores) if rouge_scores else 0
@@ -357,21 +258,6 @@ def evaluate_statistical_scores(predictions, logger):
     return avg_bleu_score, avg_rouge_scores, avg_meteor_scores
 
 def run_eval(chain, retriever, eval_qa_pair, grader_llm, grade_prompt, logger):
-    """
-    Runs evaluation on a model's performance on a given evaluation dataset.
-    @param chain: Model chain used for answering questions
-    @param retriever:  Document retriever used for retrieving relevant documents
-    @param eval_set: List of dictionaries containing questions and corresponding ground truth answers
-    @param grade_prompt: String prompt used for grading model's performance
-    @param retriever_type: String specifying the type of retriever used
-    @param num_neighbors: Number of neighbors to retrieve using the retriever
-    @param text: full document text
-    @return: A tuple of four items:
-    - answers_grade: A dictionary containing scores for the model's answers.
-    - retrieval_grade: A dictionary containing scores for the model's document retrieval.
-    - latencies_list: A list of latencies in seconds for each question answered.
-    - predictions_list: A list of dictionaries containing the model's predicted answers and relevant documents for each question.
-    """
 
     logger.info("`Running eval ...`")
     predictions = []
@@ -569,6 +455,10 @@ def run_evaluator(
         
         graded_consistency_results = run_consistency_eval(qa_chain, grader_llm, eval_pair["question"], logger)
 
+        import deepeval_provider
+        deep_eval_model = deepeval_provider.make_model(model="llama3.1")
+        deep_eval_result = deepeval_provider.run_deep_eval(deep_eval_model, predictions[0])
+
         # Assemble output
         d = pd.DataFrame(predictions)
 
@@ -581,7 +471,7 @@ def run_evaluator(
 
         d['latency'] = latency
 
-        # Summary statistics
+        # # Summary statistics
         d['answerScore'] = [{'score': 1 if "Incorrect" not in text else 0,
                              'justification': text} for text in d['answerScore']]
         d['retrievalScore'] = [{'score': 1 if "Incorrect" not in text else 0,
@@ -592,6 +482,8 @@ def run_evaluator(
         d['avgMeteorScores'] = avg_meteor_scores
 
         d['consistencyResults'] = [graded_consistency_results]
+
+        d['deepeval'] = [deep_eval_result]
 
         # Convert dataframe to dict
         d_dict = d.to_dict('records')

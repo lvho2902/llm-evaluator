@@ -184,16 +184,6 @@ $question_3: Create a variation of {text}, phrased differently.
 
 CONSISTENCY_QA_CHAIN_PROMPT = PromptTemplate(input_variables=['text'], template=template)
 
-# template = """**Role:** You are an evaluator tasked with assessing the consistency of a set of answers.
-# {query}{answer}
-# Compare the following sentences and see if they are consistent in every detail?
-# {result}
-
-# **Instruction:** The response format shoud be:
-# GRADE: (Consistent or Inconsistent)
-# JUSTIFICATION: (Provide a brief explanation in one or two sentences, focusing solely on whether the content and meaning of the responses align perfectly.)
-# """
-
 template = """Prompt:
 Evaluate the consistency and accuracy of the following answers, focusing on the meaning and key concepts conveyed. Ignore differences in wording or phrasing and skip any acronyms. For each answer, assess the following:
 

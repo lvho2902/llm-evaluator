@@ -6,7 +6,6 @@ import githubIcon from "../public/github-mark.svg";
 import { useMediaQuery } from "@mantine/hooks";
 
 export enum MenuItem {
-  Demo = "Demo",
   Playground = "Playground",
   About = "About",
 }
@@ -32,15 +31,6 @@ const HeaderEvaluator = ({ activeTab }: { activeTab: MenuItem }) => {
             </Group>
           </Link>
           <Group>
-            <Link
-              href="/"
-              style={{
-                textDecoration: "none",
-                borderBottom: activeTab === MenuItem.Demo ? borderBottom : null,
-              }}
-            >
-              <Text c="black">Demo</Text>
-            </Link>
             <Link
               href="/playground"
               style={{

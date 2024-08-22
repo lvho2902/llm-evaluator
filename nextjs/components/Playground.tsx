@@ -33,6 +33,9 @@ import { ResponsiveScatterPlot } from "@nivo/scatterplot";
 import { isEmpty, isNil, orderBy } from "lodash";
 import TestFileUploadZone from "./TestFileUploadZone";
 import LogRocket from "logrocket";
+import ExperimentResultTable from "./tables/ExperimentResultTable";
+import ConsistencyResultTable from "./tables/ConsistencyResultTable";
+import DeepEvalResultTable from "./tables/DeepEvalResultTable";
 
 const MAX_FILE_SIZE_MB = 50;
 
@@ -76,6 +79,7 @@ const Playground = ({ form }: { form: Form }) => {
   const [gradingPromptStyle, setGradingPromptStyle] = useState(undefined);
   const experimentsResultsSpoilerRef = useRef<HTMLButtonElement>(null);
   const consistencyResultsSpoilerRef = useRef<HTMLButtonElement>(null);
+  const deepEvalResultsSpoilerRef = useRef<HTMLButtonElement>(null);
   const summarySpoilerRef = useRef<HTMLButtonElement>(null);
   const testDatasetSpoilerRef = useRef<HTMLButtonElement>(null);
   const [testFilesDropzoneDisabled, setTestFilesDropzoneDisabled] =
@@ -698,82 +702,14 @@ const Playground = ({ form }: { form: Form }) => {
                 </Group>
               </Group>
             </Stack>
-            <ScrollArea scrollbarSize={0}>
-              <Table withBorder withColumnBorders striped highlightOnHover>
-                <thead>
-                  <tr>
-                    <th>Question</th>
-                    <th>Expected Answer</th>
-                    <th>Observed Answer</th>
-                    <th>Retrieval Relevancy Score</th>
-                    <th>Answer Similarity Score</th>
-                    <th>BLEU</th>
-                    <th>ROUGE</th>
-                    <th>METEOR</th>
-                    <th>Latency (s)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {results?.map((result: Result, index: number) => (
-                    <tr key={index}>
-                      <td>{result?.question}</td>
-                      <td>{result?.answer}</td>
-                      <td>{result?.result}</td>
-                      <td style={{ whiteSpace: "pre-wrap" }}>
-                        {isFastGradingPrompt ? (
-                          renderPassFail(result.retrievalScore)
-                        ) : (
-                          <Spoiler
-                            maxHeight={150}
-                            hideLabel={
-                              <Text weight="bold" color="blue">
-                                Show less
-                              </Text>
-                            }
-                            showLabel={
-                              <Text weight="bold" color="blue">
-                                Show more
-                              </Text>
-                            }
-                          >
-                            {result?.retrievalScore.justification}
-                          </Spoiler>
-                        )}
-                      </td>
-                      <td style={{ whiteSpace: "pre-wrap" }}>
-                        {isFastGradingPrompt ? (
-                          renderPassFail(result?.answerScore)
-                        ) : (
-                          <Spoiler
-                            maxHeight={150}
-                            hideLabel={
-                              <Text weight="bold" color="blue">
-                                Show less
-                              </Text>
-                            }
-                            showLabel={
-                              <Text weight="bold" color="blue">
-                                Show more
-                              </Text>
-                            }
-                          >
-                            {result?.answerScore.justification}
-                          </Spoiler>
-                        )}
-                      </td>
-                      <td>{Number(result?.avgBleuScore).toFixed(3)}</td>
-                      <td>{Number(result?.avgRougeScore).toFixed(3)}</td>
-                      <td>{Number(result?.avgMeteorScores).toFixed(3)}</td>
-                      <td>{result?.latency?.toFixed(3)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </ScrollArea>
+            <ExperimentResultTable
+              results={results}
+              isFastGradingPrompt={isFastGradingPrompt}
+            />
           </Spoiler>
         </Card>
       ) : null}
-            {!isEmpty(results) ? (
+      {!isEmpty(results) ? (
         <Card>
           <Spoiler
             maxHeight={0}
@@ -811,94 +747,55 @@ const Playground = ({ form }: { form: Form }) => {
                 </Group>
               </Group>
             </Stack>
-            <ScrollArea scrollbarSize={0}>
-              <Table withBorder withColumnBorders striped highlightOnHover>
-                <thead>
-                  <tr>
-                    <th>Question</th>
-                    <th>Variant Questions</th>
-                    <th>Model Answers</th>
-                    <th>Grade Result</th>
-                    <th>Score</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {results?.map((result: Result, index: number) => (
-                    <tr key={index}>
-                      <td style={{ whiteSpace: "pre-wrap" }}>
-                          <Spoiler
-                            maxHeight={150}
-                            hideLabel={
-                              <Text weight="bold" color="blue">
-                                Show less
-                              </Text>
-                            }
-                            showLabel={
-                              <Text weight="bold" color="blue">
-                                Show more
-                              </Text>
-                            }
-                          >
-                            {result?.question}
-                          </Spoiler>
-                      </td>
-                      <td style={{ whiteSpace: "pre-wrap" }}>
-                          <Spoiler
-                            maxHeight={150}
-                            hideLabel={
-                              <Text weight="bold" color="blue">
-                                Show less
-                              </Text>
-                            }
-                            showLabel={
-                              <Text weight="bold" color="blue">
-                                Show more
-                              </Text>
-                            }
-                          >
-                            {result?.consistencyResults?.questions}
-                          </Spoiler>
-                      </td>
-                      <td style={{ whiteSpace: "pre-wrap" }}>
-                          <Spoiler
-                            maxHeight={150}
-                            hideLabel={
-                              <Text weight="bold" color="blue">
-                                Show less
-                              </Text>
-                            }
-                            showLabel={
-                              <Text weight="bold" color="blue">
-                                Show more
-                              </Text>
-                            }
-                          >
-                            {result?.consistencyResults?.answers}
-                          </Spoiler>
-                      </td>
-                      <td style={{ whiteSpace: "pre-wrap" }}>
-                          <Spoiler
-                            maxHeight={150}
-                            hideLabel={
-                              <Text weight="bold" color="blue">
-                                Show less
-                              </Text>
-                            }
-                            showLabel={
-                              <Text weight="bold" color="blue">
-                                Show more
-                              </Text>
-                            }
-                          >
-                            {result?.consistencyResults?.results}
-                          </Spoiler>
-                      </td>
-                      <td>{Number(result?.consistencyResults?.score).toFixed(1)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </ScrollArea>
+            <ConsistencyResultTable
+              results={results}
+              isFastGradingPrompt={isFastGradingPrompt}
+            />
+          </Spoiler>
+        </Card>
+      ) : null}
+            {!isEmpty(results) ? (
+        <Card>
+          <Spoiler
+            maxHeight={0}
+            showLabel="Show deep eval results"
+            hideLabel={null}
+            transitionDuration={500}
+            initialState={true}
+            controlRef={deepEvalResultsSpoilerRef}
+          >
+            <Stack>
+              <Group position="apart">
+                <Title order={3}>Deep Eval Results</Title>
+                <br />
+                <br />
+                <Group>
+                  <Button
+                    style={{ marginBottom: "18px" }}
+                    type="button"
+                    variant="subtle"
+                    onClick={() => download(results.map(result => result.deepeval), "deep_eval_results")}
+                  >
+                    Download
+                  </Button>
+                  <Button
+                    style={{ marginBottom: "18px" }}
+                    type="button"
+                    variant="subtle"
+                    onClick={() => {
+                      if (deepEvalResultsSpoilerRef.current)
+                        deepEvalResultsSpoilerRef.current.click();
+                    }}
+                  >
+                    Hide
+                  </Button>
+                </Group>
+              </Group>
+            </Stack>
+            <DeepEvalResultTable
+              results={results}
+              isFastGradingPrompt={isFastGradingPrompt}
+            />
           </Spoiler>
         </Card>
       ) : null}
