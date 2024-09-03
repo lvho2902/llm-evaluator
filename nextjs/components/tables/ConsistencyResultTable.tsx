@@ -3,11 +3,9 @@ import { Result } from "../../utils/types";
 import renderPassFail from "../../utils/renderPassFail";
 
 const ConsistencyResultTable = ({
-  results,
-  isFastGradingPrompt,
+  results
 }: {
   results: any[];
-  isFastGradingPrompt: boolean;
 }) => {
   return (
     <ScrollArea scrollbarSize={0}>
@@ -28,72 +26,36 @@ const ConsistencyResultTable = ({
                 <td style={{ whiteSpace: "pre-wrap" }}>
                     <Spoiler
                       maxHeight={150}
-                      hideLabel={
-                        <Text weight="bold" color="blue">
-                          Show less
-                        </Text>
-                      }
-                      showLabel={
-                        <Text weight="bold" color="blue">
-                          Show more
-                        </Text>
-                      }
-                    >
+                      hideLabel={<Text weight="bold" color="blue">Show less</Text>}
+                      showLabel={<Text weight="bold" color="blue">Show more</Text>}>
                       {result?.question}
                     </Spoiler>
                 </td>
                 <td style={{ whiteSpace: "pre-wrap" }}>
                     <Spoiler
                       maxHeight={150}
-                      hideLabel={
-                        <Text weight="bold" color="blue">
-                          Show less
-                        </Text>
-                      }
-                      showLabel={
-                        <Text weight="bold" color="blue">
-                          Show more
-                        </Text>
-                      }
-                    >
-                      {result?.consistencyResults?.questions}
+                      hideLabel={<Text weight="bold" color="blue">Show less</Text>}
+                      showLabel={<Text weight="bold" color="blue">Show more</Text>}>
+                      {result?.consistency?.questions}
                     </Spoiler>
                 </td>
                 <td style={{ whiteSpace: "pre-wrap" }}>
                     <Spoiler
                       maxHeight={150}
-                      hideLabel={
-                        <Text weight="bold" color="blue">
-                          Show less
-                        </Text>
-                      }
-                      showLabel={
-                        <Text weight="bold" color="blue">
-                          Show more
-                        </Text>
-                      }
-                    >
-                      {result?.consistencyResults?.answers}
+                      hideLabel={<Text weight="bold" color="blue">Show less</Text>}
+                      showLabel={<Text weight="bold" color="blue">Show more</Text>}>
+                      {result?.consistency?.answers}
                     </Spoiler>
                 </td>
                 <td style={{ whiteSpace: "pre-wrap" }}>
                     <Spoiler
                       maxHeight={150}
-                      hideLabel={
-                        <Text weight="bold" color="blue">
-                          Show less
-                        </Text>
-                      }
-                      showLabel={
-                        <Text weight="bold" color="blue">
-                          Show more
-                        </Text>
-                      }
-                    >
-                      {result?.consistencyResults?.results}
+                      hideLabel={<Text weight="bold" color="blue">Show less</Text>}
+                      showLabel={<Text weight="bold" color="blue">Show more</Text>}>
+                      {result?.consistency?.results}
                     </Spoiler>
                 </td>
-                <td>{Number(result?.consistencyResults?.score).toFixed(1)}</td>
+                <td>{Number(result?.consistency?.score).toFixed(1)}</td>
               </tr>
             );
           })}

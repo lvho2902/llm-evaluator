@@ -1,36 +1,30 @@
 import { UseFormReturn } from "react-hook-form";
 
 export type FormValues = {
-  evalQuestionsCount: number;
-  chunkSize: number;
-  overlap: number;
-  splitMethod: string;
-  embeddingAlgorithm: string;
-  model: string;
-  grader: string;
-  retriever: string;
-  gradingPrompt: string;
-  numNeighbors: number;
   files: any[];
+  number_of_question: number;
+  chunk_size: number;
+  chunk_overlap: number;
+  split_method: string;
+  embedding_provider: string;
+  retriever_type: string;
+  model: string;
+  evaluator_model: string;
+  num_neighbors: number;
 };
 
 export type Form = UseFormReturn<FormValues>;
 
 export type Result = {
+  experiment_summary_id: number;
   question: string;
-  answer: string;
-  result: string;
-  retrievalScore: { score: number; justification: string };
-  answerScore: { score: number; justification: string };
-  avgBleuScore: number;
-  avgRougeScore: number;
-  avgMeteorScores: number;
-  latency: number;
-  consistencyResults: ConsistencyResults;
+  expected: string;
+  actual: string;
+  consistency: Consistency;
   deepeval: DeepEval;
 };
 
-export type ConsistencyResults = {
+export type Consistency = {
   questions: string;
   answers: string;
   results: string;
@@ -50,23 +44,15 @@ export type QAPair = {
 };
 
 export type Experiment = {
-  evalQuestionsCount: number;
-  chunkSize: number;
-  overlap: number;
-  splitMethod: string;
-  retriever: string;
-  embeddingAlgorithm: string;
+  number_of_question: number;
+  chunk_size: number;
+  chunk_overlap: number;
+  split_method: string;
+  retriever_type: string;
+  embedding_provider: string;
   model: string;
-  grader: string;
-  gradingPrompt: string;
-  numNeighbors: number;
-  avgRelevancyScore: number;
-  avgAnswerScore: number;
-  avgBleuScore: number,
-  avgRougeScore: number;
-  avgMeteorScores: number;
-  avgConsistencyScore: number;
-  avgLatency: number;
+  evaluator_model: string;
+  num_neighbors: number;
   performance: number;
   id: number;
 };

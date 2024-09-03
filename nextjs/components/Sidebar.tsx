@@ -21,9 +21,9 @@ const Sidebar = ({ form }: { form: Form }) => {
           }}
         >
           <div>
-            <Text fz="md">Number of eval questions</Text>
+            <Text fz="md">Number of questions</Text>
             <Controller
-              name="evalQuestionsCount"
+              name="number_of_question"
               control={control}
               render={({ field }) => (
                 <Slider
@@ -46,7 +46,7 @@ const Sidebar = ({ form }: { form: Form }) => {
           <div>
             <Text fz="md">Chunk size</Text>
             <Controller
-              name="chunkSize"
+              name="chunk_size"
               control={control}
               render={({ field }) => (
                 <Slider
@@ -70,7 +70,7 @@ const Sidebar = ({ form }: { form: Form }) => {
           <div>
             <Text fz="md">Chunk overlap</Text>
             <Controller
-              name="overlap"
+              name="chunk_overlap"
               control={control}
               render={({ field }) => (
                 <Slider
@@ -98,9 +98,10 @@ const Sidebar = ({ form }: { form: Form }) => {
                 <Select
                   {...field}
                   data={[
-                    { label: "Ollama Mistral 7B", value: "ollama-mistral-7b" },
-                    { label: "Ollama Llama 3 8B", value: "ollama-llama-3-8b" },
-                    { label: "Ollama Llama 3.1 8B", value: "ollama-llama-3.1-8b" },
+                    { label: "Mistral 7B", value: "mistral" },
+                    { label: "Llama 3 8B", value: "llama3" },
+                    { label: "Llama 3.1 8B", value: "llama3.1" },
+                    { label: "Llama 2 13B", value: "llama2:13b" },
                     { label: "GPT 3.5 Turbo", value: "gpt-3.5-turbo" },
                     { label: "GPT 4", value: "gpt-4" },
                     { label: "Eden GPT 3.5 Turbo Instruct", value: "eden-gpt-3.5-turbo-instruct" },
@@ -112,15 +113,16 @@ const Sidebar = ({ form }: { form: Form }) => {
           <div>
             <Text fz="md">Evaluator</Text>
             <Controller
-              name="grader"
+              name="evaluator_model"
               control={control}
               render={({ field }) => (
                 <Select
                   {...field}
                   data={[
-                    { label: "Ollama Mistral 7B", value: "ollama-mistral-7b" },
-                    { label: "Ollama Llama 3 8B", value: "ollama-llama-3-8b" },
-                    { label: "Ollama Llama 3.1 8B", value: "ollama-llama-3.1-8b" },
+                    { label: "Mistral 7B", value: "mistral" },
+                    { label: "Llama 3 8B", value: "llama3" },
+                    { label: "Llama 3.1 8B", value: "llama3.1" },
+                    { label: "Llama 2 13B", value: "llama2:13b" },
                     { label: "Eden GPT 3.5 Turbo Instruct", value: "eden-gpt-3.5-turbo-instruct" },
                     { label: "OpenAI", value: "openai" },
                   ]}
@@ -131,7 +133,7 @@ const Sidebar = ({ form }: { form: Form }) => {
           <div>
             <Text fz="md">Split method</Text>
             <Controller
-              name="splitMethod"
+              name="split_method"
               control={control}
               render={({ field }) => (
                 <Select
@@ -151,9 +153,9 @@ const Sidebar = ({ form }: { form: Form }) => {
             />
           </div>
           <div>
-            <Text fz="md">Embedding algorithm</Text>
+            <Text fz="md">Embedding provider</Text>
             <Controller
-              name="embeddingAlgorithm"
+              name="embedding_provider"
               control={control}
               render={({ field }) => (
                 <Select
@@ -166,10 +168,6 @@ const Sidebar = ({ form }: { form: Form }) => {
                     {
                       label: "OpenAI",
                       value: "OpenAI",
-                    },
-                    {
-                      label: "EdenOpenAI",
-                      value: "EdenOpenAI",
                     }
                   ]}
                 />
@@ -179,7 +177,7 @@ const Sidebar = ({ form }: { form: Form }) => {
           <div>
             <Text fz="md">Retriever</Text>
             <Controller
-              name="retriever"
+              name="retriever_type"
               control={control}
               render={({ field }) => (
                 <Select
@@ -189,7 +187,7 @@ const Sidebar = ({ form }: { form: Form }) => {
                     // if (value === "Anthropic-100k") {
                     //   setValue("model", "anthropic");
                     //   setValue("splitMethod", "");
-                    //   setValue("embeddingAlgorithm", ""); 
+                    //   setValue("embeddingProvider", ""); 
                     // }
                   // }}
                   data={[
@@ -213,7 +211,7 @@ const Sidebar = ({ form }: { form: Form }) => {
           <div>
             <Text fz="md">Number of chunks to retrieve</Text>
             <Controller
-              name="numNeighbors"
+              name="num_neighbors"
               control={control}
               render={({ field }) => (
                 <Slider
@@ -227,36 +225,6 @@ const Sidebar = ({ form }: { form: Form }) => {
                   max={5}
                   min={3}
                   step={1}
-                />
-              )}
-            />
-          </div>
-          <div>
-            <Text fz="md">Grading prompt style</Text>
-            <Controller
-              name="gradingPrompt"
-              control={control}
-              render={({ field }) => (
-                <Select
-                  {...field}
-                  data={[
-                    {
-                      label: "Fast",
-                      value: "Fast",
-                    },
-                    {
-                      label: "Descriptive",
-                      value: "Descriptive",
-                    },
-                    {
-                      label: "Descriptive w/ bias check",
-                      value: "Descriptive w/ bias check",
-                    },
-                    {
-                      label: "OpenAI grading prompt",
-                      value: "OpenAI grading prompt",
-                    },
-                  ]}
                 />
               )}
             />

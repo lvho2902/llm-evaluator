@@ -1,26 +1,5 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import {
-  Group,
-  Text,
-  useMantineTheme,
-  Alert,
-  Table,
-  Button,
-  Title,
-  Flex,
-  Stack,
-  Spoiler,
-  Progress,
-  Card,
-  ScrollArea,
-  createStyles,
-} from "@mantine/core";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import {Group, Text, useMantineTheme, Alert, Table, Button, Title, Flex, Stack, Spoiler, Progress, Card, ScrollArea, createStyles} from "@mantine/core";
 import { IconUpload, IconX, IconAlertCircle } from "@tabler/icons-react";
 import { Dropzone, MIME_TYPES } from "@mantine/dropzone";
 import { Experiment, Form, QAPair, Result } from "../utils/types";
@@ -30,12 +9,14 @@ import { fetchEventSource } from "@microsoft/fetch-event-source";
 import { Parser } from "@json2csv/plainjs";
 import { IconFile } from "@tabler/icons-react";
 import { ResponsiveScatterPlot } from "@nivo/scatterplot";
-import { isEmpty, isNil, orderBy } from "lodash";
+import { isEmpty, isNil, orderBy, set } from "lodash";
 import TestFileUploadZone from "./TestFileUploadZone";
 import LogRocket from "logrocket";
-import ExperimentResultTable from "./tables/ExperimentResultTable";
 import ConsistencyResultTable from "./tables/ConsistencyResultTable";
 import DeepEvalResultTable from "./tables/DeepEvalResultTable";
+import ExperimentSummaryTable from "./ExperimentSummaryTable";
+
+import { Pagination } from '@mantine/core';
 
 const MAX_FILE_SIZE_MB = 50;
 
@@ -67,161 +48,142 @@ const useStyles = createStyles((theme) => ({
 
 const Playground = ({ form }: { form: Form }) => {
   const { setValue, watch, getValues, handleSubmit } = form;
-  const watchFiles = watch("files");
+  const watch_files = watch("files");
   const theme = useMantineTheme();
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<Result[]>([]);
-  const [testDataset, setTestDataset] = useState<QAPair[]>([]);
-  const [evalQuestionsCount, setEvalQuestionsCount] = useState(-1);
+  const [test_dataset, setTestDataset] = useState<QAPair[]>([]);
+  const [number_of_question, setNumberOfQuestion] = useState(-1);
   const [experiments, setExperiments] = useState<Experiment[]>([]);
-  const [didUploadTestDataset, setDidUploadTestDataset] = useState(false);
-  const [shouldShowProgress, setShouldShowProgress] = useState(false);
-  const [gradingPromptStyle, setGradingPromptStyle] = useState(undefined);
-  const experimentsResultsSpoilerRef = useRef<HTMLButtonElement>(null);
-  const consistencyResultsSpoilerRef = useRef<HTMLButtonElement>(null);
-  const deepEvalResultsSpoilerRef = useRef<HTMLButtonElement>(null);
-  const summarySpoilerRef = useRef<HTMLButtonElement>(null);
-  const testDatasetSpoilerRef = useRef<HTMLButtonElement>(null);
-  const [testFilesDropzoneDisabled, setTestFilesDropzoneDisabled] =
-    useState(true);
-  const [fileUploadDisabled, setFileUploadDisabled] = useState(false);
-
+  const [selected_experiment, setSelectedExperiment] = useState<Experiment | null>(null);
+  const [did_upload_test_dataset, setDidUploadTestDataset] = useState(false);
+  const [should_show_progress, setShouldShowProgress] = useState(false);
+  const consistency_results_spoiler_ref = useRef<HTMLButtonElement>(null);
+  const deepeval_results_spoiler_ref = useRef<HTMLButtonElement>(null);
+  const summary_spoiler_ref = useRef<HTMLButtonElement>(null);
+  const test_dataset_spoiler_ref = useRef<HTMLButtonElement>(null);
+  const [test_files_dropzone_disabled, setTestFilesDropzoneDisabled] = useState(true);
+  const [file_upload_disabled, setFileUploadDisabled] = useState(false);
   const { classes } = useStyles();
 
-  const initialProgress = {
-    value: 15,
-    color: "purple",
-    label: "Processing Files",
-  };
+  const [experimentRun, setExperimentRun] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+  const [resultsPage, setResultsPage] = useState(1);
+  const [resultsPerPage, setResultsPerPage] = useState(3); // Adjust items per page as needed
 
-  const finishedProgress = {
-    value: 100,
-    color: "green",
-    label: "Completed",
-  };
+  const initialProgress = {value: 15, color: "purple", label: "Processing Files"};
+  const finishedProgress = {value: 100, color: "green", label: "Completed"};
+
+  const fetchExperiments = useCallback(async () => {
+    try {
+      const response = await fetch(`${API_URL}/experiments`);
+      const data: Experiment[] = await response.json();
+      setExperiments(data);
+      if (experimentRun) {
+        const totalPages = Math.ceil(data.length / itemsPerPage);
+        setCurrentPage(totalPages);
+        setExperimentRun(false); // Reset the flag after navigating
+      }
+    } catch (error) {
+      console.error("Failed to fetch experiments:", error);
+    }
+  }, [experimentRun, itemsPerPage]);
+
+  const paginatedConsistencyResults = useMemo(() => {
+    const startIndex = (resultsPage - 1) * resultsPerPage;
+    const endIndex = startIndex + resultsPerPage;
+    console.log(resultsPage, startIndex, endIndex)
+    return results.slice(startIndex, endIndex);
+  }, [results, resultsPage, resultsPerPage]);
+
+  const fetchResults = useCallback(async (experiment: Experiment) => {
+    try {
+      const response = await fetch(`${API_URL}/evaluations/${experiment?.id}`);
+      const data = await response.json();
+      const results = data?.map((item: { data: Result }) => item.data);
+      setResults(results)
+    } catch (error) {
+      console.error(`Failed to fetch results for experiment ${experiment?.id}:`, error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchExperiments();
+  }, [fetchExperiments]);
+
+  useEffect(() => {
+    if (selected_experiment !== null) {
+      fetchResults(selected_experiment);
+    }
+  }, [selected_experiment, fetchResults]);
 
   const experimentProgress = useMemo(() => {
-    if (results.length === 0) {
-      return [initialProgress];
-    }
-
-    const res = 15 + Math.floor((results?.length / evalQuestionsCount) * 85);
-
-    if (res === 100) {
-      return [finishedProgress];
-    }
-    const ret = [
-      initialProgress,
-      {
-        value: res,
-        color: "blue",
-        label: "Generating Evals & Grading",
-      },
-    ];
-    return ret;
-  }, [results, evalQuestionsCount]);
-
-  const chartData = experiments.map((experiment, index) => ({
-    id: "Expt #" + (index + 1),
-    data: [
-      {
-        x: experiment.avgAnswerScore,
-        y: experiment.avgLatency,
-      },
-    ],
-  }));
-
-  const renderPassFail = (data: any) => {
-    if (data.score === 0) {
-      return "Incorrect";
-    }
-    if (data.score === 1) {
-      return "Correct";
-    }
-    throw new Error(`Problem parsing ${data}`);
-  };
+    if (results.length === 0) {return [initialProgress];}
+    const res = 15 + Math.floor((results?.length / number_of_question) * 85);
+    console.log("rusults len", results?.length)
+    console.log("number of questions", number_of_question)
+    console.log("res", res)
+    if (res == 100) {return [finishedProgress];}
+    return [initialProgress, {value: res, color: "blue", label: "Generating Evals & Grading"}];
+  }, [results, number_of_question]);
 
   const submit = handleSubmit(async (data) => {
     setShouldShowProgress(true);
     setLoading(true);
     setResults([]);
-
-    const resetExpts =
-      data.evalQuestionsCount !== evalQuestionsCount || didUploadTestDataset;
-    if (resetExpts) {
-      setExperiments([]);
-    }
-
+    // const resetExpts = data.number_of_question !== number_of_question || did_upload_test_dataset;
+    // if (resetExpts) {setExperiments([]);}
     setDidUploadTestDataset(false);
-
     const formData = new FormData();
-    data.files.forEach((file) => {
-      formData.append("files", file);
-    });
-    formData.append("num_eval_questions", data.evalQuestionsCount.toString());
-    formData.append("chunk_chars", data.chunkSize.toString());
-    formData.append("overlap", data.overlap.toString());
-    formData.append("split_method", data.splitMethod);
-    formData.append("retriever_type", data.retriever);
-    formData.append("embeddings", data.embeddingAlgorithm);
-    formData.append("model_version", data.model);
-    formData.append("grader", data.grader);
-    formData.append("grade_prompt", data.gradingPrompt);
-    formData.append("num_neighbors", data.numNeighbors.toString());
-    formData.append("test_dataset", JSON.stringify(testDataset));
+    data.files.forEach((file) => {formData.append("files", file);});
+    formData.append("test_dataset", JSON.stringify(test_dataset));
+    formData.append("number_of_question", data.number_of_question.toString());
+    formData.append("chunk_size", data.chunk_size.toString());
+    formData.append("chunk_overlap", data.chunk_overlap.toString());
+    formData.append("split_method", data.split_method);
+    formData.append("retriever_type", data.retriever_type);
+    formData.append("embedding_provider", data.embedding_provider);
+    formData.append("model", data.model);
+    formData.append("evaluator_model", data.evaluator_model);
+    formData.append("num_neighbors", data.num_neighbors.toString());
 
     if (!IS_DEV) {
       LogRocket.track("PlaygroundSubmission", {
-        fileSizes: data.files.map((file) => file.size),
-        fileTypes: data.files.map((file) => file.type),
-        numQuestions: data.evalQuestionsCount,
-        overlap: data.overlap,
-        split: data.splitMethod,
-        retriever: data.retriever,
-        embedding: data.embeddingAlgorithm,
+        file_size: data.files.map((file) => file.size),
+        file_type: data.files.map((file) => file.type),
+        number_of_question: data.number_of_question,
+        chunk_overlap: data.chunk_overlap,
+        split_method: data.split_method,
+        retriever_type: data.retriever_type,
+        embedding_provider: data.embedding_provider,
         model: data.model,
-        grader: data.grader,
-        promptStyle: data.gradingPrompt,
-        numNeighbors: data.numNeighbors,
-        uploadedTestDataset: !!testDataset.length,
+        evaluator_model: data.evaluator_model,
+        num_neighbors: data.num_neighbors,
+        uploaded_test_dataset: !!test_dataset.length,
       });
     }
 
-    setEvalQuestionsCount(data.evalQuestionsCount);
-    setGradingPromptStyle(data.gradingPrompt);
-
+    setNumberOfQuestion(data.number_of_question);
     const controller = new AbortController();
-
     let localResults = [];
     let rowCount = 0;
     try {
-      await fetchEventSource(API_URL + "/evaluator-stream", {
-        method: "POST",
-        body: formData,
-        headers: {
-          Accept: "text/event-stream",
-          Connection: "keep-alive", // Add the keep-alive header
-        },
-        openWhenHidden: true,
-        signal: controller.signal,
+      await fetchEventSource(API_URL + "/evaluator-stream", 
+        { method: "POST", body: formData, headers: { Accept: "text/event-stream", Connection: "keep-alive" }, openWhenHidden: true, signal: controller.signal,
         onmessage(ev) {
           try {
-            const row: Result = JSON.parse(ev.data)?.data;
+            const row: Result = JSON.parse(ev?.data)?.data;
             setResults((results) => [...results, row]);
             localResults = [...localResults, row];
             rowCount += 1;
-            if (rowCount > testDataset.length) {
+            if (rowCount > test_dataset.length) {
               setTestDataset((testDataset) => [
                 ...testDataset,
-                {
-                  question: row.question,
-                  answer: row.answer,
-                },
+                {question: row.question, answer: row.expected},
               ]);
             }
-            if (rowCount === data.evalQuestionsCount) {
-              controller.abort();
-            }
+            if (rowCount === data.number_of_question) {controller.abort();}
           } catch (e) {
             console.warn("Error parsing data", e);
           }
@@ -229,9 +191,7 @@ const Playground = ({ form }: { form: Form }) => {
         onclose() {
           console.log("Connection closed by the server");
           setLoading(false);
-          if (!rowCount) {
-            throw new Error("No results were returned from the server.");
-          }
+          if (!rowCount) throw new Error("No results were returned from the server.");
         },
         onerror(err) {
           console.log("There was an error from server", err);
@@ -239,67 +199,18 @@ const Playground = ({ form }: { form: Form }) => {
         },
       });
     } catch (e) {
-      notifications.show({
-        title: "Error",
-        message: "There was an error from the server.",
-        color: "red",
-      });
+      notifications.show({ title: "Error", message: "There was an error from the server.", color: "red"});
       setShouldShowProgress(false);
       setLoading(false);
       return;
     }
     setLoading(false);
-    const avgAnswerScore =
-      localResults.reduce((acc, curr) => acc + curr.answerScore.score, 0) /
-      localResults.length;
-    const avgRelevancyScore =
-      localResults.reduce((acc, curr) => acc + curr.retrievalScore.score, 0) /
-      localResults.length;
-    const avgBleuScore =
-      localResults.reduce((acc, curr) => acc + curr.avgBleuScore, 0) /
-      localResults.length;
-    const avgRougeScore =
-      localResults.reduce((acc, curr) => acc + curr.avgRougeScore, 0) /
-      localResults.length;
-    const avgMeteorScores =
-      localResults.reduce((acc, curr) => acc + curr.avgMeteorScores, 0) /
-      localResults.length;
-    const avgConsistencyScore =
-      localResults.reduce((acc, curr) => acc + curr.consistencyResults?.score, 0) /
-      localResults.length;
-    const avgLatency =
-      localResults.reduce((acc, curr) => acc + curr.latency, 0) /
-      localResults.length;
-    const newExperiment: Experiment = {
-      evalQuestionsCount: data.evalQuestionsCount,
-      chunkSize: data.chunkSize,
-      overlap: data.overlap,
-      splitMethod: data.splitMethod,
-      retriever: data.retriever,
-      embeddingAlgorithm: data.embeddingAlgorithm,
-      model: data.model,
-      grader: data.grader,
-      gradingPrompt: data.gradingPrompt,
-      numNeighbors: data.numNeighbors,
-      avgRelevancyScore,
-      avgAnswerScore,
-      avgBleuScore,
-      avgRougeScore,
-      avgMeteorScores,
-      avgConsistencyScore,
-      avgLatency,
-      performance: avgAnswerScore / avgLatency,
-      id: resetExpts ? 1 : experiments.length + 1,
-    };
-    setExperiments((experiments) =>
-      resetExpts ? [newExperiment] : [...experiments, newExperiment]
-    );
+    setExperimentRun(true);
+    fetchExperiments();
   });
-
-  const runExperimentButtonLabel = experiments.length
+  const runExperimentButtonLabel = experiments?.length
     ? "Re-run experiment"
     : "Run Experiment";
-
   const download = useCallback(
     (data: any[], filename: string) => {
       const parser = new Parser();
@@ -316,30 +227,23 @@ const Playground = ({ form }: { form: Form }) => {
     },
     [results]
   );
-
-  const isFastGradingPrompt = gradingPromptStyle === "Fast";
+  const indexOfLastExperiment = currentPage * itemsPerPage;
+  const indexOfFirstExperiment = indexOfLastExperiment - itemsPerPage;
+  const paginatedExperiments = experiments.slice(indexOfFirstExperiment, indexOfLastExperiment);
   const alertStyle = { backgroundColor: `rgba(193,194,197,0.38)` };
-
   return (
     <Stack>
-      <Alert
-        icon={<IconAlertCircle size="1rem" />}
-        title="Instructions"
-        style={alertStyle}
-      >
-        Upload a file (up to 50 MB) and choose the parameters for your QA
-        chain. This evaluator will generate a test dataset of QA pairs and grade
-        the performance of the QA chain. You can experiment with different
+      <Alert icon={<IconAlertCircle size="1rem" />} title="Instructions" style={alertStyle}>
+        Upload a file (up to 50 MB) and choose the parameters for your QA chain. This evaluator will generate a test dataset of QA pairs
+        and grade the performance of the QA chain. You can experiment with different
         parameters and evaluate the performance.
       </Alert>
       <Flex direction="row" gap="md">
         <Dropzone
-          disabled={fileUploadDisabled}
-          className={fileUploadDisabled ? classes.disabled : null}
+          disabled={file_upload_disabled}
+          className={file_upload_disabled ? classes.disabled : null}
           onDrop={(files) => {
             setValue("files", [...(getValues("files") ?? []), ...files]);
-            setExperiments([]);
-            setResults([]);
             setShouldShowProgress(false);
             setTestFilesDropzoneDisabled(false);
             setFileUploadDisabled(true);
@@ -366,13 +270,8 @@ const Playground = ({ form }: { form: Form }) => {
               default:
                 break;
             }
-            notifications.show({
-              title: "Error",
-              message,
-              color: "red",
-            });
+            notifications.show({title: "Error", message, color: "red"});
           }}
-          // maxSize={3 * 1024 ** 2}
           style={{ width: "100%" }}
         >
           <Stack align="center">
@@ -380,11 +279,7 @@ const Playground = ({ form }: { form: Form }) => {
               <IconUpload
                 size="3.2rem"
                 stroke={1.5}
-                color={
-                  theme.colors[theme.primaryColor][
-                    theme.colorScheme === "dark" ? 4 : 6
-                  ]
-                }
+                color={theme.colors[theme.primaryColor][theme.colorScheme === "dark" ? 4 : 6]}
               />
             </Dropzone.Accept>
             <Dropzone.Reject>
@@ -399,7 +294,7 @@ const Playground = ({ form }: { form: Form }) => {
             </Dropzone.Idle>
             <div>
               <Text size="xl" inline align="center">
-                Upload Text for QA Eval
+                Upload Text for QA Evaluation
               </Text>
               <Text size="sm" color="dimmed" mt={7} align="center">
                 {"Attach a file (.txt, .pdf, .doc, .docx)"}
@@ -408,12 +303,12 @@ const Playground = ({ form }: { form: Form }) => {
           </Stack>
         </Dropzone>
         <TestFileUploadZone
-          disabled={testFilesDropzoneDisabled}
+          disabled={test_files_dropzone_disabled}
           setTestDataset={setTestDataset}
           setDidUploadTestDataset={setDidUploadTestDataset}
         />
       </Flex>
-      {!!watchFiles?.length && (
+      {!!watch_files?.length && (
         <>
           <Table>
             <thead>
@@ -423,7 +318,7 @@ const Playground = ({ form }: { form: Form }) => {
               </tr>
             </thead>
             <tbody>
-              {watchFiles?.map((file, id) => (
+              {watch_files?.map((file, id) => (
                 <tr key={id}>
                   <td>{file?.name}</td>
                   <td>{(file?.size / 1024 ** 2).toFixed(1)}</td>
@@ -431,14 +326,14 @@ const Playground = ({ form }: { form: Form }) => {
               ))}
             </tbody>
           </Table>
-          {!!testDataset.length && (
+          {!!test_dataset.length && (
             <Card>
               <Spoiler
                 maxHeight={0}
                 showLabel="Show available test dataset"
                 hideLabel={null}
                 transitionDuration={500}
-                controlRef={testDatasetSpoilerRef}
+                controlRef={test_dataset_spoiler_ref}
               >
                 <Stack>
                   <Group position="apart">
@@ -448,8 +343,7 @@ const Playground = ({ form }: { form: Form }) => {
                         style={{ marginBottom: "18px" }}
                         type="button"
                         variant="secondary"
-                        onClick={() => download(testDataset, "test_dataset")}
-                      >
+                        onClick={() => download(test_dataset, "test_dataset")}>
                         Download
                       </Button>
                       <Button
@@ -458,11 +352,7 @@ const Playground = ({ form }: { form: Form }) => {
                         variant="subtle"
                         onClick={() => {
                           setTestDataset([]);
-                          notifications.show({
-                            title: "Success",
-                            message: "The test dataset has been cleared.",
-                            color: "green",
-                          });
+                          notifications.show({title: "Success", message: "The test dataset has been cleared.", color: "green"});
                         }}
                       >
                         Reset
@@ -471,11 +361,7 @@ const Playground = ({ form }: { form: Form }) => {
                         style={{ marginBottom: "18px" }}
                         type="button"
                         variant="subtle"
-                        onClick={() => {
-                          if (testDatasetSpoilerRef.current)
-                            testDatasetSpoilerRef.current.click();
-                        }}
-                      >
+                        onClick={() => {if (test_dataset_spoiler_ref.current) test_dataset_spoiler_ref.current.click();}}>
                         Hide
                       </Button>
                     </Group>
@@ -489,7 +375,7 @@ const Playground = ({ form }: { form: Form }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {testDataset?.map((result: QAPair, index: number) => (
+                    {test_dataset?.map((result: QAPair, index: number) => (
                       <tr key={index}>
                         <td>{result?.question}</td>
                         <td>{result?.answer}</td>
@@ -505,24 +391,20 @@ const Playground = ({ form }: { form: Form }) => {
               style={{ marginBottom: "18px" }}
               type="submit"
               onClick={submit}
-              disabled={loading}
-            >
+              disabled={loading}>
               {runExperimentButtonLabel}
             </Button>
           </Flex>
         </>
       )}
-      {shouldShowProgress && (
+      {should_show_progress && (
         <Progress
-          // value={percentLoaded}
-          // label={percentLoaded + "%"}
           size="xl"
           radius="xl"
           sections={experimentProgress}
           color={loading ? "blue" : "green"}
         />
       )}
-      {!!experiments.length && (
         <Card>
           <Spoiler
             maxHeight={0}
@@ -530,7 +412,7 @@ const Playground = ({ form }: { form: Form }) => {
             hideLabel={null}
             transitionDuration={500}
             initialState={true}
-            controlRef={summarySpoilerRef}
+            controlRef={summary_spoiler_ref}
           >
             <Stack>
               <Group position="apart">
@@ -548,168 +430,31 @@ const Playground = ({ form }: { form: Form }) => {
                     style={{ marginBottom: "18px" }}
                     type="button"
                     variant="subtle"
-                    onClick={() => {
-                      if (summarySpoilerRef.current)
-                        summarySpoilerRef.current.click();
-                    }}
-                  >
+                    onClick={() => {if (summary_spoiler_ref.current) summary_spoiler_ref.current.click();}}>
                     Hide
                   </Button>
                 </Group>
               </Group>
             </Stack>
-            <ScrollArea scrollbarSize={0}>
-              <Table withBorder withColumnBorders striped highlightOnHover>
-                <thead>
-                  <tr>
-                    <th>#Experiment</th>
-                    <th>#Questions</th>
-                    <th>Chunk Size</th>
-                    <th>Overlap</th>
-                    <th>Split Method</th>
-                    <th>Retriever</th>
-                    <th>Embedding Algorithm</th>
-                    <th>Model</th>
-                    <th>Evaluator</th>
-                    <th>Grading Prompt Style</th>
-                    <th># of Chunks Retrieved</th>
-                    <th>Avg Retrieval Relevancy Score</th>
-                    <th>Avg Answer Similarity Score</th>
-                    <th>Avg BLEU</th>
-                    <th>Avg ROUGE</th>
-                    <th>Avg METEOR</th>
-                    <th>Avg Consistency Score</th>
-                    <th>Avg Latency (s)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {experiments?.map((result: Experiment, index: number) => (
-                    <tr key={index}>
-                      <td>{index + 1}</td>
-                      <td>{result?.evalQuestionsCount}</td>
-                      <td>{result?.chunkSize}</td>
-                      <td>{result?.overlap}</td>
-                      <td>{result?.splitMethod}</td>
-                      <td>{result?.retriever}</td>
-                      <td>{result?.embeddingAlgorithm}</td>
-                      <td>{result?.model}</td>
-                      <td>{result?.grader}</td>
-                      <td>{result?.gradingPrompt}</td>
-                      <td>{result?.numNeighbors}</td>
-                      <td>{Number(result?.avgRelevancyScore).toFixed(3)}</td>
-                      <td>{Number(result?.avgAnswerScore).toFixed(3)}</td>
-                      <td>{Number(result?.avgBleuScore).toFixed(3)}</td>
-                      <td>{Number(result?.avgRougeScore).toFixed(3)}</td>
-                      <td>{Number(result?.avgMeteorScores).toFixed(3)}</td>
-                      <td>{Number(result?.avgConsistencyScore).toFixed(3)}</td>
-                      <td>{result?.avgLatency.toFixed(3)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </ScrollArea>
-            <div style={{ height: 500 }}>
-              <ResponsiveScatterPlot
-                data={chartData}
-                margin={{ top: 60, right: 140, bottom: 70, left: 90 }}
-                xScale={{ type: "linear", min: 0, max: 1 }}
-                xFormat=">-.2f"
-                yScale={{ type: "linear", min: 0, max: "auto" }}
-                yFormat=">-.2f"
-                blendMode="multiply"
-                axisTop={null}
-                axisRight={null}
-                nodeSize={25}
-                axisBottom={{
-                  tickSize: 5,
-                  tickPadding: 5,
-                  tickRotation: 0,
-                  legend: "Avg Answer Similarity Score",
-                  legendPosition: "middle",
-                  legendOffset: 46,
-                }}
-                axisLeft={{
-                  tickSize: 5,
-                  tickPadding: 5,
-                  tickRotation: 0,
-                  legend: "Avg Latency (s)",
-                  legendPosition: "middle",
-                  legendOffset: -60,
-                }}
-                legends={[
-                  {
-                    anchor: "bottom-right",
-                    direction: "column",
-                    justify: false,
-                    translateX: 130,
-                    translateY: 0,
-                    itemWidth: 100,
-                    itemHeight: 12,
-                    itemsSpacing: 5,
-                    itemDirection: "left-to-right",
-                    symbolSize: 12,
-                    symbolShape: "circle",
-                    effects: [
-                      {
-                        on: "hover",
-                        style: {
-                          itemOpacity: 1,
-                        },
-                      },
-                    ],
-                  },
-                ]}
-              />
-            </div>
-          </Spoiler>
-        </Card>
-      )}
-      {!isEmpty(results) ? (
-        <Card>
-          <Spoiler
-            maxHeight={0}
-            showLabel="Show results"
-            hideLabel={null}
-            transitionDuration={500}
-            initialState={true}
-            controlRef={experimentsResultsSpoilerRef}
-          >
-            <Stack>
-              <Group position="apart">
-                <Title order={3}>Experiment Results</Title>
-                <br />
-                <br />
-                <Group>
-                  <Button
-                    style={{ marginBottom: "18px" }}
-                    type="button"
-                    variant="subtle"
-                    onClick={() => download(results, "results")}
-                  >
-                    Download
-                  </Button>
-                  <Button
-                    style={{ marginBottom: "18px" }}
-                    type="button"
-                    variant="subtle"
-                    onClick={() => {
-                      if (experimentsResultsSpoilerRef.current)
-                        experimentsResultsSpoilerRef.current.click();
-                    }}
-                  >
-                    Hide
-                  </Button>
-                </Group>
-              </Group>
-            </Stack>
-            <ExperimentResultTable
-              results={results}
-              isFastGradingPrompt={isFastGradingPrompt}
+            <ExperimentSummaryTable
+              experiments={paginatedExperiments}
+              onRowClick={(experiment) => 
+                {
+                  setSelectedExperiment(experiment)
+                  setNumberOfQuestion(experiment.number_of_question)
+                  setShouldShowProgress(false)
+                }
+              }
             />
+            <Flex justify="center" mt="md">
+              <Pagination
+                value={currentPage}
+                onChange={setCurrentPage}
+                total={Math.ceil(experiments.length / itemsPerPage)}
+              />
+            </Flex>
           </Spoiler>
         </Card>
-      ) : null}
-      {!isEmpty(results) ? (
         <Card>
           <Spoiler
             maxHeight={0}
@@ -717,7 +462,7 @@ const Playground = ({ form }: { form: Form }) => {
             hideLabel={null}
             transitionDuration={500}
             initialState={true}
-            controlRef={consistencyResultsSpoilerRef}
+            controlRef={consistency_results_spoiler_ref}
           >
             <Stack>
               <Group position="apart">
@@ -729,7 +474,7 @@ const Playground = ({ form }: { form: Form }) => {
                     style={{ marginBottom: "18px" }}
                     type="button"
                     variant="subtle"
-                    onClick={() => download(results.map(result => result.consistencyResults), "consistency_results")}
+                    onClick={() => download(results.map(result => result.consistency), "consistency_results")}
                   >
                     Download
                   </Button>
@@ -737,24 +482,22 @@ const Playground = ({ form }: { form: Form }) => {
                     style={{ marginBottom: "18px" }}
                     type="button"
                     variant="subtle"
-                    onClick={() => {
-                      if (consistencyResultsSpoilerRef.current)
-                        consistencyResultsSpoilerRef.current.click();
-                    }}
-                  >
+                    onClick={() => {if (consistency_results_spoiler_ref.current) consistency_results_spoiler_ref.current.click();}}>
                     Hide
                   </Button>
                 </Group>
               </Group>
             </Stack>
-            <ConsistencyResultTable
-              results={results}
-              isFastGradingPrompt={isFastGradingPrompt}
-            />
+            <ConsistencyResultTable results={paginatedConsistencyResults}/>
+            <Flex justify="center" mt="md">
+              <Pagination
+                value={resultsPage}
+                onChange={setResultsPerPage}
+                total={Math.ceil(results.length / resultsPerPage)}
+              />
+            </Flex>
           </Spoiler>
         </Card>
-      ) : null}
-            {!isEmpty(results) ? (
         <Card>
           <Spoiler
             maxHeight={0}
@@ -762,7 +505,7 @@ const Playground = ({ form }: { form: Form }) => {
             hideLabel={null}
             transitionDuration={500}
             initialState={true}
-            controlRef={deepEvalResultsSpoilerRef}
+            controlRef={deepeval_results_spoiler_ref}
           >
             <Stack>
               <Group position="apart">
@@ -774,7 +517,7 @@ const Playground = ({ form }: { form: Form }) => {
                     style={{ marginBottom: "18px" }}
                     type="button"
                     variant="subtle"
-                    onClick={() => download(results.map(result => result.deepeval), "deep_eval_results")}
+                    onClick={() => download(results.map(result => result?.deepeval), "deep_eval_results")}
                   >
                     Download
                   </Button>
@@ -782,23 +525,22 @@ const Playground = ({ form }: { form: Form }) => {
                     style={{ marginBottom: "18px" }}
                     type="button"
                     variant="subtle"
-                    onClick={() => {
-                      if (deepEvalResultsSpoilerRef.current)
-                        deepEvalResultsSpoilerRef.current.click();
-                    }}
-                  >
+                    onClick={() => {if (deepeval_results_spoiler_ref.current) deepeval_results_spoiler_ref.current.click();}}>
                     Hide
                   </Button>
                 </Group>
               </Group>
             </Stack>
-            <DeepEvalResultTable
-              results={results}
-              isFastGradingPrompt={isFastGradingPrompt}
-            />
+            <DeepEvalResultTable results={paginatedConsistencyResults}/>
+            <Flex justify="center" mt="md">
+              <Pagination
+                value={resultsPage}
+                onChange={setResultsPerPage}
+                total={Math.ceil(results.length / resultsPerPage)}
+              />
+            </Flex>
           </Spoiler>
         </Card>
-      ) : null}
     </Stack>
   );
 };

@@ -9,17 +9,16 @@ import Playground from "../../components/Playground";
 const PlaygroundPage = () => {
   const form = useForm<FormValues>({
     defaultValues: {
-      evalQuestionsCount: 1,
-      chunkSize: 2000,
-      overlap: 150,
-      splitMethod: "RecursiveTextSplitter",
-      embeddingAlgorithm: "Ollama",
-      model: "ollama-mistral-7b",
-      grader: "ollama-llama-3.1-8b",
-      retriever: "similarity-search",
-      gradingPrompt: "Descriptive",
-      numNeighbors: 3,
       files: [],
+      number_of_question: 1,
+      chunk_size: 2000,
+      chunk_overlap: 150,
+      split_method: "RecursiveTextSplitter",
+      embedding_provider: "Ollama",
+      retriever_type: "similarity-search",
+      model: "mistral",
+      evaluator_model: "llama3.1",
+      num_neighbors: 3
     },
   });
 
