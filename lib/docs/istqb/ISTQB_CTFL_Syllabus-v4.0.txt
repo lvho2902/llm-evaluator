@@ -1,0 +1,1181 @@
+### 0. Introduction
+
+#### 0.1. Purpose of this Syllabus
+This syllabus forms the basis for the International Software Testing Qualification at the Foundation Level. The ISTQB® provides this syllabus as follows:
+
+1. To member boards, to translate into their local language and to accredit training providers. Member boards may adapt the syllabus to their particular language needs and modify the references to adapt to their local publications.
+2. To certification bodies, to derive examination questions in their local language adapted to the learning objectives for this syllabus.
+3. To training providers, to produce courseware and determine appropriate teaching methods.
+4. To certification candidates, to prepare for the certification exam (either as part of a training course or independently).
+5. To the international software and systems engineering community, to advance the profession of software and systems testing, and as a basis for books and articles.
+
+#### 0.2. The Certified Tester Foundation Level in Software Testing
+The Foundation Level qualification is aimed at anyone involved in software testing. This includes people in roles such as testers, test analysts, test engineers, test consultants, test managers, software developers, and development team members. This Foundation Level qualification is also appropriate for anyone who wants a basic understanding of software testing, such as project managers, quality managers, product owners, software development managers, business analysts, IT directors, and management consultants. Holders of the Foundation Certificate will be able to go on to higher-level software testing qualifications.
+
+#### 0.3. Career Path for Testers
+The ISTQB® scheme provides support for testing professionals at all stages of their careers, offering both breadth and depth of knowledge. Individuals who achieved the ISTQB® Foundation certification may also be interested in the Core Advanced Levels (Test Analyst, Technical Test Analyst, and Test Manager) and thereafter Expert Level (Test Management or Improving the Test Process). Anyone seeking to develop skills in testing practices in an Agile environment could consider the Agile Technical Tester or Agile Test Leadership at Scale certifications. The Specialist stream offers a deep dive into areas that have specific test approaches and test activities (e.g., in test automation, AI testing, model-based testing, mobile app testing), that are related to specific test areas (e.g., performance testing, usability testing, acceptance testing, security testing), or which cluster testing know-how for certain industry domains (e.g., automotive or gaming). Please visit [www.istqb.org](http://www.istqb.org) for the latest information on ISTQB’s Certified Tester Scheme.
+
+#### 0.4. Business Outcomes
+This section lists the 14 Business Outcomes expected of a person who has achieved the Foundation Level certification.
+
+A Foundation Level Certified Tester can…
+
+- **FL-BO1** Understand what testing is and why it is beneficial
+- **FL-BO2** Understand fundamental concepts of software testing
+- **FL-BO3** Identify the test approach and activities to be implemented depending on the context of testing
+- **FL-BO4** Assess and improve the quality of documentation
+- **FL-BO5** Increase the effectiveness and efficiency of testing
+- **FL-BO6** Align the test process with the software development lifecycle
+- **FL-BO7** Understand test management principles
+- **FL-BO8** Write and communicate clear and understandable defect reports
+- **FL-BO9** Understand the factors that influence the priorities and efforts related to testing
+- **FL-BO10** Work as part of a cross-functional team
+- **FL-BO11** Know risks and benefits related to test automation
+- **FL-BO12** Identify essential skills required for testing
+- **FL-BO13** Understand the impact of risk on testing
+- **FL-BO14** Effectively report on test progress and quality
+
+#### 0.5. Examinable Learning Objectives and Cognitive Level of Knowledge
+Learning objectives support business outcomes and are used to create the Certified Tester Foundation Level exams. In general, all contents of chapters 1-6 of this syllabus are examinable at a K1 level. That is, the candidate may be asked to recognize, remember, or recall a keyword or concept mentioned in any of the six chapters. The specific learning objectives levels are shown at the beginning of each chapter, and classified as follows:
+
+- **K1: Remember**
+- **K2: Understand**
+- **K3: Apply**
+
+Further details and examples of learning objectives are given in Appendix A. All terms listed as keywords just below chapter headings shall be remembered (K1), even if not explicitly mentioned in the learning objectives.
+
+#### 0.6. The Foundation Level Certificate Exam
+The Foundation Level Certificate exam is based on this syllabus. Answers to exam questions may require the use of material based on more than one section of this syllabus. All sections of the syllabus are examinable, except for the Introduction and Appendices. Standards and books are included as references (Chapter 7), but their content is not examinable, beyond what is summarized in the syllabus itself from such standards and books. Refer to the document Foundation Level Examination Structures and Rules.
+
+#### 0.7. Accreditation
+An ISTQB® Member Board may accredit training providers whose course material follows this syllabus. Training providers should obtain accreditation guidelines from the Member Board or body that performs the accreditation. An accredited course is recognized as conforming to this syllabus, and is allowed to have an ISTQB® exam as part of the course. The accreditation guidelines for this syllabus follow the general Accreditation Guidelines published by the Processes Management and Compliance Working Group.
+
+#### 0.8. Handling of Standards
+There are standards referenced in the Foundation Syllabus (e.g., IEEE or ISO standards). These references provide a framework (as in the references to ISO 25010 regarding quality characteristics) or provide a source of additional information if desired by the reader. The standards documents are not intended for examination. Refer to Chapter 7 for more information on standards.
+
+#### 0.9. Staying Current
+The software industry changes rapidly. To deal with these changes and to provide the stakeholders with access to relevant and current information, the ISTQB working groups have created links on the [www.istqb.org](http://www.istqb.org) website, which refer to supporting documentation and changes to standards. This information is not examinable under the Foundation syllabus.
+
+#### 0.10. Level of Detail
+The level of detail in this syllabus allows for internationally consistent courses and exams. In order to achieve this goal, the syllabus consists of:
+
+- General instructional objectives describing the intention of the Foundation Level
+- A list of terms (keywords) that students must be able to recall
+- Learning objectives for each knowledge area, describing the cognitive learning outcomes to be achieved
+- A description of the key concepts, including references to recognized sources
+
+The syllabus content is not a description of the entire knowledge area of software testing; it reflects the level of detail to be covered in Foundation Level training courses. It focuses on test concepts and techniques that can be applied to all software projects independent of the SDLC employed.
+
+#### 0.11. How this Syllabus is Organized
+There are six chapters with examinable content. The top-level heading for each chapter specifies the training time for the chapter. Timing is not provided below the chapter level. For accredited training courses, the syllabus requires a minimum of 1135 minutes (18 hours and 55 minutes) of instruction, distributed across the six chapters as follows:
+
+- **Chapter 1: Fundamentals of Testing (180 minutes)**
+  - The student learns the basic principles related to testing, the reasons why testing is required, and what the test objectives are.
+  - The student understands the test process, the major test activities, and testware.
+  - The student understands the essential skills for testing.
+
+- **Chapter 2: Testing Throughout the Software Development Lifecycle (130 minutes)**
+  - The student learns how testing is incorporated into different development approaches.
+  - The student learns the concepts of test-first approaches, as well as DevOps.
+  - The student learns about the different test levels, test types, and maintenance testing.
+
+- **Chapter 3: Static Testing (80 minutes)**
+  - The student learns about the static testing basics, the feedback and review process.
+
+- **Chapter 4: Test Analysis and Design (390 minutes)**
+  - The student learns how to apply black-box, white-box, and experience-based test techniques to derive test cases from various software work products.
+  - The student learns about the collaboration-based test approach.
+
+- **Chapter 5: Managing the Test Activities (335 minutes)**
+  - The student learns how to plan tests in general, and how to estimate test effort.
+  - The student learns how risks can influence the scope of testing.
+  - The student learns how to monitor and control test activities.
+  - The student learns how configuration management supports testing.
+  - The student learns how to report defects in a clear and understandable way.
+
+- **Chapter 6: Test Tools (20 minutes)**
+  - The student learns to classify tools and to understand the risks and benefits of test automation.
+
+  ### 1. Fundamentals of Testing – 180 minutes
+
+  **Keywords**  
+  coverage, debugging, defect, error, failure, quality, quality assurance, root cause, test analysis, test basis, test case, test completion, test condition, test control, test data, test design, test execution, test implementation, test monitoring, test object, test objective, test planning, test procedure, test result, testing, testware, validation, verification
+  
+  **Learning Objectives for Chapter 1:**
+  
+  1.1 What is Testing?  
+  - FL-1.1.1  
+  - FL-1.1.2  
+    - (K1) Identify typical test objectives  
+    - (K2) Differentiate testing from debugging  
+  
+  1.2 Why is Testing Necessary?  
+  - FL-1.2.1  
+  - FL-1.2.2  
+  - FL-1.2.3  
+    - (K2) Exemplify why testing is necessary  
+    - (K1) Recall the relation between testing and quality assurance  
+    - (K2) Distinguish between root cause, error, defect, and failure  
+  
+  1.3 Testing Principles  
+  - FL-1.3.1  
+    - (K2) Explain the seven testing principles  
+  
+  1.4 Test Activities, Testware and Test Roles  
+  - FL-1.4.1  
+  - FL-1.4.2  
+  - FL-1.4.3  
+  - FL-1.4.4  
+  - FL-1.4.5  
+    - (K2) Summarize the different test activities and tasks  
+    - (K2) Explain the impact of context on the test process  
+    - (K2) Differentiate the testware that supports the test activities  
+    - (K2) Explain the value of maintaining traceability  
+    - (K2) Compare the different roles in testing  
+  
+  1.5 Essential Skills and Good Practices in Testing  
+  - FL-1.5.1  
+  - FL-1.5.2  
+  - FL-1.5.3  
+    - (K2) Give examples of the generic skills required for testing  
+    - (K1) Recall the advantages of the whole team approach  
+    - (K2) Distinguish the benefits and drawbacks of independence of testing  
+  
+  ---
+  
+  **1.1. What is Testing?**
+  
+  Software systems are an integral part of our daily life. Most people have had experience with software that did not work as expected. Software that does not work correctly can lead to many problems, including loss of money, time or business reputation, and, in extreme cases, even injury or death. Software testing assesses software quality and helps reducing the risk of software failure in operation. Software testing is a set of activities to discover defects and evaluate the quality of software artifacts. These artifacts, when being tested, are known as test objects. A common misconception about testing is that it only consists of executing tests (i.e., running the software and checking the test results). However, software testing also includes other activities and must be aligned with the software development lifecycle (see chapter 2). Another common misconception about testing is that testing focuses entirely on verifying the test object. Whilst testing involves verification, i.e., checking whether the system meets specified requirements, it also involves validation, which means checking whether the system meets users’ and other stakeholders’ needs in its operational environment. Testing may be dynamic or static. Dynamic testing involves the execution of software, while static testing does not. Static testing includes reviews (see chapter 3) and static analysis. Dynamic testing uses different types of test techniques and test approaches to derive test cases (see chapter 4). Testing is not only a technical activity. It also needs to be properly planned, managed, estimated, monitored and controlled (see chapter 5). Testers use tools (see chapter 6), but it is important to remember that testing is largely an intellectual activity, requiring the testers to have specialized knowledge, use analytical skills and apply critical thinking and systems thinking (Myers 2011, Roman 2018). The ISO/IEC/IEEE 29119-1 standard provides further information about software testing concepts.
+  
+  **1.1.1. Test Objectives**
+  
+  The typical test objectives are:  
+  - Evaluating work products such as requirements, user stories, designs, and code  
+  - Triggering failures and finding defects  
+  - Ensuring required coverage of a test object  
+  - Reducing the level of risk of inadequate software quality  
+  - Verifying whether specified requirements have been fulfilled  
+  - Verifying that a test object complies with contractual, legal, and regulatory requirements  
+  - Providing information to stakeholders to allow them to make informed decisions  
+  - Building confidence in the quality of the test object  
+  - Validating whether the test object is complete and works as expected by the stakeholders  
+  
+  Objectives of testing can vary, depending upon the context, which includes the work product being tested, the test level, risks, the software development lifecycle (SDLC) being followed, and factors related to the business context, e.g., corporate structure, competitive considerations, or time to market.
+  
+  **1.1.2. Testing and Debugging**
+  
+  Testing and debugging are separate activities. Testing can trigger failures that are caused by defects in the software (dynamic testing) or can directly find defects in the test object (static testing). When dynamic testing (see chapter 4) triggers a failure, debugging is concerned with finding causes of this failure (defects), analyzing these causes, and eliminating them. The typical debugging process in this case involves:  
+  - Reproduction of a failure  
+  - Diagnosis (finding the root cause)  
+  - Fixing the cause  
+  
+  Subsequent confirmation testing checks whether the fixes resolved the problem. Preferably, confirmation testing is done by the same person who performed the initial test. Subsequent regression testing can also be performed, to check whether the fixes are causing failures in other parts of the test object (see section 2.2.3 for more information on confirmation testing and regression testing). When static testing identifies a defect, debugging is concerned with removing it. There is no need for reproduction or diagnosis, since static testing directly finds defects, and cannot cause failures (see chapter 3).
+  
+  **1.2. Why is Testing Necessary?**
+  
+  Testing, as a form of quality control, helps in achieving the agreed upon goals within the set scope, time, quality, and budget constraints. Testing’s contribution to success should not be restricted to the test team activities. Any stakeholder can use their testing skills to bring the project closer to success. Testing components, systems, and associated documentation helps to identify defects in software.
+  
+  **1.2.1. Testing’s Contributions to Success**
+  
+  Testing provides a cost-effective means of detecting defects. These defects can then be removed (by debugging – a non-testing activity), so testing indirectly contributes to higher quality test objects. Testing provides a means of directly evaluating the quality of a test object at various stages in the SDLC. These measures are used as part of a larger project management activity, contributing to decisions to move to the next stage of the SDLC, such as the release decision. Testing provides users with indirect representation on the development project. Testers ensure that their understanding of users’ needs are considered throughout the development lifecycle. The alternative is to involve a representative set of users as part of the development project, which is not usually possible due to the high costs and lack of availability of suitable users. Testing may also be required to meet contractual or legal requirements, or to comply with regulatory standards.
+  
+  **1.2.2. Testing and Quality Assurance (QA)**
+  
+  While people often use the terms “testing” and “quality assurance” (QA) interchangeably, testing and QA are not the same. Testing is a form of quality control (QC). QC is a product-oriented, corrective approach that focuses on those activities supporting the achievement of appropriate levels of quality. Testing is a major form of quality control, while others include formal methods (model checking and proof of correctness), simulation and prototyping. QA is a process-oriented, preventive approach that focuses on the implementation and improvement of processes. It works on the basis that if a good process is followed correctly, then it will generate a good product. QA applies to both the development and testing processes, and is the responsibility of everyone on a project. Test results are used by QA and QC. In QC they are used to fix defects, while in QA they provide feedback on how well the development and test processes are performing.
+  
+  **1.2.3. Errors, Defects, Failures, and Root Causes**
+  
+  Human beings make errors (mistakes), which produce defects (faults, bugs), which in turn may result in failures. Humans make errors for various reasons, such as time pressure, complexity of work products, processes, infrastructure or interactions, or simply because they are tired or lack adequate training. Defects can be found in documentation, such as a requirements specification or a test script, in source code, or in a supporting artifact such as a build file. Defects in artifacts produced earlier in the SDLC, if undetected, often lead to defective artifacts later in the lifecycle. If a defect in code is executed, the system may fail to do what it should do, or do something it shouldn’t, causing a failure. Some defects will always result in a failure if executed, while others will only result in a failure in specific circumstances, and some may never result in a failure. Errors and defects are not the only cause of failures. Failures can also be caused by environmental conditions, such as when radiation or electromagnetic field cause defects in firmware. A root cause is a fundamental reason for the occurrence of a problem (e.g., a situation that leads to an error). Root causes are identified through root cause analysis, which is typically performed when a failure occurs or a defect is identified. It is believed that further similar failures or defects can be prevented or their frequency reduced by addressing the root cause, such as by removing it.
+  
+  
+  
+  **1.3. Testing Principles**
+  
+  Principles are fundamental truths that provide a basis for testing activities. They support the test process and its success, ensuring the test process is efficient and effective. The seven principles of testing are:  
+  
+  1. **Testing shows the presence of defects, not their absence**: Testing can show that defects are present in a test object, but it cannot prove that there are no defects. It can only prove that some specific defects are not present. It is not possible to test for all possible inputs and conditions, so testing can only provide a degree of confidence that the test object will behave as expected.  
+  
+  2. **Exhaustive testing is not possible**: It is not possible to test all possible inputs, conditions, and states in a complex system. Therefore, it is important to select a representative subset of test cases based on risk, coverage, or other criteria. This means that testing should be planned and focused on areas of highest risk and impact.  
+  
+  3. **Early testing saves time and money**: The cost of fixing defects increases as they move further down the SDLC. By finding and fixing defects early, testing can help reduce overall project costs. This is why testing should start as early as possible in the development lifecycle.  
+  
+  4. **Defects clustering**: Defects tend to cluster in specific areas or components of a test object. By focusing testing efforts on areas known to have high defect density, testers can be more effective and efficient in finding defects.  
+  
+  5. **Beware of the pesticide paradox**: Running the same set of tests repeatedly will not find new defects. It is important to regularly review and update test cases to address new risks, and to incorporate different test techniques and approaches.  
+  
+  6. **Testing is context-dependent**: The approach to testing should be tailored to the specific context and environment in which the test object is used. This includes considering the type of system, the development process, and the needs of stakeholders.  
+  
+  7. **Absence of errors fallacy**: Finding and fixing defects does not guarantee that the system will meet user needs or requirements. The system must be validated in the context of the intended environment and use cases to ensure it fulfills its intended purpose.
+  
+  **1.4. Test Activities, Testware and Test Roles**
+  
+  **1.4.1. Test Activities**
+  
+  Test activities are the various tasks and processes involved in the testing lifecycle, including:  
+  - Test planning: Defining the scope, approach, and resources needed for testing.  
+  - Test analysis: Identifying and analyzing test conditions, requirements, and risks.  
+  - Test design: Creating test cases, test scripts, and test data.  
+  - Test implementation: Setting up test environments and executing test cases.  
+  - Test execution: Running the tests and recording results.  
+  - Test reporting: Documenting test results, defects, and issues.  
+  - Test closure: Finalizing testing activities and evaluating test outcomes.
+  
+  **1.4.2. Testware**
+  
+  Testware is the collection of test-related artifacts and tools used to support testing. This includes:  
+  - Test plans  
+  - Test cases  
+  - Test scripts  
+  - Test data  
+  - Test environments  
+  - Test results  
+  
+  **1.4.3. Traceability**
+  
+  Maintaining traceability means ensuring that every test case can be traced back to specific requirements or risks. This helps ensure that all requirements are tested and that the test coverage is adequate. Traceability also helps in assessing the impact of changes and managing testing activities effectively.
+  
+  **1.4.4. Impact of Context**
+  
+  The context in which testing occurs can affect the test process and outcomes. Factors such as the development methodology, project size, team composition, and stakeholder needs all influence how testing is conducted. Understanding the context helps in tailoring the test approach to meet specific project goals and constraints.
+  
+  **1.4.5. Test Roles**
+  
+  Different roles in testing include:  
+  - Test Manager: Oversees the overall test process, planning, and resource management.  
+  - Test Analyst: Defines and designs test cases, based on requirements and risk analysis.  
+  - Test Designer: Creates test scripts and test data.  
+  - Test Executor: Runs the tests and records results.  
+  - Test Lead: Coordinates the test team and manages test execution.  
+  - Test Consultant: Provides expert advice and guidance on testing practices and processes.
+  
+  **1.5. Essential Skills and Good Practices in Testing**
+  
+  **1.5.1. Generic Skills**
+  
+  Testers need a range of skills, including:  
+  - Analytical skills to understand and evaluate requirements and test conditions.  
+  - Critical thinking to identify potential defects and assess testing effectiveness.  
+  - Communication skills to effectively report and discuss test results and issues.  
+  - Technical skills to understand and work with the test object and related tools.
+  
+  **1.5.2. Whole Team Approach**
+  
+  A whole team approach to testing involves integrating testing activities throughout the development process, with all team members contributing to and supporting testing efforts. This approach helps to improve quality and efficiency by ensuring that testing is not treated as a separate phase but as an integral part of the development lifecycle.
+  
+  **1.5.3. Independence of Testing**
+  
+  Independent testing, where testers are separate from the development team, can provide an objective perspective and reduce biases. However, there are benefits and drawbacks to this approach. While independence can enhance objectivity, it may also result in less understanding of the system and its context. Balancing independence with effective communication and collaboration is key to successful testing.
+  
+  ---
+  
+  ### Key Points Summary:
+  
+  1. **Testing** evaluates software quality by discovering defects and assessing artifacts, including both dynamic and static methods. It involves planning, management, and analysis.
+  
+  2. **Objectives** of testing include verifying requirements, identifying defects, and ensuring quality, while **debugging** focuses on fixing identified defects.
+  
+  3. **Testing is necessary** for cost-effectiveness, quality evaluation, and meeting requirements. It supports **Quality Assurance (QA)** and involves detecting defects that could lead to failures.
+  
+  4. **Principles of Testing** highlight that testing reveals defects, exhaustive testing isn’t feasible, early testing is beneficial, and testing must be context-dependent.
+  
+  5. **Test Activities** encompass planning, analysis, design, execution, and reporting, supported by testware and roles that contribute to effective testing and quality assurance.
+  
+  6. **Skills and Practices** emphasize the importance of analytical, communication, and technical skills, the value of a whole team approach, and balancing testing independence with collaboration.
+  
+  This chapter sets the foundation for understanding testing and its role in software quality, setting the stage for deeper exploration of testing processes and techniques in subsequent chapters.
+
+  ### 2. Testing Throughout the Software Development Lifecycle – 130 minutes 
+
+  **Keywords**  
+  acceptance testing, black-box testing, component integration testing, component testing, confirmation testing, functional testing, integration testing, maintenance testing, non-functional testing, regression testing, shift-left, system integration testing, system testing, test level, test object, test type, white-box testing  
+  
+  **Learning Objectives for Chapter 2**  
+  **2.1 Testing in the Context of a Software Development Lifecycle**  
+  - **FL-2.1.1** (K2) Explain the impact of the chosen software development lifecycle on testing  
+  - **FL-2.1.2** (K1) Recall good testing practices that apply to all software development lifecycles  
+  - **FL-2.1.3** (K1) Recall the examples of test-first approaches to development  
+  - **FL-2.1.4** (K2) Summarize how DevOps might have an impact on testing  
+  - **FL-2.1.5** (K2) Explain the shift-left approach  
+  - **FL-2.1.6** (K2) Explain how retrospectives can be used as a mechanism for process improvement  
+  
+  **2.2 Test Levels and Test Types**  
+  - **FL-2.2.1** (K2) Distinguish the different test levels  
+  - **FL-2.2.2** (K2) Distinguish the different test types  
+  - **FL-2.2.3** (K2) Distinguish confirmation testing from regression testing  
+  
+  **2.3 Maintenance Testing**  
+  - **FL-2.3.1** (K2) Summarize maintenance testing and its triggers  
+  
+  ---
+  
+  **2.1. Testing in the Context of a Software Development Lifecycle**  
+  A software development lifecycle (SDLC) model is an abstract, high-level representation of the software development process. An SDLC model defines how different development phases and types of activities performed within this process relate to each other, both logically and chronologically. Examples of SDLC models include: sequential development models (e.g., waterfall model, V-model), iterative development models (e.g., spiral model, prototyping), and incremental development models (e.g., Unified Process). 
+  
+  Some activities within software development processes can also be described by more detailed software development methods and Agile practices. Examples include: acceptance test-driven development (ATDD), behavior-driven development (BDD), domain-driven design (DDD), extreme programming (XP), feature-driven development (FDD), Kanban, Lean IT, Scrum, and test-driven development (TDD).  
+  
+  **2.1.1. Impact of the Software Development Lifecycle on Testing**  
+  Testing must be adapted to the SDLC to succeed. The choice of the SDLC impacts on the:  
+  - Scope and timing of test activities (e.g., test levels and test types)  
+  - Level of detail of test documentation  
+  - Choice of test techniques and test approach  
+  - Extent of test automation  
+  - Role and responsibilities of a tester  
+  
+  In sequential development models, in the initial phases testers typically participate in requirement reviews, test analysis, and test design. The executable code is usually created in the later phases, so typically dynamic testing cannot be performed early in the SDLC.  
+  
+  In some iterative and incremental development models, it is assumed that each iteration delivers a working prototype or product increment. This implies that in each iteration both static and dynamic testing may be performed at all test levels. Frequent delivery of increments requires fast feedback and extensive regression testing.  
+  
+  Agile software development assumes that change may occur throughout the project. Therefore, lightweight work product documentation and extensive test automation to make regression testing easier are favored in agile projects. Also, most of the manual testing tends to be done using experience-based test techniques (see Section 4.4) that do not require extensive prior test analysis and design.  
+  
+  **2.1.2. Software Development Lifecycle and Good Testing Practices**  
+  Good testing practices, independent of the chosen SDLC model, include the following:  
+  - For every software development activity, there is a corresponding test activity, so that all development activities are subject to quality control  
+  - Different test levels (see chapter 2.2.1) have specific and different test objectives, which allows for testing to be appropriately comprehensive while avoiding redundancy  
+  - Test analysis and design for a given test level begins during the corresponding development phase of the SDLC, so that testing can adhere to the principle of early testing (see section 1.3)  
+  - Testers are involved in reviewing work products as soon as drafts of this documentation are available, so that this earlier testing and defect detection can support the shift-left strategy (see section 2.1.5)  
+  
+  **2.1.3. Testing as a Driver for Software Development**  
+  TDD, ATDD and BDD are similar development approaches, where tests are defined as a means of directing development. Each of these approaches implements the principle of early testing (see section 1.3) and follows a shift-left approach (see section 2.1.5), since the tests are defined before the code is written. They support an iterative development model. These approaches are characterized as follows:  
+  
+  **Test-Driven Development (TDD):**  
+  - Directs the coding through test cases (instead of extensive software design) (Beck 2003)  
+  - Tests are written first, then the code is written to satisfy the tests, and then the tests and code are refactored  
+  
+  **Acceptance Test-Driven Development (ATDD)** (see section 4.5.3):  
+  - Derives tests from acceptance criteria as part of the system design process (Gärtner 2011)  
+  - Tests are written before the part of the application is developed to satisfy the tests  
+  
+  **Behavior-Driven Development (BDD):**  
+  - Expresses the desired behavior of an application with test cases written in a simple form of natural language, which is easy to understand by stakeholders – usually using the Given/When/Then format. (Chelimsky 2010)  
+  - Test cases are then automatically translated into executable tests  
+  
+  For all the above approaches, tests may persist as automated tests to ensure the code quality in future adaptations / refactoring.  
+  
+  **2.1.4. DevOps and Testing**  
+  DevOps is an organizational approach aiming to create synergy by getting development (including testing) and operations to work together to achieve a set of common goals. DevOps requires a cultural shift within an organization to bridge the gaps between development (including testing) and operations while treating their functions with equal value. DevOps promotes team autonomy, fast feedback, integrated toolchains, and technical practices like continuous integration (CI) and continuous delivery (CD). This enables the teams to build, test and release high-quality code faster through a DevOps delivery pipeline (Kim 2016).  
+  
+  From the testing perspective, some of the benefits of DevOps are:  
+  - Fast feedback on the code quality, and whether changes adversely affect existing code  
+  - CI promotes a shift-left approach in testing (see section 2.1.5) by encouraging developers to submit high quality code accompanied by component tests and static analysis  
+  - Promotes automated processes like CI/CD that facilitate establishing stable test environments  
+  - Increases the view on non-functional quality characteristics (e.g., performance, reliability)  
+  - Automation through a delivery pipeline reduces the need for repetitive manual testing  
+  - The risk in regression is minimized due to the scale and range of automated regression tests  
+  
+  DevOps is not without its risks and challenges, which include:  
+  - The DevOps delivery pipeline must be defined and established  
+  - CI / CD tools must be introduced and maintained  
+  - Test automation requires additional resources and may be difficult to establish and maintain  
+  
+  Although DevOps comes with a high level of automated testing, manual testing – especially from the user's perspective – will still be needed.  
+  
+  **2.1.5. Shift-Left Approach**  
+  The principle of early testing (see section 1.3) is sometimes referred to as shift-left because it is an approach where testing is performed earlier in the SDLC. Shift-left normally suggests that testing should be done earlier (e.g., not waiting for code to be implemented or for components to be integrated), but it does not mean that testing later in the SDLC should be neglected.  
+  
+  There are some good practices that illustrate how to achieve a “shift-left” in testing, which include:  
+  - Reviewing the specification from the perspective of testing. These review activities on specifications often find potential defects, such as ambiguities, incompleteness, and inconsistencies  
+  - Writing test cases before the code is written and have the code run in a test harness during code implementation  
+  - Using CI and even better CD as it comes with fast feedback and automated component tests to accompany source code when it is submitted to the code repository  
+  - Completing static analysis of source code prior to dynamic testing, or as part of an automated process  
+  - Performing non-functional testing starting at the component test level, where possible. This is a form of shift-left as these non-functional test types tend to be performed later in the SDLC when a complete system and a representative test environment are available  
+  
+  A shift-left approach might result in extra training, effort and/or costs earlier in the process but is expected to save efforts and/or costs later in the process. For the shift-left approach it is important that stakeholders are convinced and bought into this concept.  
+  
+  **2.1.6. Retrospectives and Process Improvement**  
+  Retrospectives (also known as “post-project meetings” and project retrospectives) are often held at the end of a project or an iteration, at a release milestone, or can be held when needed. The timing and organization of the retrospectives depend on the particular SDLC model being followed. In these meetings the participants (not only testers, but also e.g.,
+  
+   developers, and stakeholders) discuss the past phases of the project or the iteration, focusing on aspects that went well and aspects that should be improved.  
+  
+  The primary goal of retrospectives is to determine what improvements to make in future phases or iterations. Typical discussions may include:  
+  - The efficiency and effectiveness of the testing process  
+  - What has been learned from the testing activities  
+  - How the quality of testing processes can be improved in the future  
+  
+  It is important to address both positive and negative aspects of the testing and development process in order to continuously improve the effectiveness and efficiency of the software development process.  
+  
+  **2.2. Test Levels and Test Types**  
+  To understand the testing approach in a given SDLC, one needs to understand the different test levels and test types that are available and their use.  
+  
+  **2.2.1. Test Levels**  
+  Test levels are used to structure the testing process. Different levels have different objectives and scope. The main test levels are:  
+  
+  **Component Testing** (also known as unit testing or module testing)  
+  - Focuses on individual components or units of code.  
+  - Objectives: to ensure that each component performs as expected in isolation.  
+  - Performed by developers and may include static analysis, code reviews, and unit tests.  
+  
+  **Component Integration Testing** (also known as integration testing)  
+  - Focuses on the interactions between integrated components or systems.  
+  - Objectives: to detect defects in the interaction between components.  
+  - Performed after component testing, often by testers, and may include integration tests, interface tests, and communication protocols.  
+  
+  **System Testing**  
+  - Focuses on the complete and integrated software system.  
+  - Objectives: to validate that the system meets the specified requirements and performs its intended functions.  
+  - Performed by testers, often using functional and non-functional tests.  
+  
+  **Acceptance Testing**  
+  - Focuses on validating the system against user requirements and expectations.  
+  - Objectives: to determine if the system is ready for delivery and meets business needs.  
+  - Performed by end users or stakeholders, often using functional, usability, and user acceptance tests.  
+  
+  **2.2.2. Test Types**  
+  Test types are used to categorize tests based on their objectives and characteristics. The main test types are:  
+  
+  **Functional Testing**  
+  - Tests the functionality of the system according to the requirements.  
+  - Examples: functional tests, integration tests, system tests, acceptance tests.  
+  
+  **Non-Functional Testing**  
+  - Tests aspects of the system that are not related to specific functions but to the quality attributes.  
+  - Examples: performance testing, security testing, usability testing, reliability testing.  
+  
+  **White-Box Testing**  
+  - Tests based on knowledge of the internal structure and code of the application.  
+  - Examples: unit tests, code coverage tests, path tests.  
+  
+  **Black-Box Testing**  
+  - Tests based on the specifications and requirements without knowledge of the internal workings.  
+  - Examples: functional tests, system tests, acceptance tests.  
+  
+  **2.2.3. Confirmation Testing vs. Regression Testing**  
+  - **Confirmation Testing**: Performed to verify that a specific defect has been fixed. This is done by re-running the failed test cases to confirm that the defect no longer exists.  
+  - **Regression Testing**: Performed to ensure that changes to the software (e.g., fixes, enhancements) have not introduced new defects or adversely affected existing functionalities. This includes re-running previous test cases to check if the software's behavior has changed.  
+  
+  **2.3. Maintenance Testing**  
+  Maintenance testing is carried out to ensure that the software continues to perform well as it undergoes changes. This can include updates, enhancements, or fixes. Maintenance testing typically includes:  
+  
+  **Triggers for Maintenance Testing:**  
+  - **Bug Fixes**: Fixes applied to correct defects identified in the software.  
+  - **Enhancements**: New features or improvements added to the software.  
+  - **Updates**: Changes made to the software to keep it compatible with new environments or technologies.  
+  - **Releases**: New versions or iterations of the software that include a combination of fixes, enhancements, and updates.  
+  
+  **Objectives of Maintenance Testing:**  
+  - To ensure that the changes made to the software do not negatively impact existing functionality.  
+  - To verify that the software continues to meet its requirements and performance standards.  
+  - To identify and fix any new defects introduced by the changes.  
+  
+  Maintenance testing often involves regression testing, as well as confirmation testing to verify specific fixes.
+
+  ### 3. Static Testing – 80 minutes
+
+  **Keywords**  
+  anomaly, dynamic testing, formal review, informal review, inspection, review, static analysis, static testing, technical review, walkthrough  
+  
+  **Learning Objectives for Chapter 3:**  
+  **3.1 Static Testing Basics**  
+  - **FL-3.1.1** (K1) Recognize types of products that can be examined by the different static test techniques  
+  - **FL-3.1.2** (K2) Explain the value of static testing  
+  - **FL-3.1.3** (K2) Compare and contrast static and dynamic testing  
+  
+  **3.2 Feedback and Review Process**  
+  - **FL-3.2.1** (K1) Identify the benefits of early and frequent stakeholder feedback  
+  - **FL-3.2.2** (K2) Summarize the activities of the review process  
+  - **FL-3.2.3** (K1) Recall which responsibilities are assigned to the principal roles when performing reviews  
+  - **FL-3.2.4** (K2) Compare and contrast the different review types  
+  - **FL-3.2.5** (K1) Recall the factors that contribute to a successful review  
+  
+  **3.1. Static Testing Basics**  
+  In contrast to dynamic testing, in static testing the software under test does not need to be executed. Code, process specification, system architecture specification, or other work products are evaluated through manual examination (e.g., reviews) or with the help of a tool (e.g., static analysis). Test objectives include improving quality, detecting defects, and assessing characteristics like readability, completeness, correctness, testability, and consistency. Static testing can be applied for both verification and validation. Testers, business representatives, and developers work together during example mappings, collaborative user story writing, and backlog refinement sessions to ensure that user stories and related work products meet defined criteria, e.g., the Definition of Ready (see section 5.1.3). Review techniques can be applied to ensure user stories are complete and understandable and include testable acceptance criteria. By asking the right questions, testers explore, challenge, and help improve the proposed user stories.
+  
+  Static analysis can identify problems prior to dynamic testing while often requiring less effort, since no test cases are required, and tools (see chapter 6) are typically used. Static analysis is often incorporated into CI frameworks (see section 2.1.4). While largely used to detect specific code defects, static analysis is also used to evaluate maintainability and security. Spelling checkers and readability tools are other examples of static analysis tools.
+  
+  **3.1.1. Work Products Examinable by Static Testing**  
+  Almost any work product can be examined using static testing. Examples include requirement specification documents, source code, test plans, test cases, product backlog items, test charters, project documentation, contracts, and models.
+  
+  Any work product that can be read and understood can be the subject of a review. However, for static analysis, work products need a structure against which they can be checked (e.g., models, code, or text with a formal syntax).
+  
+  Work products that are not appropriate for static testing include those that are difficult to interpret by human beings and that should not be analyzed by tools (e.g., 3rd party executable code due to legal reasons).
+  
+  **3.1.2. Value of Static Testing**  
+  Static testing can detect defects in the earliest phases of the SDLC, fulfilling the principle of early testing (see section 1.3). It can also identify defects which cannot be detected by dynamic testing (e.g., unreachable code, design patterns not implemented as desired, defects in non-executable work products).
+  
+  Static testing provides the ability to evaluate the quality of, and to build confidence in work products. By verifying the documented requirements, the stakeholders can also make sure that these requirements describe their actual needs. Since static testing can be performed early in the SDLC, a shared understanding can be created among the involved stakeholders. Communication will also be improved between the involved stakeholders. For this reason, it is recommended to involve a wide variety of stakeholders in static testing.
+  
+  Even though reviews can be costly to implement, the overall project costs are usually much lower than when no reviews are performed because less time and effort needs to be spent on fixing defects later in the project.
+  
+  Code defects can be detected using static analysis more efficiently than in dynamic testing, usually resulting in both fewer code defects and a lower overall development effort.
+  
+  **3.1.3. Differences between Static Testing and Dynamic Testing**  
+  Static testing and dynamic testing practices complement each other. They have similar objectives, such as supporting the detection of defects in work products (see section 1.1.1), but there are also some differences, such as:  
+  - Static and dynamic testing (with analysis of failures) can both lead to the detection of defects; however, there are some defect types that can only be found by either static or dynamic testing.  
+  - Static testing finds defects directly, while dynamic testing causes failures from which the associated defects are determined through subsequent analysis.  
+  - Static testing may more easily detect defects that lay on paths through the code that are rarely executed or hard to reach using dynamic testing.  
+  - Static testing can be applied to non-executable work products, while dynamic testing can only be applied to executable work products.  
+  - Static testing can be used to measure quality characteristics that are not dependent on executing code (e.g., maintainability), while dynamic testing can be used to measure quality characteristics that are dependent on executing code (e.g., performance efficiency).  
+  
+  Typical defects that are easier and/or cheaper to find through static testing include:  
+  - Defects in requirements (e.g., inconsistencies, ambiguities, contradictions, omissions, inaccuracies, duplications)  
+  - Design defects (e.g., inefficient database structures, poor modularization)  
+  - Certain types of coding defects (e.g., variables with undefined values, undeclared variables, unreachable or duplicated code, excessive code complexity)  
+  - Deviations from standards (e.g., lack of adherence to naming conventions in coding standards)  
+  - Incorrect interface specifications (e.g., mismatched number, type, or order of parameters)  
+  - Specific types of security vulnerabilities (e.g., buffer overflows)  
+  - Gaps or inaccuracies in test basis coverage (e.g., missing tests for an acceptance criterion)  
+  
+  **3.2. Feedback and Review Process**  
+  
+  **3.2.1. Benefits of Early and Frequent Stakeholder Feedback**  
+  Early and frequent feedback allows for the early communication of potential quality problems. If there is little stakeholder involvement during the SDLC, the product being developed might not meet the stakeholder’s original or current vision. A failure to deliver what the stakeholder wants can result in costly rework, missed deadlines, blame games, and might even lead to complete project failure.
+  
+  Frequent stakeholder feedback throughout the SDLC can prevent misunderstandings about requirements and ensure that changes to requirements are understood and implemented earlier. This helps the development team to improve their understanding of what they are building. It allows them to focus on those features that deliver the most value to the stakeholders and that have the most positive impact on identified risks.
+  
+  **3.2.2. Review Process Activities**  
+  The ISO/IEC 20246 standard defines a generic review process that provides a structured but flexible framework from which a specific review process may be tailored to a particular situation. If the required review is more formal, then more of the tasks described for the different activities will be needed.
+  
+  The size of many work products makes them too large to be covered by a single review. The review process may be invoked a couple of times to complete the review for the entire work product.
+  
+  The activities in the review process are:  
+  - **Planning**: During the planning phase, the scope of the review, which comprises the purpose, the work product to be reviewed, quality characteristics to be evaluated, areas to focus on, exit criteria, supporting information such as standards, effort, and the timeframes for the review, shall be defined.  
+  - **Review initiation**: During review initiation, the goal is to make sure that everyone and everything involved is prepared to start the review. This includes making sure that every participant has access to the work product under review, understands their role and responsibilities, and receives everything needed to perform the review.  
+  - **Individual review**: Every reviewer performs an individual review to assess the quality of the work product under review and to identify anomalies, recommendations, and questions by applying one or more review techniques (e.g., checklist-based reviewing, scenario-based reviewing). The ISO/IEC 20246 standard provides more depth on different review techniques. The reviewers log all their identified anomalies, recommendations, and questions.  
+  - **Communication and analysis**: Since the anomalies identified during a review are not necessarily defects, all these anomalies need to be analyzed and discussed. For every anomaly, the decision should be made on its status, ownership, and required actions. This is typically done in a review meeting, during which the participants also decide what the quality level of the reviewed work product is and what follow-up actions are required. A follow-up review may be required to complete actions.  
+  - **Fixing and reporting**: For every defect, a defect report should be created so that corrective actions can be followed up. Once the exit criteria are reached, the work product can be accepted. The review results are reported.
+  
+  **3.2.3. Roles and Responsibilities in Reviews**  
+  Reviews involve various stakeholders, who may take on several roles. The principal roles and their responsibilities are:  
+  - **Manager**: decides what is to be reviewed and provides resources, such as staff and time for the review  
+  - **Author**: creates and fixes the work product under review  
+  - **Moderator** (also known as the facilitator): ensures the effective running of review meetings, including mediation, time management, and a safe
+  
+   review environment in which everyone can speak freely  
+  - **Scribe** (also known as recorder): collates anomalies from reviewers and records review information, such as decisions and new anomalies found during the review meeting  
+  - **Reviewer**: performs reviews. A reviewer may be someone working on the project, a subject matter expert, or any other stakeholder  
+  - **Review leader**: takes overall responsibility for the review such as deciding who will be involved and organizing when and where the review will take place  
+  
+  Other, more detailed roles are possible, as described in the ISO/IEC 20246 standard.
+  
+  **3.2.4. Review Types**  
+  There exist many review types ranging from informal reviews to formal reviews. The required level of formality depends on factors such as the SDLC being followed, the maturity of the development process, the criticality and complexity of the work product being reviewed, legal or regulatory requirements, and the need for an audit trail. The same work product can be reviewed with different review types, e.g., first an informal one and later a more formal one.
+  
+  Selecting the right review type is key to achieving the required review objectives (see section 3.2.5). The selection is not only based on the objectives but also on factors such as the project needs, available resources, work product type and risks, business domain, and company culture.
+  
+  Some commonly used review types are:  
+  - **Informal review**: Informal reviews do not follow a defined process and do not require a formal documented output. The main objective is detecting anomalies.  
+  - **Walkthrough**: A walkthrough, which is led by the author, can serve many objectives, such as evaluating quality and building confidence in the work product, educating reviewers, gaining consensus, generating new ideas, motivating and enabling authors to improve, and detecting anomalies. Reviewers might perform an individual review before the walkthrough, but this is not required.  
+  - **Technical Review**: A technical review is performed by technically qualified reviewers and led by a moderator. The objectives of a technical review are to gain consensus and make decisions regarding a technical problem, but also to detect anomalies, evaluate quality and build confidence in the work product, generate new ideas, and to motivate and enable authors to improve.  
+  - **Inspection**: As inspections are the most formal type of review, they follow the complete generic process (see section 3.2.2). The main objective is to find the maximum number of anomalies. Other objectives are to evaluate quality, build confidence in the work product, and to motivate and enable authors to improve. Metrics are collected and used to improve the SDLC, including the inspection process. In inspections, the author cannot act as the review leader or scribe.
+  
+  **3.2.5. Success Factors for Reviews**  
+  There are several factors that determine the success of reviews, which include:  
+  - Defining clear objectives and measurable exit criteria. Evaluation of participants should never be an objective  
+  - Choosing the appropriate review type to achieve the given objectives, and to suit the type of work product, the review participants, the project needs, and context  
+  - Conducting reviews on small chunks so that reviewers do not lose concentration during an individual review and/or the review meeting (when held)  
+  - Providing feedback from reviews to stakeholders and authors so they can improve the product and their activities (see section 3.2.1)  
+  - Providing adequate time to participants to prepare for the review  
+  - Support from management for the review process  
+  - Making reviews part of the organization’s culture, to promote learning and process improvement  
+  - Providing adequate training for all participants so they know how to fulfil their role  
+  - Facilitating meetings
+
+### 4. Test Analysis and Design – 390 minutes
+
+**Keywords**  
+*acceptance criteria, acceptance test-driven development, black-box test technique, boundary value analysis, branch coverage, checklist-based testing, collaboration-based test approach, coverage, coverage item, decision table testing, equivalence partitioning, error guessing, experience-based test technique, exploratory testing, state transition testing, statement coverage, test technique, white-box test technique*
+
+### **Learning Objectives for Chapter 4**
+
+#### **4.1 Test Techniques Overview**
+
+- **FL-4.1.1 (K2)**  
+  Distinguish black-box, white-box, and experience-based test techniques
+
+#### **4.2 Black-box Test Techniques**
+
+- **FL-4.2.1 (K3)**  
+  Use equivalence partitioning to derive test cases
+- **FL-4.2.2 (K3)**  
+  Use boundary value analysis to derive test cases
+- **FL-4.2.3 (K3)**  
+  Use decision table testing to derive test cases
+- **FL-4.2.4 (K3)**  
+  Use state transition testing to derive test cases
+
+#### **4.3 White-box Test Techniques**
+
+- **FL-4.3.1 (K2)**  
+  Explain statement testing
+- **FL-4.3.2 (K2)**  
+  Explain branch testing
+- **FL-4.3.3 (K2)**  
+  Explain the value of white-box testing
+
+#### **4.4 Experience-based Test Techniques**
+
+- **FL-4.4.1 (K2)**  
+  Explain error guessing
+- **FL-4.4.2 (K2)**  
+  Explain exploratory testing
+- **FL-4.4.3 (K2)**  
+  Explain checklist-based testing
+
+#### **4.5 Collaboration-based Test Approaches**
+
+- **FL-4.5.1 (K2)**  
+  Explain how to write user stories in collaboration with developers and business representatives
+- **FL-4.5.2 (K2)**  
+  Classify the different options for writing acceptance criteria
+- **FL-4.5.3 (K3)**  
+  Use acceptance test-driven development (ATDD) to derive test cases
+
+### **4.1 Test Techniques Overview**
+
+Test techniques support the tester in test analysis (what to test) and in test design (how to test). These techniques help develop a relatively small but sufficient set of test cases systematically. They also help the tester define test conditions, identify coverage items, and identify test data during test analysis and design.
+
+Further information on test techniques and their corresponding measures can be found in the **ISO/IEC/IEEE 29119-4** standard, and in **(Beizer 1990, Craig 2002, Copeland 2004, Koomen 2006, Jorgensen 2014, Ammann 2016, Forgács 2019)**.
+
+In this syllabus, test techniques are classified as:
+
+- **Black-box Test Techniques** (specification-based)  
+  Based on an analysis of the specified behavior of the test object without reference to its internal structure. Test cases are independent of how the software is implemented.
+
+- **White-box Test Techniques** (structure-based)  
+  Based on an analysis of the test object’s internal structure and processing. Test cases depend on how the software is designed and can only be created after the design or implementation of the test object.
+
+- **Experience-based Test Techniques**  
+  Use the knowledge and experience of testers for the design and implementation of test cases. These techniques depend heavily on the tester’s skills and can detect defects missed by black-box and white-box techniques.
+
+### **4.2 Black-Box Test Techniques**
+
+Commonly used black-box test techniques include:
+
+- **Equivalence Partitioning**
+- **Boundary Value Analysis**
+- **Decision Table Testing**
+- **State Transition Testing**
+
+#### **4.2.1 Equivalence Partitioning**
+
+Equivalence Partitioning (EP) divides data into partitions (equivalence partitions) based on the expectation that all elements of a partition are processed similarly by the test object. If a test case from a partition detects a defect, this defect should also be detected by test cases testing other values from the same partition.
+
+**Key Points:**
+
+- **Partitions:** Identified for any data element related to the test object (inputs, outputs, configuration items, etc.)
+- **Coverage:** Achieved by covering each identified partition (including invalid partitions) at least once. Coverage is measured as the percentage of partitions exercised by test cases.
+
+#### **4.2.2 Boundary Value Analysis**
+
+Boundary Value Analysis (BVA) focuses on testing the boundaries of equivalence partitions. BVA can only be used for ordered partitions.
+
+**Key Points:**
+
+- **Versions:** 
+  - **2-value BVA**: Two coverage items per boundary.
+  - **3-value BVA**: Three coverage items per boundary.
+- **Coverage:** Measured as a percentage of boundary values and their neighbors exercised by test cases.
+
+#### **4.2.3 Decision Table Testing**
+
+Decision tables are used to test system requirements specifying how different combinations of conditions result in different outcomes.
+
+**Key Points:**
+
+- **Structure:** Conditions and resulting actions form rows; each column corresponds to a decision rule.
+- **Coverage:** Measured as the percentage of exercised columns containing feasible combinations of conditions.
+
+#### **4.2.4 State Transition Testing**
+
+State transition diagrams model the behavior of a system by showing its possible states and valid state transitions.
+
+**Key Points:**
+
+- **Models:** State transition diagrams and state tables.
+- **Coverage Criteria:**
+  - **All states coverage**
+  - **Valid transitions coverage**
+  - **All transitions coverage**
+
+### **4.3 White-Box Test Techniques**
+
+This section focuses on two popular code-related white-box test techniques:
+
+- **Statement Testing**
+- **Branch Testing**
+
+#### **4.3.1 Statement Testing and Statement Coverage**
+
+In statement testing, the coverage items are executable statements.
+
+**Key Points:**
+
+- **Coverage:** Measured as a percentage of statements exercised by test cases.
+- **Objective:** Achieve 100% statement coverage to ensure all executable statements are exercised at least once.
+
+#### **4.3.2 Branch Testing and Branch Coverage**
+
+A branch is a transfer of control between two nodes in the control flow graph.
+
+**Key Points:**
+
+- **Coverage:** Measured as a percentage of branches exercised by test cases.
+- **Objective:** Achieve 100% branch coverage to ensure all branches (unconditional and conditional) are exercised.
+
+#### **4.3.3 The Value of White-box Testing**
+
+White-box techniques account for the entire software implementation during testing, facilitating defect detection even when the software specification is vague, outdated, or incomplete.
+
+### **4.4 Experience-based Test Techniques**
+
+Commonly used experience-based test techniques include:
+
+- **Error Guessing**
+- **Exploratory Testing**
+- **Checklist-Based Testing**
+
+#### **4.4.1 Error Guessing**
+
+Error guessing anticipates the occurrence of errors, defects, and failures based on the tester’s knowledge.
+
+**Key Points:**
+
+- **Focus Areas:** Input, output, logic, computation, interfaces, or data.
+- **Method:** Fault attacks as a systematic approach to error guessing.
+
+#### **4.4.2 Exploratory Testing**
+
+In exploratory testing, tests are simultaneously designed, executed, and evaluated while the tester learns about the test object.
+
+**Key Points:**
+
+- **Session-Based Approach:** Conducted within a defined time-box with a test charter to guide testing.
+- **Applicability:** Useful when specifications are inadequate or time is limited.
+
+#### **4.4.3 Checklist-Based Testing**
+
+Checklist-based testing involves designing, implementing, and executing tests based on a checklist.
+
+**Key Points:**
+
+- **Checklist Sources:** Based on experience, user importance, or understanding of software failures.
+- **Applicability:** Useful in the absence of detailed test cases to provide guidelines and consistency.
+
+### **4.5 Collaboration-based Test Approaches**
+
+Each of the above-mentioned techniques (see sections 4.2, 4.3, 4.4)...
+
+### 5. Managing the Test Activities – 335 minutes
+
+**Keywords:**  
+defect management, defect report, entry criteria, exit criteria, product risk, project risk, risk, risk analysis, risk assessment, risk control, risk identification, risk level, risk management, risk mitigation, risk monitoring, risk-based testing, test approach, test completion report, test control, test monitoring, test plan, test planning, test progress report, test pyramid, testing quadrants
+
+### Learning Objectives for Chapter 5:
+
+#### 5.1 Test Planning
+
+- **FL-5.1.1** (K2) Exemplify the purpose and content of a test plan
+- **FL-5.1.2** (K1) Recognize how a tester adds value to iteration and release planning
+- **FL-5.1.3** (K2) Compare and contrast entry criteria and exit criteria
+- **FL-5.1.4** (K3) Use estimation techniques to calculate the required test effort
+- **FL-5.1.5** (K3) Apply test case prioritization
+- **FL-5.1.6** (K1) Recall the concepts of the test pyramid
+- **FL-5.1.7** (K2) Summarize the testing quadrants and their relationships with test levels and test types
+
+#### 5.2 Risk Management
+
+- **FL-5.2.1** (K1) Identify risk level by using risk likelihood and risk impact
+- **FL-5.2.2** (K2) Distinguish between project risks and product risks
+- **FL-5.2.3** (K2) Explain how product risk analysis may influence the thoroughness and scope of testing
+- **FL-5.2.4** (K2) Explain what measures can be taken in response to analyzed product risks
+
+#### 5.3 Test Monitoring, Test Control, and Test Completion
+
+- **FL-5.3.1** (K1) Recall metrics used for testing
+- **FL-5.3.2** (K2) Summarize the purposes, content, and audiences for test reports
+- **FL-5.3.3** (K2) Exemplify how to communicate the status of testing
+
+#### 5.4 Configuration Management
+
+- **FL-5.4.1** (K2) Summarize how configuration management supports testing
+
+#### 5.5 Defect Management
+
+- **FL-5.5.1** (K3) Prepare a defect report
+
+### 5.1 Test Planning
+
+#### 5.1.1 Purpose and Content of a Test Plan
+
+A test plan describes the objectives, resources, and processes for a test project. A test plan:
+
+- Documents the means and schedule for achieving test objectives
+- Helps to ensure that the performed test activities will meet the established criteria
+- Serves as a means of communication with team members and other stakeholders
+- Demonstrates that testing will adhere to the existing test policy and test strategy (or explains why the testing will deviate from them)
+
+Test planning guides the testers’ thinking and forces the testers to confront the future challenges related to risks, schedules, people, tools, costs, effort, etc. The process of preparing a test plan is a useful way to think through the efforts needed to achieve the test project objectives.
+
+**Typical content of a test plan includes:**
+
+- Context of testing (e.g., scope, test objectives, constraints, test basis)
+- Assumptions and constraints of the test project
+- Stakeholders (e.g., roles, responsibilities, relevance to testing, hiring, and training needs)
+- Communication (e.g., forms and frequency of communication, documentation templates)
+- Risk register (e.g., product risks, project risks)
+- Test approach (e.g., test levels, test types, test techniques, test deliverables, entry criteria and exit criteria, independence of testing, metrics to be collected, test data requirements, test environment requirements, deviations from the organizational test policy and test strategy)
+- Budget and schedule
+
+More details about the test plan and its content can be found in the ISO/IEC/IEEE 29119-3 standard.
+
+#### 5.1.2 Tester’s Contribution to Iteration and Release Planning
+
+In iterative SDLCs, typically two kinds of planning occur: release planning and iteration planning.
+
+- **Release Planning:**  
+  - Looks ahead to the release of a product
+  - Defines and redefines the product backlog
+  - May involve refining larger user stories into a set of smaller user stories
+  - Serves as the basis for the test approach and test plan across all iterations
+  - Testers involved in release planning participate in writing testable user stories and acceptance criteria, participate in project and quality risk analyses, estimate test effort associated with user stories, determine the test approach, and plan the testing for the release.
+
+- **Iteration Planning:**  
+  - Looks ahead to the end of a single iteration and is concerned with the iteration backlog
+  - Testers involved in iteration planning participate in the detailed risk analysis of user stories, determine the testability of user stories, break down user stories into tasks (particularly testing tasks), estimate test effort for all testing tasks, and identify and refine functional and non-functional aspects of the test object.
+
+#### 5.1.3 Entry Criteria and Exit Criteria
+
+**Entry Criteria:** Define the preconditions for undertaking a given activity. If entry criteria are not met, it is likely that the activity will prove to be more difficult, time-consuming, costly, and riskier.
+
+**Exit Criteria:** Define what must be achieved in order to declare an activity completed.
+
+**Typical Entry Criteria include:**
+
+- Availability of resources (e.g., people, tools, environments, test data, budget, time)
+- Availability of testware (e.g., test basis, testable requirements, user stories, test cases)
+- Initial quality level of a test object (e.g., all smoke tests have passed)
+
+**Typical Exit Criteria include:**
+
+- Measures of thoroughness (e.g., achieved level of coverage, number of unresolved defects, defect density, number of failed test cases)
+- Completion criteria (e.g., planned tests have been executed, static testing has been performed, all defects found are reported, all regression tests are automated)
+
+**Note:** Running out of time or budget can also be viewed as valid exit criteria. Even without other exit criteria being satisfied, it can be acceptable to end testing under such circumstances if the stakeholders have reviewed and accepted the risk to go live without further testing.
+
+**Agile Software Development:**
+
+- **Definition of Done:** Exit criteria in Agile.
+- **Definition of Ready:** Entry criteria for a user story to start the development and/or testing activities.
+
+#### 5.1.4 Estimation Techniques
+
+Test effort estimation involves predicting the amount of test-related work needed to meet the objectives of a test project. It's important to make it clear to stakeholders that the estimate is based on a number of assumptions and is always subject to estimation error.
+
+**Estimation Techniques:**
+
+1. **Estimation Based on Ratios:**
+   - Uses historical data from previous projects within the organization to derive “standard” ratios for similar projects.
+
+2. **Extrapolation:**
+   - Measurements are made as early as possible in the current project to gather the data. Effort required for the remaining work is approximated by extrapolating this data.
+
+3. **Wideband Delphi:**
+   - An expert-based technique where experts make experience-based estimations iteratively until a consensus is reached.
+
+4. **Three-Point Estimation:**
+   - Experts make three estimations: the most optimistic (a), the most likely (m), and the most pessimistic (b). The final estimate (E) is their weighted arithmetic mean.
+
+See references (Kan 2003, Koomen 2006, Westfall 2009) for more on test estimation techniques.
+
+#### 5.1.5 Test Case Prioritization
+
+After specifying and assembling test cases into test suites, these suites can be arranged in a test execution schedule that defines the order of execution.
+
+**Common Prioritization Strategies:**
+
+- **Risk-Based Prioritization:**  
+  - Order of execution based on risk analysis results.
+
+- **Coverage-Based Prioritization:**  
+  - Order of execution based on coverage achieved.
+
+- **Requirements-Based Prioritization:**  
+  - Order of execution based on the priorities of the requirements.
+
+**Note:** Test case dependencies and resource availability must also be considered when prioritizing.
+
+#### 5.1.6 Test Pyramid
+
+The test pyramid is a model that shows that different tests may have different granularity.
+
+**Pyramid Layers:**
+
+- **Bottom Layer:**  
+  - Small, isolated, fast tests (e.g., unit tests).
+
+- **Top Layer:**  
+  - Complex, high-level, end-to-end tests.
+
+The number and naming of the layers may differ. For example, the original test pyramid model (Cohn 2009) defines three layers: “unit tests,” “service tests,” and “UI tests.”
+
+#### 5.1.7 Testing Quadrants
+
+The testing quadrants model, defined by Brian Marick (Marick 2003, Crispin 2008), groups test levels with appropriate test types, activities, test techniques, and work products in Agile software development.
+
+**Quadrants:**
+
+1. **Quadrant Q1 (Technology Facing, Support the Team):**  
+   - Contains component and component integration tests. These should be automated and included in the CI process.
+
+2. **Quadrant Q2 (Business Facing, Support the Team):**  
+   - Contains functional tests, examples, user story tests, user experience prototypes, API testing, and simulations.
+
+3. **Quadrant Q3 (
+
+Business Facing, Critique the Product):**  
+   - Contains exploratory testing, scenario-based testing, user acceptance testing, and alpha/beta testing.
+
+4. **Quadrant Q4 (Technology Facing, Critique the Product):**  
+   - Contains performance testing, load testing, and security testing.
+
+**Note:** The quadrants should not be seen as a strict sequence or hierarchy. Some tests might fall into multiple quadrants, and different quadrants could be addressed in parallel.
+
+### 5.2 Risk Management
+
+#### 5.2.1 Risk Levels
+
+Risk level can be identified by using the product of risk likelihood and risk impact.
+
+**Risk Level = Risk Likelihood x Risk Impact**
+
+#### 5.2.2 Project Risks vs. Product Risks
+
+**Project Risks:**  
+- Concerns about problems that may impact the project or software development process. Examples include delays in delivery, staffing issues, budget cuts, etc.
+
+**Product Risks:**  
+- Potential risks that might occur with the product itself. Examples include poor performance, security vulnerabilities, incorrect functionality, etc.
+
+#### 5.2.3 Product Risk Analysis
+
+The product risk analysis influences the thoroughness and scope of testing. High-risk areas may require more thorough testing, while low-risk areas may require lighter testing.
+
+#### 5.2.4 Responding to Product Risks
+
+Measures can be taken to mitigate identified product risks, including:
+
+- Design reviews
+- Code reviews
+- Extra test cases
+- More in-depth testing
+- Higher test coverage
+
+### 5.3 Test Monitoring, Test Control, and Test Completion
+
+#### 5.3.1 Metrics for Testing
+
+Common metrics include:
+
+- Test coverage
+- Number of defects found
+- Number of tests passed or failed
+- Time taken to execute tests
+
+#### 5.3.2 Purposes and Content of Test Reports
+
+Test reports summarize the status of the test project and provide evidence that testing has been performed. They are intended for stakeholders such as project managers, developers, and clients.
+
+**Test reports typically include:**
+
+- Summary of testing performed
+- List of defects found
+- Metrics and KPIs
+- Conclusions and recommendations
+
+#### 5.3.3 Communicating the Status of Testing
+
+Testers must clearly and effectively communicate the status of testing to stakeholders. This includes regular progress reports and updates on any issues or risks.
+
+### 5.4 Configuration Management
+
+Configuration management supports testing by ensuring that test environments, test cases, and the test object itself are properly controlled and maintained. This ensures repeatability and accuracy in testing.
+
+### 5.5 Defect Management
+
+#### 5.5.1 Preparing a Defect Report
+
+A defect report should clearly document the defect to ensure it can be effectively addressed.
+
+**Typical content of a defect report includes:**
+
+- **Summary:** A brief overview of the defect.
+- **Description:** A detailed description of the defect, including steps to reproduce.
+- **Severity:** The impact of the defect on the system.
+- **Priority:** The urgency of fixing the defect.
+- **Environment:** Information on the test environment where the defect was found.
+- **Attachments:** Any relevant screenshots, logs, or other files.
+
+### 6. Test Tools – 20 Minutes
+
+**Keywords:**  
+Test automation
+
+**Learning Objectives for Chapter 6:**
+
+- **6.1 Tool Support for Testing**  
+  - FL-6.1.1 (K2) Explain how different types of test tools support testing.
+  
+- **6.2 Benefits and Risks of Test Automation**  
+  - FL-6.2.1 (K1) Recall the benefits and risks of test automation.
+
+### 6.1 Tool Support for Testing
+
+Test tools support and facilitate many test activities. Examples include, but are not limited to:
+
+- **Management Tools:**  
+  Increase the test process efficiency by facilitating management of the SDLC, requirements, tests, defects, and configuration.
+
+- **Static Testing Tools:**  
+  Support the tester in performing reviews and static analysis.
+
+- **Test Design and Implementation Tools:**  
+  Facilitate the generation of test cases, test data, and test procedures.
+
+- **Test Execution and Coverage Tools:**  
+  Facilitate automated test execution and coverage measurement.
+
+- **Non-functional Testing Tools:**  
+  Allow the tester to perform non-functional testing that is difficult or impossible to perform manually.
+
+- **DevOps Tools:**  
+  Support the DevOps delivery pipeline, workflow tracking, automated build process(es), CI/CD.
+
+- **Collaboration Tools:**  
+  Facilitate communication.
+
+- **Tools Supporting Scalability and Deployment Standardization:**  
+  Tools such as virtual machines and containerization tools.
+
+- **Other Tools:**  
+  Any other tool that assists in testing (e.g., a spreadsheet is a test tool in the context of testing).
+
+### 6.2 Benefits and Risks of Test Automation
+
+Simply acquiring a tool does not guarantee success. Each new tool will require effort to achieve real and lasting benefits (e.g., for tool introduction, maintenance, and training). There are also some risks that need analysis and mitigation.
+
+**Potential Benefits of Using Test Automation Include:**
+
+- **Time Saved:**  
+  Reducing repetitive manual work (e.g., executing regression tests, re-entering the same test data, comparing expected results vs actual results, and checking against coding standards).
+
+- **Prevention of Human Errors:**  
+  Greater consistency and repeatability (e.g., tests consistently derived from requirements, systematic test data creation, and tool-executed tests in the same order and frequency).
+
+- **Objective Assessment:**  
+  More objective assessments (e.g., coverage) and providing measures that are too complicated for humans to derive.
+
+- **Easier Access to Information:**  
+  Supporting test management and test reporting (e.g., statistics, graphs, and aggregated data about test progress, defect rates, and test execution duration).
+
+- **Reduced Test Execution Times:**  
+  Providing earlier defect detection, faster feedback, and quicker time to market.
+
+- **More Time for Testers:**  
+  Allowing testers to design new, deeper, and more effective tests.
+
+**Potential Risks of Using Test Automation Include:**
+
+- **Unrealistic Expectations:**  
+  Expectations about the benefits of a tool, including functionality and ease of use.
+
+- **Inaccurate Estimations:**  
+  Misjudging time, costs, and effort required to introduce a tool, maintain test scripts, and change the existing manual test process.
+
+- **Inappropriate Tool Use:**  
+  Using a test tool when manual testing is more appropriate.
+
+- **Over-reliance on Tools:**  
+  Ignoring the need for human critical thinking.
+
+- **Vendor Dependency:**  
+  The risk of a vendor going out of business, retiring the tool, selling it to a different vendor, or providing poor support (e.g., responses to queries, upgrades, and defect fixes).
+
+- **Open-source Software Risks:**  
+  Risks of open-source software being abandoned, lacking further updates, or requiring frequent updates of internal components.
+
+- **Compatibility Issues:**  
+  The automation tool may not be compatible with the development platform.
+
+- **Unsuitable Tool Selection:**  
+  Choosing a tool that does not comply with regulatory requirements and/or safety standards.
+
+### 7. References
+
+**Standards:**
+
+- ISO/IEC/IEEE 29119-1 (2022) Software and systems engineering – Software testing – Part 1: General Concepts
+- ISO/IEC/IEEE 29119-2 (2021) Software and systems engineering – Software testing – Part 2: Test processes
+- ISO/IEC/IEEE 29119-3 (2021) Software and systems engineering – Software testing – Part 3: Test documentation
+- ISO/IEC/IEEE 29119-4 (2021) Software and systems engineering – Software testing – Part 4: Test techniques
+- ISO/IEC 25010 (2011) Systems and software engineering – Systems and software Quality Requirements and Evaluation (SQuaRE) System and software quality models
+- ISO/IEC 20246 (2017) Software and systems engineering – Work product reviews
+- ISO/IEC/IEEE 14764 (2022) Software engineering – Software life cycle processes – Maintenance
+- ISO 31000 (2018) Risk management – Principles and guidelines
+
+**Books:**
+
+- Adzic, G. (2009) *Bridging the Communication Gap: Specification by Example and Agile Acceptance Testing*, Neuri Limited
+- Ammann, P., & Offutt, J. (2016) *Introduction to Software Testing* (2nd ed.), Cambridge University Press
+- Andrews, M., & Whittaker, J. (2006) *How to Break Web Software: Functional and Security Testing of Web Applications and Web Services*, Addison-Wesley Professional
+- Beck, K. (2003) *Test Driven Development: By Example*, Addison-Wesley
+- Beizer, B. (1990) *Software Testing Techniques* (2nd ed.), Van Nostrand Reinhold: Boston, MA
+- Boehm, B. (1981) *Software Engineering Economics*, Prentice Hall, Englewood Cliffs, NJ
+- Buxton, J.N., & Randell, B., eds. (1970) *Software Engineering Techniques.* Report on a conference sponsored by the NATO Science Committee, Rome, Italy, 27–31 October 1969
+- Chelimsky, D. et al. (2010) *The Rspec Book: Behaviour Driven Development with Rspec, Cucumber, and Friends*, The Pragmatic Bookshelf: Raleigh, NC
+- Cohn, M. (2009) *Succeeding with Agile: Software Development Using Scrum*, Addison-Wesley
+- Copeland, L. (2004) *A Practitioner’s Guide to Software Test Design*, Artech House: Norwood, MA
+- Craig, R., & Jaskiel, S. (2002) *Systematic Software Testing*, Artech House: Norwood, MA
+- Crispin, L., & Gregory, J. (2008) *Agile Testing: A Practical Guide for Testers and Agile Teams*, Pearson Education: Boston, MA
+- Forgács, I., & Kovács, A. (2019) *Practical Test Design: Selection of traditional and automated test design techniques*, BCS, The Chartered Institute for IT
+- Gawande, A. (2009) *The Checklist Manifesto: How to Get Things Right*, Metropolitan Books: New York, NY
+- Gärtner, M. (2011) *ATDD by Example: A Practical Guide to Acceptance Test-Driven Development*, Pearson Education: Boston, MA
+- Gilb, T., & Graham, D. (1993) *Software Inspection*, Addison Wesley
+- Hendrickson, E. (2013) *Explore It!: Reduce Risk and Increase Confidence with Exploratory Testing*, The Pragmatic Programmers
+- Hetzel, B. (1988) *The Complete Guide to Software Testing* (2nd ed.), John Wiley & Sons
+- Jeffries, R., Anderson, A., & Hendrickson, C. (2000) *Extreme Programming Installed*, Addison-Wesley Professional
+- Jorgensen, P. (2014) *Software Testing, A Craftsman’s Approach* (4th ed.), CRC Press: Boca Raton, FL
+- Kan, S. (2003) *Metrics and Models in Software Quality Engineering* (2nd ed.), Addison-Wesley
+- Kaner, C., Falk, J., & Nguyen, H.Q. (1999) *Testing Computer Software* (2nd ed.), Wiley
+- Kaner, C., Bach, J., & Pettichord, B. (2011) *Lessons Learned in Software Testing: A Context-Driven Approach* (1st ed.), Wiley
+- Kim, G., Humble, J., Debois, P., & Willis, J. (2016) *The DevOps Handbook*, Portland, OR
+- Koomen, T., van der Aalst, L., Broekman, B., & Vroon, M. (2006) *TMap Next for Result-Driven Testing*, UTN Publishers, The Netherlands
+- Myers, G. (2011) *The Art of Software Testing* (3rd ed.), John Wiley & Sons: New York, NY
+- O’Regan, G. (2019) *Concise Guide to Software Testing*, Springer Nature Switzerland
+- Pressman, R.S. (2019) *Software Engineering. A Practitioner’s Approach* (9th ed.), McGraw Hill
+- Roman, A. (2018) *Thinking-Driven Testing: The Most Reasonable Approach to Quality Control*, Springer Nature Switzerland
+- Van Veenendaal, E. (ed.) (2012) *Practical Risk-Based Testing, The PRISMA Approach*, UTN Publishers: The Netherlands
+- Watson, A.H
+
+### 8. Appendix A – Learning Objectives/Cognitive Level of Knowledge
+
+The following learning objectives are defined as applying to this syllabus. Each topic in the syllabus will be examined according to the learning objective for it. The learning objectives begin with an action verb corresponding to its cognitive level of knowledge as listed below.
+
+**Level 1: Remember (K1)** – The candidate will remember, recognize, and recall a term or concept.  
+**Action verbs:** identify, recall, remember, recognize.  
+**Examples:**
+
+- “Identify typical test objectives.”
+- “Recall the concepts of the test pyramid.”
+- “Recognize how a tester adds value to iteration and release planning.”
+
+**Level 2: Understand (K2)** – The candidate can select the reasons or explanations for statements related to the topic, and can summarize, compare, classify, and give examples for the testing concept.  
+**Action verbs:** classify, compare, contrast, differentiate, distinguish, exemplify, explain, give examples, interpret, summarize.  
+**Examples:**
+
+- “Classify the different options for writing acceptance criteria.”
+- “Compare the different roles in testing” (look for similarities, differences, or both).
+- “Distinguish between project risks and product risks” (allows concepts to be differentiated).
+- “Exemplify the purpose and content of a test plan.”
+- “Explain the impact of context on the test process.”
+- “Summarize the activities of the review process.”
+
+**Level 3: Apply (K3)** – The candidate can carry out a procedure when confronted with a familiar task, or select the correct procedure and apply it to a given context.  
+**Action verbs:** apply, implement, prepare, use.  
+**Examples:**
+
+- “Apply test case prioritization” (should refer to a procedure, technique, process, algorithm etc.).
+- “Prepare a defect report.”
+- “Use boundary value analysis to derive test cases.”
+
+**References for the cognitive levels of learning objectives:**
+
+Anderson, L. W., & Krathwohl, D. R. (Eds.) (2001). *A Taxonomy for Learning, Teaching, Assessing: A Revision of Bloom's Taxonomy of Educational Objectives*, Allyn & Bacon
